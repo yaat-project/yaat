@@ -46,4 +46,4 @@ uvicorn example:app
 ```
 
 ## Credit
-- For temporariy, I use Chimera image from <a href="https://zombiebacons.tumblr.com/post/29558558057/did-a-quick-chimera-logo-for-my-friend-john-over" target="_blank">this tumblr</a>
+- I used Chimera image from <a href="https://zombiebacons.tumblr.com/post/29558558057/did-a-quick-chimera-logo-for-my-friend-john-over" target="_blank">this tumblr</a>
