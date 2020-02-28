@@ -2,8 +2,9 @@
 <p align="center">
 <img src="https://wallpapercave.com/wp/wp3733068.jpg" height="300" alt="chimera"/>
 </p>
+<p align="center"><i>lightweight ASGI framework</i> </p>
 
-## What is this?
+## Chimera
 
 Chimera is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/">ASGI</a>.  
 This is not developed for production (`at this point`) and I suggested you to try it for learning only.  
