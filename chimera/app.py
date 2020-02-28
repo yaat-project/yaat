@@ -5,8 +5,9 @@ import os
 import typing
 
 from .exceptions import HttpException
+from .middleware import Middleware
 from .requests import Request
-from .responses import FileResponse
+from .responses import Response, FileResponse
 from .staticfiles import handle_staticfile
 from .types import Scope, Receive, Send
 
@@ -16,6 +17,7 @@ class Chimera:
         self.routes = {}
         self.templates_env = Environment(loader=FileSystemLoader(os.path.abspath(templates_dir)))
         self.static_dir = static_dir[1:] if static_dir and static_dir.startswith("/") else static_dir
+        self.middleware = Middleware(self)
         self.exception_handler = None
 
     # NOTE: properties
@@ -41,8 +43,12 @@ class Chimera:
 
 
     # NOTE: Handle Request
-    async def handle_request(self, request: Request) -> None:
+    async def handle_request(self, request: Request) -> Response:
         handler, kwargs = self.find_handler(request_path=request.path)
+
+        # handle static file
+        if self.static_dir and request.path.startswith(f"/{self.static_dir}"):
+            return await handle_staticfile(request, self.static_dir)
 
         try:
             if handler is not None:
@@ -64,8 +70,7 @@ class Chimera:
                 response = e.response
             else:
                 raise e
-
-        await response(request.send)
+        return response
 
     def find_handler(self, request_path) -> (callable, typing.Any):
         for path, handler in self.routes.items():
@@ -83,10 +88,10 @@ class Chimera:
         return self.templates_env.get_template(template_name).render(**context).encode()
 
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        request = Request(scope, receive, send)
+    # NOTE: Middleware
+    def add_middleware(self, middleware_cls: Middleware) -> None:
+        self.middleware.add(middleware_cls)
 
-        if self.static_dir and request.path.startswith(f"/{self.static_dir}"):
-            await handle_staticfile(request, self.static_dir)
-        else:
-            await self.handle_request(request)
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        await self.middleware(scope, receive, send)

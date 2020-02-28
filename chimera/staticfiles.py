@@ -2,7 +2,7 @@ import os
 
 from .exceptions import HttpException
 from .requests import Request
-from .responses import FileResponse
+from .responses import Response, FileResponse
 
 
 def get_abs_path(static_dir: str) -> str:
@@ -11,7 +11,7 @@ def get_abs_path(static_dir: str) -> str:
 def is_file_exists(filepath: str) -> bool:
     return os.path.exists(filepath)
 
-async def handle_staticfile(request: Request, static_dir: str) -> None:
+async def handle_staticfile(request: Request, static_dir: str) -> Response:
     requested_path = request.path
     if requested_path.startswith("/"):
         requested_path = requested_path[1:]
@@ -30,4 +30,4 @@ async def handle_staticfile(request: Request, static_dir: str) -> None:
         )
     except HttpException as e:
         response = e.response
-    await response(request.send)
+    return response

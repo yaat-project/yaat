@@ -100,7 +100,7 @@ class PlainTextResponse(Response):
     media_type = "text/plain"
 
 
-class JSONResponse(Response):
+class JsonResponse(Response):
     media_type = "application/json"
 
     def render_content(self, content: typing.Any) -> bytes:
