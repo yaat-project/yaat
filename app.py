@@ -1,9 +1,9 @@
-from kelpie import Kelpie
-from kelpie.responses import FileResponse, HTMLResponse, PlainTextResponse
+from chimera import Chimera
+from chimera.responses import FileResponse, HTMLResponse, PlainTextResponse
 
 
 # NOTE: Example Web Application To Test Kelpie
-app = Kelpie(templates_dir="templates", static_dir="static")
+app = Chimera(templates_dir="templates", static_dir="static")
 
 
 # NOTE: templating
