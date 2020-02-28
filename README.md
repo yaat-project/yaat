@@ -12,7 +12,7 @@ Python 3.6+
 ## Setup
 
 ```bash
-pip3 install -r requirements.txt`
+pip3 install -r requirements.txt
 ```
 
 You'll also want to install an ASGI server, such as uvicorn.
