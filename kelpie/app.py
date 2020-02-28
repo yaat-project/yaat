@@ -6,14 +6,16 @@ import typing
 
 from .exceptions import HttpException
 from .requests import Request
-from .responses import PlainTextResponse
+from .responses import FileResponse
+from .staticfiles import handle_staticfile
 from .types import Scope, Receive, Send
 
 
 class Kelpie:
-    def __init__(self, templates_dir="templates"):
+    def __init__(self, templates_dir="templates", static_dir=None):
         self.routes = {}
         self.templates_env = Environment(loader=FileSystemLoader(os.path.abspath(templates_dir)))
+        self.static_dir = static_dir[1:] if static_dir and static_dir.startswith("/") else static_dir
         self.exception_handler = None
 
     # NOTE: properties
@@ -22,9 +24,8 @@ class Kelpie:
         return self.__exception_handler
 
     @exception_handler.setter
-    def exception_handler(self, exception: callable):
+    def exception_handler(self, exception: callable) -> None:
         self.__exception_handler = exception
-
 
     # NOTE: Routing
     def add_route(self, path: str, handler: callable) -> None:
@@ -40,8 +41,7 @@ class Kelpie:
 
 
     # NOTE: Handle Request
-    async def handle_request(self, scope: Scope, receive: Receive, send: Send) -> None:
-        request = Request(scope, receive, send)
+    async def handle_request(self, request: Request) -> None:
         handler, kwargs = self.find_handler(request_path=request.path)
 
         try:
@@ -84,4 +84,9 @@ class Kelpie:
 
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        await self.handle_request(scope, receive, send)
+        request = Request(scope, receive, send)
+
+        if self.static_dir and request.path.startswith(f"/{self.static_dir}"):
+            await handle_staticfile(request, self.static_dir)
+        else:
+            await self.handle_request(request)
