@@ -1,12 +1,12 @@
-<h1 align="center">Chimera</h1>  
+<h1 align="center">Hippogriff</h1>  
 <p align="center">
-<img src="https://wallpapercave.com/wp/wp3733068.jpg" height="300" alt="chimera"/>
+<img src="https://wallpapercave.com/wp/wp3733068.jpg" height="300" alt="Hippogriff"/>
 </p>
 <p align="center"><i>lightweight ASGI framework</i> </p>
 
-## Chimera
+## Hippogriff
 
-Chimera is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/">ASGI</a>.  
+Hippogriff is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/">ASGI</a>.  
 This is not production yet (at this point). 
 
 ## Requirements
@@ -29,10 +29,10 @@ pip3 install uvicorn
 
 **example.py**
 ```python
-from chimera import Chimera
-from chimera.responses import PlainTextResponse
+from hippogriff import Hippogriff
+from hippogriff.responses import PlainTextResponse
 
-app = Chimera()
+app = Hippogriff()
 
 @app.route("/")
 async def index(req):
