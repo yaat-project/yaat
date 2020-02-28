@@ -11,7 +11,7 @@ app = Chimera(templates_dir="templates", static_dir="static")
 async def home(req):
     return HTMLResponse(
         content=app.template("home.html", context={
-            "name": "Kelpie"
+            "name": "Chimera"
         })
     )
 
