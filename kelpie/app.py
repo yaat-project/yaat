@@ -1,5 +1,7 @@
+from jinja2 import Environment, FileSystemLoader
 from parse import parse
 import inspect
+import os
 import typing
 
 from .exceptions import HttpException
@@ -9,11 +11,24 @@ from .types import Scope, Receive, Send
 
 
 class Kelpie:
-    def __init__(self):
+    def __init__(self, templates_dir="templates"):
         self.routes = {}
+        self.templates_env = Environment(loader=FileSystemLoader(os.path.abspath(templates_dir)))
+        self.exception_handler = None
 
-    def add_route(self, path: str, handler: callable):
-        assert path not in self.routes, "Route already exists"
+    # NOTE: properties
+    @property
+    def exception_handler(self) -> callable:
+        return self.__exception_handler
+
+    @exception_handler.setter
+    def exception_handler(self, exception: callable):
+        self.__exception_handler = exception
+
+
+    # NOTE: Routing
+    def add_route(self, path: str, handler: callable) -> None:
+        assert path not in self.routes, f"Route {path}, already exists"
         self.routes[path] = handler
 
     def route(self, path: str) -> callable:
@@ -23,6 +38,8 @@ class Kelpie:
 
         return wrapper
 
+
+    # NOTE: Handle Request
     async def handle_request(self, scope: Scope, receive: Receive, send: Send) -> None:
         request = Request(scope, receive, send)
         handler, kwargs = self.find_handler(request_path=request.path)
@@ -40,8 +57,13 @@ class Kelpie:
             else:
                 # default response when path not found
                 raise HttpException(status_code=404, details=f"Not found")
-        except HttpException as e:
-            response = e.response
+        except Exception as e:
+            if self.exception_handler is not None:
+                response = self.exception_handler(request, e)
+            elif isinstance(e, HttpException):
+                response = e.response
+            else:
+                raise e
 
         await response(request.send)
 
@@ -52,6 +74,14 @@ class Kelpie:
                 return handler, parse_result.named
         return None, None
 
+
+    # NOTE: Templating
+    def template(self, template_name: str, context=None) -> bytes:
+        if context is None:
+            context = {}
+
+        return self.templates_env.get_template(template_name).render(**context).encode()
+
+
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        assert scope['type'] == 'http'
         await self.handle_request(scope, receive, send)
