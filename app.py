@@ -1,9 +1,9 @@
 from kelpie import Kelpie
-from kelpie.responses import HTMLResponse, PlainTextResponse
+from kelpie.responses import FileResponse, HTMLResponse, PlainTextResponse
 
 
 # NOTE: Example Web Application To Test Kelpie
-app = Kelpie(templates_dir="templates")
+app = Kelpie(templates_dir="templates", static_dir="static")
 
 
 # NOTE: templating
@@ -68,6 +68,6 @@ app.add_route("/manual_route", manual_add_route)
 
 # app.exception_handler = custom_exception_handler
 
-@app.route("/exception")
-def exception_throwing_handler(req):
-    raise AssertionError("This handler should not be user")
+# @app.route("/exception")
+# def exception_throwing_handler(req):
+#     raise AssertionError("This handler should not be user")
