@@ -1,4 +1,7 @@
 <h1 align="center">Chimera</h1>  
+<p align="center">
+<img src="https://66.media.tumblr.com/tumblr_m8uy1cmim81r0lcy5o1_1280.jpg" height="250" alt="chimera"/>
+</p>
 
 ## What is this?
 
@@ -41,3 +44,6 @@ Then run using uvicorn:
 ```bash
 uvicorn example:app
 ```
+
+## Credit
+- For temporariy, I use Chimera image from <a href="https://zombiebacons.tumblr.com/post/29558558057/did-a-quick-chimera-logo-for-my-friend-john-over" target="_blank">this tumblr</a>
