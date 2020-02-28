@@ -8,3 +8,7 @@ This is not developed for production (`at this point`) and I suggested you to tr
 ## Requirements
 
 Python 3.6
+
+## Setup
+
+- `pip install -r requirements.txt`
