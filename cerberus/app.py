@@ -12,7 +12,7 @@ from .staticfiles import handle_staticfile
 from .types import Scope, Receive, Send
 
 
-class Hippogriff:
+class Cerberus:
     def __init__(self, templates_dir="templates", static_dir=None):
         self.routes = {}
         self.templates_env = Environment(loader=FileSystemLoader(os.path.abspath(templates_dir)))

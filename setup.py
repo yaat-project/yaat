@@ -1,14 +1,14 @@
 from distutils.core import setup
 setup(
-  name = 'Hippogriff',
-  packages = ['hippogriff'],
+  name = 'cerberus',
+  packages = ['cerberus'],
   version = '0.1',
   license='MIT',
   description = 'Lightweight asynchronous web framework',
   author = 'Khant',
   author_email = 'contact@khant.dev',
-  url = 'https://github.com/the-robot/hippogrif',
-  download_url = 'https://github.com/the-robot/hippogrif/archive/v_01.tar.gz',
+  url = 'https://github.com/the-robot/cerberus',
+  download_url = 'https://github.com/the-robot/cerberus/archive/v_01.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
     "aiofiles",
