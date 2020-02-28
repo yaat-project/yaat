@@ -27,8 +27,8 @@ class Kelpie:
         request = Request(scope, receive, send)
         handler, kwargs = self.find_handler(request_path=request.path)
 
-        if handler is not None:
-            try:
+        try:
+            if handler is not None:
                 if inspect.isclass(handler):
                     handler = getattr(handler(), request.method.lower(), None)
                     if handler is None:
@@ -37,11 +37,11 @@ class Kelpie:
                             details=f"{request.method} method is not allowed for {request.path}"
                         )
                 response = await handler(request, **kwargs)
-            except HttpException as e:
-                response = e.response
-        else:
-            # default response when path not found
-            response = self.default_response()
+            else:
+                # default response when path not found
+                raise HttpException(status_code=404, details=f"Not found")
+        except HttpException as e:
+            response = e.response
 
         await response(request.send)
 
@@ -51,12 +51,6 @@ class Kelpie:
             if parse_result is not None:
                 return handler, parse_result.named
         return None, None
-
-    def default_response(self) -> PlainTextResponse:
-        return PlainTextResponse(
-            content='Not found',
-            status_code=404
-        )
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         assert scope['type'] == 'http'
