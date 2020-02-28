@@ -6,7 +6,7 @@ from .types import ASGIApp, Scope, Receive, Send
 
 
 class Middleware:
-    def __init__(self, app):
+    def __init__(self, app: ASGIApp):
         self.app = app
 
     def add(self, middleware_cls: typing.Type):
