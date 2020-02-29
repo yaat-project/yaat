@@ -1,7 +1,7 @@
 from parse import parse
 import typing
 
-from .exceptions import HttpException
+from .exceptions import MethodNotAllowException
 
 
 class Route:
@@ -71,10 +71,7 @@ class Router:
             parse_result = parse(route.path, request_path)
 
             if not route.is_valid_method(method):
-                raise HttpException(
-                    status_code=405,
-                    details="Method Not Allowed"
-                )
+                raise MethodNotAllowException
 
             if parse_result is not None:
                 return route.handler, parse_result.named

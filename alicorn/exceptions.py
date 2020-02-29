@@ -22,3 +22,13 @@ class HttpException(Exception):
     def __str__(self) -> str:
         class_name = self.__class__.__name__
         return f"{class_name}(status_code={self.status_code!r}, detail={self.details!r})"
+
+
+class NotFoundException(HttpException):
+    def __init__(self):
+        super().__init__(status_code=404, details="Not Found")
+
+
+class MethodNotAllowException(HttpException):
+    def __init__(self):
+        super().__init__(status_code=405, details="Method Not Allowed")
