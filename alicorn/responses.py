@@ -1,4 +1,5 @@
 import json
+import http.cookies
 from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
 import typing
@@ -16,6 +17,7 @@ except ImportError:
 class Response:
     media_type = None
     charset = 'utf-8'
+    encoding_method = 'latin-1'
 
     def __init__(
         self,
@@ -45,7 +47,7 @@ class Response:
             populate_content_type = True
         else:
             raw_headers = [
-                (k.lower().encode("latin-1"), v.encode("latin-1"))
+                (k.lower().encode(self.encoding_method), v.encode(self.encoding_method))
                 for k, v in headers.items()
             ]
             keys = [h[0] for h in raw_headers]
@@ -55,17 +57,17 @@ class Response:
         body = getattr(self, "body", b"")
         if body and populate_content_length:
             content_length = str(len(body))
-            raw_headers.append((b"content-length", content_length.encode("latin-1")))
+            raw_headers.append((b"content-length", content_length.encode(self.encoding_method)))
         
         content_type = self.media_type
         if content_type is not None and populate_content_type:
             if content_type.startswith("text/"):
                 content_type += "; charset=" + self.charset
-            raw_headers.append((b"content-type", content_type.encode("latin-1")))
+            raw_headers.append((b"content-type", content_type.encode(self.encoding_method)))
 
-        self.raw_headers = raw_headers
+        self.raw_headers: list = raw_headers
 
-    def set_cookies(
+    def set_cookie(
         self,
         key: str,
         value: str = "",
@@ -77,8 +79,35 @@ class Response:
         httponly: bool = False,
         samesite: str = "lax",
     ) -> None:
-        # TODO: implement set cookie method
-        pass
+        cookie: http.cookies.BaseCookie = http.cookies.SimpleCookie()
+        cookie[key] = value
+        if max_age is not None:
+            cookie[key]["max-age"] = max_age
+        if expires is not None:
+            cookie[key]["expires"] = expires
+        if path is not None:
+            cookie[key]["path"] = path
+        if domain is not None:
+            cookie[key]["domain"] = domain
+        if secure:
+            cookie[key]["secure"] = True
+        if httponly:
+            cookie[key]["httponly"] = True
+        if samesite is not None:
+            # 'none' for cross-site access
+            assert samesite.lower() in [
+                "strict",
+                "lax",
+                "none",
+            ], "samesite must be either 'strict', 'lax' or 'none'"
+            cookie[key]["samesite"] = samesite
+        cookie_values = cookie.output(header="").strip()
+        self.raw_headers.append(
+            (b"set-cookie", cookie_val.encode(self.encoding_method))
+        )
+
+    def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
+        self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
     async def __call__(self, send: Send) -> None:
         await send({
@@ -114,8 +143,9 @@ class JsonResponse(Response):
 
 
 class RedirectResponse(Response):
-    # TODO: implement redirection
-    pass
+    def __init__(self, url: str, status_code: int = 307, headers: dict={}) -> None:
+        headers["location"] = quote_plus(str(url), safe=":/%#?&=@[]!$&'()*+,;")
+        super().__init__(content=b"", status_code=status_code, headers=headers)
 
 
 class FileResponse(Response):
