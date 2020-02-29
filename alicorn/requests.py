@@ -1,3 +1,4 @@
+import json
 import typing
 
 from .types import Scope, Receive, Send, Message
@@ -80,5 +81,33 @@ class Request(HttpConnection):
     def send(self, send: Send):
         self.__send = send
 
+    async def stream(self) -> bytes:
+        if hasattr(self, "_body"):
+            return self._body
+
+        body = b''
+        more_body = True
+
+        while more_body:
+            message = await self.receive()
+            body += message.get('body', b'')
+            more_body = message.get('more_body', False)
+
+        return body
+
     async def body(self) -> bytes:
-        return self.send.get("body", b"")
+        if hasattr(self, "_body"):
+            return self._body
+
+        self._body = await self.stream()
+        return self._body
+
+    async def json(self) -> typing.Any:
+        if not hasattr(self, "_json"):
+            body = await self.body()
+            self._json = {} if body.decode() == '' else json.loads(body)
+        return self._json
+
+    async def form(self) -> dict:
+        # TODO: implement form data
+        pass
