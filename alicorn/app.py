@@ -35,7 +35,6 @@ class Alicorn:
         assert path not in self.router.paths, f"Route {path}, already exists"
         self.router.add_route(path, handler, methods)
 
-
     def route(self, path: str, methods: list = None) -> callable:
         def wrapper(handler):
             self.add_route(path, handler, methods)
