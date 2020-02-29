@@ -26,6 +26,7 @@ class Alicorn:
     def exception_handler(self, exception: callable) -> None:
         self.__exception_handler = exception
 
+
     # NOTE: Routing
     def add_route(self, path: str, handler: callable, methods: list = None) -> None:
         assert path not in self.router.paths, f"Route {path}, already exists"
