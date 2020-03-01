@@ -52,22 +52,46 @@ class Route:
 
 class Router:
     def __init__(self):
-        self._routes = []
-
-    def add_route(self, path: str, handler: callable, methods: list = None):
-        self._routes.append(
-            Route(path=path, handler=handler, methods=methods)
-        )
+        self.routes = []
 
     @property
-    def paths(self) -> list:
+    def routes(self) -> typing.List[Route]:
+        return self.__routes
+
+    @routes.setter
+    def routes(self, routes: typing.List[Route]):
+        self.__routes = routes
+
+    @property
+    def paths(self) -> typing.List[str]:
         paths = set()
-        for route in self._routes:
+        for route in self.routes:
             paths.add(route.path)
         return list(paths)
 
+    def add_route(self, path: str, handler: callable, methods: list = None) -> None:
+        self.routes.append(
+            Route(path=path, handler=handler, methods=methods)
+        )
+
+    def route(self, path: str, methods: list = None) -> callable:
+        def wrapper(handler):
+            self.add_route(path, handler, methods)
+            return handler
+
+        return wrapper
+
+    def mount(self, router: callable, prefix: str = None) -> None:
+        """Mount another router"""
+        routes = router.routes
+
+        # register sub routes
+        for route in routes:
+            path = self.__add_prefix(prefix, route.path) if prefix else route.path
+            self.add_route(path=path, handler=route.handler, methods=route.methods)
+
     def get_handler(self, request_path: str, method: str) -> (callable, typing.Any):
-        for route in self._routes:
+        for route in self.routes:
             parse_result = parse(route.path, request_path)
 
             if not route.is_valid_method(method):
@@ -77,3 +101,9 @@ class Router:
                 return route.handler, parse_result.named
     
         return None, None
+
+    def __add_prefix(self, prefix: str, path: str) -> str:
+        if not prefix.startswith("/"):
+            prefix = "/" + prefix
+
+        return f"{prefix}{path}" if path.startswith("/") else f"{prefix}/{path}"

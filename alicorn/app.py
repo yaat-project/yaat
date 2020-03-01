@@ -29,7 +29,6 @@ class Alicorn:
 
     # NOTE: Routing
     def add_route(self, path: str, handler: callable, methods: list = None) -> None:
-        assert path not in self.router.paths, f"Route {path}, already exists"
         self.router.add_route(path, handler, methods)
 
     def route(self, path: str, methods: list = None) -> callable:
@@ -38,6 +37,9 @@ class Alicorn:
             return handler
 
         return wrapper
+
+    def mount(self, router: Router, prefix: str = None) -> None:
+        self.router.mount(router, prefix)
 
 
     # NOTE: Handle Request
