@@ -62,7 +62,8 @@ uvicorn example:app
 ## TODO
 
 - [ ] Test Client for Unit Testing
-- [ ] Authentication Middleware
 - [ ] Session Middleware
-- [ ] Auto Documentation Generator (using <a href="https://swagger.io/solutions/api-design/" target="_blank">OpenAPI</a> and <a href="https://swagger.io/tools/swaggerhub/" target="_blank">SwaggerHub</a>)
+- [ ] Authentication Middleware
+- [ ] Auto documentation generator (using <a href="https://swagger.io/solutions/api-design/" target="_blank">OpenAPI</a> and <a href="https://swagger.io/tools/swaggerhub/" target="_blank">SwaggerHub</a>)
+- [ ] Built-in background tasks and scheduler
 - [ ] GraphQL using <a href="https://graphene-python.org" target="_blank">Graphene</a>
