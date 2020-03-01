@@ -55,7 +55,7 @@ Then run using uvicorn:
 uvicorn example:app
 ```
 
-> See Wiki for documentation
+> See <a href="https://github.com/the-robot/alicorn/wiki">Wiki</a> for documentation and complete examples
 
 ## FYI
 
