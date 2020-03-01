@@ -13,7 +13,8 @@ This is not ready for production however you can try it out.
 
 - Decorator routing and class based router for sub applications
 - Cookie support
-- Template response using <a href="https://jinja.palletsprojects.com/en/2.11.x/">Jinja2</a>
+- Template responses using <a href="https://jinja.palletsprojects.com/en/2.11.x/">Jinja2</a>
+- Static file responses
 
 ## Requirements
 
