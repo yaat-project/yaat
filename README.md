@@ -6,7 +6,7 @@
 
 ## Alicorn
 
-Alicorn is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/">ASGI</a>.  
+Alicorn is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
 This is not for production (at this point). 
 
 ## Requirements
@@ -57,12 +57,12 @@ uvicorn example:app
     - You can see the list of things I wanted to work on in the near future to improve this framework at the bottom.
 
 2. Is this just another web framework?
-    - I started this to learn how a framework like <a href="https://palletsprojects.com/p/flask/">Flask</a> actually works and I am also interested in ASGI, so I decided to build this. However, after I used <a href="https://palletsprojects.com/p/flask/">Flask</a> and <a href="https://www.djangoproject.com">Django</a> for a long time, I found things that I love and hate from each. So when I started working on this, I made it to include good features that both of those have (I.e. `individual small applications` feature from Django).
+    - I started this to learn how a framework like <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a> actually works and I am also interested in ASGI, so I decided to build this. However, after I used <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a> and <a href="https://www.djangoproject.com" target="_blank">Django</a> for a long time, I found things that I love and hate from each. So when I started working on this, I made it to include good features that both of those have (I.e. `individual small applications` feature from Django).
 
 ## TODO
 
 - [ ] Test Client for Unit Testing
 - [ ] Authentication Middleware
 - [ ] Session Middleware
-- [ ] Auto Documentation Generator (using <a href="https://swagger.io/solutions/api-design/">OpenAPI</a> and <a href="https://swagger.io/tools/swaggerhub/">SwaggerHub</a>)
-- [ ] GraphQL using <a href="https://graphene-python.org">Graphene</a>
+- [ ] Auto Documentation Generator (using <a href="https://swagger.io/solutions/api-design/" target="_blank">OpenAPI</a> and <a href="https://swagger.io/tools/swaggerhub/" target="_blank">SwaggerHub</a>)
+- [ ] GraphQL using <a href="https://graphene-python.org" target="_blank">Graphene</a>
