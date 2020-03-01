@@ -7,7 +7,14 @@
 ## Alicorn
 
 Alicorn is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
-This is not for production (at this point). 
+This is not ready for production however you can try it out.
+
+**Features**  
+
+- Decorator routing and class based router for sub applications
+- Cookie support
+- Template responses using <a href="https://jinja.palletsprojects.com/en/2.11.x/">Jinja2</a>
+- Static file responses
 
 ## Requirements
 
@@ -38,7 +45,7 @@ app = Alicorn()
 
 @app.route("/")
 async def index(req):
-    response = PlainTextResponse(content="Hello, World!")
+    response = PlainTextResponse(content="Hello World")
     return response
 ```
 
@@ -48,7 +55,7 @@ Then run using uvicorn:
 uvicorn example:app
 ```
 
-> See Wiki for documentation
+> See <a href="https://github.com/the-robot/alicorn/wiki">Wiki</a> for documentation and complete examples
 
 ## FYI
 
