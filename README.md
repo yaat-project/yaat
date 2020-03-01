@@ -6,7 +6,7 @@
 
 ## Alicorn
 
-Alicorn is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
+Alicorn is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
 This is not ready for production however you can try it out.
 
 **Features**  
