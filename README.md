@@ -53,7 +53,7 @@ uvicorn example:app
 ## Questions
 
 1. Can I use this for my projects?
-    - No. Not at this point because it is still under development and there are so many things left to be done/improve.
+    - No. Not at this point because it is still under development and there are so many things left to be done/improve. Besides, there is no test coverage yet.
     - You can see the list of things I wanted to work on in the near future to improve this framework at the bottom.
 
 2. Is this just another web framework?
