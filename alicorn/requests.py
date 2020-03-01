@@ -1,3 +1,4 @@
+import http.cookies
 import json
 import typing
 
@@ -36,26 +37,20 @@ class HttpConnection:
 
     @property
     def url(self) -> URL:
-        if hasattr(self, "_url"):
-            return self._url
-
-        self._url = URL(self.scope)
+        if not hasattr(self, "_url"):
+            self._url = URL(self.scope)
         return self._url
 
     @property
     def headers(self) -> Headers:
-        if hasattr(self, "_headers"):
-            return self._headers
-
-        self._headers = Headers(self.scope["headers"])
+        if not hasattr(self, "_headers"):
+            self._headers = Headers(self.scope["headers"])
         return self._headers
 
     @property
     def query_params(self) -> QueryParams:
-        if hasattr(self, "_query_params"):
-            return self._query_params
-
-        self._query_params = QueryParams(self.scope["query_string"])
+        if not hasattr(self, "_query_params"):
+            self._query_params = QueryParams(self.scope["query_string"])
         return self._query_params
 
     @property
@@ -64,16 +59,26 @@ class HttpConnection:
         return None
 
     @property
-    def cookie(self) -> typing.Dict[str, str]:
-        # TODO: implement getting cookie
-        return None
+    def cookies(self) -> typing.Dict[str, str]:
+        if not hasattr(self, "_cookies"):
+            cookies = {}
+            raw_cookies = self.headers.get("cookie")
+
+            if raw_cookies:
+                cookie = http.cookies.SimpleCookie()
+                cookie.load(raw_cookies)
+
+                for key, data in cookie.items():
+                    cookies[key] = data.value
+
+            self._cookies = cookies
+        
+        return self._cookies
 
     @property
-    def client(self) -> typing.Any:
+    def client(self) -> Address:
         host, port = self.scope.get("client") or (None, None)
-        if host:
-            return Address(host, port)
-        return None
+        return Address(host, port) if host else None
 
     @property
     async def auth(self) -> typing.Any:
