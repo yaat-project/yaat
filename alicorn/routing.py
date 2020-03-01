@@ -70,6 +70,7 @@ class Router:
         return list(paths)
 
     def add_route(self, path: str, handler: callable, methods: list = None) -> None:
+        assert path not in self.paths, f"Route {path}, already exists"
         self.routes.append(
             Route(path=path, handler=handler, methods=methods)
         )
