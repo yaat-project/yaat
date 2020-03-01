@@ -1,6 +1,7 @@
 import json
 import typing
 
+from .datatypes import Address, Headers, QueryParams, URL
 from .types import Scope, Receive, Send, Message
 
 
@@ -34,6 +35,35 @@ class HttpConnection:
         return self.scope["path"]
 
     @property
+    def url(self) -> URL:
+        if hasattr(self, "_url"):
+            return self._url
+
+        self._url = URL(self.scope)
+        return self._url
+
+    @property
+    def headers(self) -> Headers:
+        if hasattr(self, "_headers"):
+            return self._headers
+
+        self._headers = Headers(self.scope["headers"])
+        return self._headers
+
+    @property
+    def query_params(self) -> QueryParams:
+        if hasattr(self, "_query_params"):
+            return self._query_params
+
+        self._query_params = QueryParams(self.scope["query_string"])
+        return self._query_params
+
+    @property
+    def session(self) -> dict:
+        # TODO: implemnt session
+        return None
+
+    @property
     def cookie(self) -> typing.Dict[str, str]:
         # TODO: implement getting cookie
         return None
@@ -41,13 +71,19 @@ class HttpConnection:
     @property
     def client(self) -> typing.Any:
         host, port = self.scope.get("client") or (None, None)
-        # TODO: implemnt datatype and return
+        if host:
+            return Address(host, port)
         return None
 
     @property
-    def session(self) -> dict:
-        # TODO: implemnt session
-        return None
+    async def auth(self) -> typing.Any:
+        # TODO: implement after authentication middleware
+        pass
+
+    @property
+    async def user(self) -> typing.Any:
+        # TODO: implement after authentication middleware
+        pass
 
 
 class Request(HttpConnection):
