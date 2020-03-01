@@ -6,7 +6,101 @@ from .types import Scope
 
 class URL:
     def __init__(self, scope: Scope):
-        pass
+        self.scheme = scope.get("scheme", "http")
+        self.server = scope.get("server", None)  
+        self.path = scope.get("root_path", "") + scope["path"]
+        self.query_string = scope.get("query_string", b"")
+        self.host_header = scope["headers"]
+        self.__init_url()
+
+
+    @property
+    def scheme(self) -> str:
+        return self.__scheme
+
+    @scheme.setter
+    def scheme(self, scheme: str):
+        self.__scheme = scheme
+
+    @property
+    def server(self) -> typing.Tuple[str, int]:
+        return self.__server
+
+    @server.setter
+    def server(self, server: typing.Tuple[str, int]):
+        self.__server = server # ip and port
+
+    @property
+    def host(self) -> str:
+        if not hasattr(self, "__host"):
+            self.__host = None
+
+            if self.server:
+                host, port = self.server
+                self.__host = host
+        return self.__host
+
+    @property
+    def port(self) -> int:
+        if not hasattr(self, "__port"):
+            self.__port = None
+
+            if self.server:
+                host, port = self.server
+                self.__port = port
+        return self.__port
+
+    @property
+    def query_string(self) -> bytes:
+        return self.__query_string
+
+    @query_string.setter
+    def query_string(self, query_str: bytes):
+        self.__query_string = query_str
+
+    @property
+    def host_header(self) -> str:
+        return self.__host_header
+
+    @host_header.setter
+    def host_header(self, headers: list):
+        host_header = None
+        for key, value in headers:
+            if key == b"host":
+                host_header = value.decode()
+                break
+        self.__host_header = host_header
+
+    @property
+    def url(self) -> str:
+        return self.__url
+
+    def __init_url(self):
+        if self.host_header is not None:
+            url = f"{self.scheme}://{self.host_header}{self.path}"
+        elif self.server is None:
+            url = self.path
+        else:
+            host, port = self.server
+            default_port = {"http": 80, "https": 443, "ws": 80, "wss": 443}[self.scheme]
+            if port == default_port:
+                url = f"{self.scheme}://{host}{self.path}"
+            else:
+                url = f"{self.scheme}://{host}:{port}{self.path}"
+
+        if self.query_string:
+            url += "?" + self.query_string.decode()
+
+        self.__url = url
+
+    def is_secure(self) -> bool:
+        return self.scheme in ("https", "wss")
+
+    def __eq__(self, other: typing.Any) -> bool:
+        return str(self) == str(other)
+
+    def __str__(self) -> str:
+        return self.__url
 
 
 class Address:

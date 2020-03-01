@@ -55,7 +55,7 @@ class HttpConnection:
 
     @property
     def session(self) -> dict:
-        # TODO: implemnt session
+        # TODO: implement after Session Middleware
         return None
 
     @property
@@ -82,12 +82,12 @@ class HttpConnection:
 
     @property
     async def auth(self) -> typing.Any:
-        # TODO: implement after authentication middleware
+        # TODO: implement after Authentication Middleware
         pass
 
     @property
     async def user(self) -> typing.Any:
-        # TODO: implement after authentication middleware
+        # TODO: implement after Authentication Middleware
         pass
 
 
