@@ -91,15 +91,11 @@ class Router:
             path = self.__add_prefix(prefix, route.path) if prefix else route.path
             self.add_route(path=path, handler=route.handler, methods=route.methods)
 
-    def get_handler(self, request_path: str, method: str) -> (callable, typing.Any):
+    def get_route(self, request_path: str, method: str) -> (Route, typing.Any):
         for route in self.routes:
             parse_result = parse(route.path, request_path)
-
-            if not route.is_valid_method(method):
-                raise MethodNotAllowException
-
             if parse_result is not None:
-                return route.handler, parse_result.named
+                return route, parse_result.named
     
         return None, None
 

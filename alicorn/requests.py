@@ -32,6 +32,10 @@ class HttpConnection:
         return self.scope["app"]
 
     @property
+    def method(self) -> str:
+        return self.scope["method"]
+
+    @property
     def path(self) -> str:
         return self.scope["path"]
 
@@ -101,10 +105,6 @@ class Request(HttpConnection):
         super().__init__(scope)
         self.receive = receive
         self.send = send
-
-    @property
-    def method(self) -> str:
-        return self.scope["method"]
 
     @property
     def receive(self) -> Receive:

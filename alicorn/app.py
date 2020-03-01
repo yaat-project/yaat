@@ -48,17 +48,18 @@ class Alicorn:
         if self.static_dir and request.path.startswith(f"/{self.static_dir}"):
             return await handle_staticfile(request, self.static_dir)
 
-        try:
-            handler, kwargs = self.router.get_handler(request_path=request.path, method=request.method)
-        except MethodNotAllowException as e:
-            return e.response  # when invalid http method is called
+        route, kwargs = self.router.get_route(request_path=request.path, method=request.method)
 
         try:
-            if handler is not None:
+            if route and route.handler is not None:
+                handler = route.handler
                 if inspect.isclass(handler):
                     handler = getattr(handler(), request.method.lower(), None)
                     if handler is None:
                         raise MethodNotAllowException
+                if not route.is_valid_method(request.method):
+                    raise MethodNotAllowException
+
                 response = await handler(request, **kwargs)
             else:
                 # default response when path not found
