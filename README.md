@@ -45,7 +45,7 @@ app = Alicorn()
 
 @app.route("/")
 async def index(req):
-    response = PlainTextResponse(content="Hello, World!")
+    response = PlainTextResponse(content="Hello World")
     return response
 ```
 
