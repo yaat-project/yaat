@@ -7,7 +7,13 @@
 ## Alicorn
 
 Alicorn is an asynchronous web framework created for learning purpose. Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
-This is not for production (at this point). 
+This is not ready for production however you can try it out.
+
+**Features**  
+
+- Decorator routing and class based router for sub applications
+- Cookie support
+- Template response using <a href="https://jinja.palletsprojects.com/en/2.11.x/">Jinja2</a>
 
 ## Requirements
 
