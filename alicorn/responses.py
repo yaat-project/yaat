@@ -192,7 +192,7 @@ class FileResponse(Response):
         if self.send_header_only:
             await send({"type": "http.response.body"})
         else:
-            path = f"{self.path}{self.filename}"
+            path = f"{self.path}{self.filename}" if self.filename.startswith("/") else f"{self.path}/{self.filename}"
             async with aiofiles.open(path, mode="rb") as file:
                 more_body = True
                 while more_body:
