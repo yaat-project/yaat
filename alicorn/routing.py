@@ -1,8 +1,6 @@
 from parse import parse
 import typing
 
-from .exceptions import MethodNotAllowException
-
 
 class Route:
     HTTP_METHODS = [
