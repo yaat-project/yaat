@@ -187,5 +187,5 @@ class QueryParams:
             return default
 
 
-class FormData:
+class Form:
     pass

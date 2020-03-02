@@ -2,7 +2,13 @@ import http.cookies
 import json
 import typing
 
-from .datatypes import Address, Headers, QueryParams, URL
+try:
+    from multipart.multipart import parse_options_header
+except ImportError:
+    parse_options_header = None
+
+from .datatypes import Address, Form, Headers, QueryParams, URL
+from .formparsers import FormParser, MultiPartParser
 from .types import Scope, Receive, Send, Message
 
 
@@ -150,5 +156,22 @@ class Request(HttpConnection):
         return self._json
 
     async def form(self) -> dict:
-        # TODO: implement form data
-        pass
+        if not hasattr(self, "_form"):
+            assert (
+                parse_options_header is not None
+            ), "'python-multipart' must be installed to use form."
+
+            content_type, options = parse_options_header(self.headers.get("Content-Type"))
+
+            if content_type == b"multipart/form-data":
+                multipart_parser = MultiPartParser(self.headers, self.stream())
+                self._form = await multipart_parser.parse()
+
+            elif content_type == b"application/x-www-form-urlencoded":
+                form_parser = FormParser(self.headers, self.stream())
+                self._form = await form_parser.parse()
+
+            else:
+                self._form = Form()
+
+        return self._form
