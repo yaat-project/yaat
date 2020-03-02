@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'alicorn',
   packages = ['alicorn'],
-  version = '0.1',
+  version = '0.1.1',
   license='MIT',
   description = 'Lightweight asynchronous web framework',
   author = 'Khant',
   author_email = 'contact@khant.dev',
   url = 'https://github.com/the-robot/alicorn',
-  download_url = 'https://github.com/the-robot/alicorn/archive/v_01.tar.gz',
+  download_url = 'https://github.com/the-robot/alicorn/releases/download/v0.1.1/alicorn-0.1.1.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
     "aiofiles",
