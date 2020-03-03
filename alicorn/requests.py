@@ -82,7 +82,7 @@ class HttpConnection:
                     cookies[key] = data.value
 
             self.__cookies = cookies
-        
+
         return self.__cookies
 
     @property
