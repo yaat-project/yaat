@@ -196,7 +196,7 @@ class Form:
         return self.__raw
 
     @raw.setter
-    def raw(self, form_data: typing.List[typing.Tuple[str, str]]) -> []:
+    def raw(self, form_data: typing.List[typing.Tuple[str, str]]) -> typing.List:
         self.__raw = form_data
 
     def keys(self) -> typing.List:
@@ -213,5 +213,5 @@ class Form:
         return self.__data
 
     @property
-    def get(self, key: str, default: typing.Any = None):
+    def get(self, key: str, default: typing.Any = None) -> typing.Any:
         return self.data.get(key, default)
