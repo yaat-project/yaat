@@ -14,6 +14,7 @@ setup(
     "aiofiles",
     "Jinja2",
     "parse",
+    "python-multipart"
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',
