@@ -5,6 +5,8 @@ httptools==0.1.1
 Jinja2==2.11.1
 MarkupSafe==1.1.1
 parse==1.14.0
+python-multipart==0.0.5
+six==1.14.0
 uvicorn==0.11.3
 uvloop==0.14.0
 websockets==8.1
