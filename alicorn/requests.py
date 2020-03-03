@@ -47,21 +47,21 @@ class HttpConnection:
 
     @property
     def url(self) -> URL:
-        if not hasattr(self, "_url"):
-            self._url = URL(self.scope)
-        return self._url
+        if not hasattr(self, "__url"):
+            self.__url = URL(self.scope)
+        return self.__url
 
     @property
     def headers(self) -> Headers:
-        if not hasattr(self, "_headers"):
-            self._headers = Headers(self.scope["headers"])
-        return self._headers
+        if not hasattr(self, "__headers"):
+            self.__headers = Headers(self.scope["headers"])
+        return self.__headers
 
     @property
     def query_params(self) -> QueryParams:
-        if not hasattr(self, "_query_params"):
-            self._query_params = QueryParams(self.scope["query_string"])
-        return self._query_params
+        if not hasattr(self, "__query_params"):
+            self.__query_params = QueryParams(self.scope["query_string"])
+        return self.__query_params
 
     @property
     def session(self) -> dict:
@@ -70,7 +70,7 @@ class HttpConnection:
 
     @property
     def cookies(self) -> typing.Dict[str, str]:
-        if not hasattr(self, "_cookies"):
+        if not hasattr(self, "__cookies"):
             cookies = {}
             raw_cookies = self.headers.get("cookie")
 
@@ -81,9 +81,9 @@ class HttpConnection:
                 for key, data in cookie.items():
                     cookies[key] = data.value
 
-            self._cookies = cookies
+            self.__cookies = cookies
         
-        return self._cookies
+        return self.__cookies
 
     @property
     def client(self) -> Address:
@@ -129,8 +129,8 @@ class Request(HttpConnection):
         self.__send = send
 
     async def stream(self) -> bytes:
-        if hasattr(self, "_body"):
-            return self._body
+        if hasattr(self, "__body"):
+            return self.__body
 
         body = b''
         more_body = True
@@ -143,35 +143,35 @@ class Request(HttpConnection):
         return body
 
     async def body(self) -> bytes:
-        if hasattr(self, "_body"):
-            return self._body
+        if hasattr(self, "__body"):
+            return self.__body
 
-        self._body = await self.stream()
-        return self._body
+        self.__body = await self.stream()
+        return self.__body
 
     async def json(self) -> typing.Any:
-        if not hasattr(self, "_json"):
+        if not hasattr(self, "__json"):
             body = await self.body()
-            self._json = {} if body.decode() == '' else json.loads(body)
-        return self._json
+            self.__json = {} if body.decode() == '' else json.loads(body)
+        return self.__json
 
     async def form(self) -> dict:
-        if not hasattr(self, "_form"):
+        if not hasattr(self, "__form"):
             assert (
                 parse_options_header is not None
             ), "'python-multipart' must be installed to use form."
 
-            content_type, options = parse_options_header(self.headers.get("Content-Type"))
+            content_type, options = parse_options_header(self.headers.get("content-type"))
 
             if content_type == b"multipart/form-data":
-                multipart_parser = MultiPartParser(self.headers, self.stream())
-                self._form = await multipart_parser.parse()
+                multipart_parser = MultiPartParser(self.headers, self.body)
+                self.__form = await multipart_parser.parse()
 
             elif content_type == b"application/x-www-form-urlencoded":
-                form_parser = FormParser(self.headers, self.stream())
-                self._form = await form_parser.parse()
+                form_parser = FormParser(self.body)
+                self.__form = await form_parser.parse()
 
             else:
-                self._form = Form()
+                self.__form = Form()
 
-        return self._form
+        return self.__form

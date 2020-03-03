@@ -145,11 +145,11 @@ class Headers:
         return [value.decode() for key, value in self._raw_headers]
 
     def items(self) -> dict:
-        if hasattr(self, "_decoded_header"):
-            return self._decoded_header
+        if hasattr(self, "__decoded_header"):
+            return self.__decoded_header
 
-        self._decoded_header = {key.decode(): value.decode() for key, value in self._raw_headers}
-        return self._decoded_header
+        self.__decoded_header = {key.decode(): value.decode() for key, value in self._raw_headers}
+        return self.__decoded_header
 
     def get(self, key: str, default: typing.Any = None) -> str:
         try:
@@ -173,12 +173,12 @@ class QueryParams:
         return [value for key, value in self.items().items()]
 
     def items(self) -> dict:
-        if hasattr(self, "_query"):
-            return self._query
+        if hasattr(self, "__query"):
+            return self.__query
 
         query_str = self._raw_query.decode()
-        self._query = dict(parse_qsl(query_str))
-        return self._query
+        self.__query = dict(parse_qsl(query_str))
+        return self.__query
 
     def get(self, key: str, default: typing.Any = None) -> str:
         try:
@@ -188,4 +188,30 @@ class QueryParams:
 
 
 class Form:
-    pass
+    def __init__(self, form_data: typing.List[typing.Tuple[str, str]] = None):
+        self.raw = form_data if form_data else []
+
+    @property
+    def raw(self):
+        return self.__raw
+
+    @raw.setter
+    def raw(self, form_data: typing.List[typing.Tuple[str, str]]) -> []:
+        self.__raw = form_data
+
+    def keys(self) -> typing.List:
+        return self.items().keys()
+
+    def values(self) -> typing.List:
+        return self.items().values()
+
+    def items(self) -> typing.Dict:
+        if not hasattr(self, "__data"):
+            self.__data = {}
+            for item in self.raw:
+                self.__data[item[0]] = item[1]
+        return self.__data
+
+    @property
+    def get(self, key: str, default: typing.Any = None):
+        return self.data.get(key, default)
