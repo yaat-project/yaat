@@ -3,3 +3,4 @@ venv/
 **/.vscode/**
 MANIFEST
 **/dist/**
+**/.DS_Store
