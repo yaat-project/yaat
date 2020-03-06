@@ -1,11 +1,12 @@
 from urllib.parse import parse_qsl
+import typing
 
 from .datatypes import Form, Headers
 
 
 class FormParser:
     def __init__(self, body: bytes):
-        self.body= body
+        self.body = body
 
     async def parse(self) -> Form:
         body_data = await self.body()
@@ -15,9 +16,10 @@ class FormParser:
 
 
 class MultiPartParser:
-    def __init__(self, headers: Headers, body: bytes):
+    def __init__(self, headers: Headers, stream: typing.AsyncGenerator[bytes, None]):
         self.headers = headers
-        self.body = body
+        self.stream = stream
+        self.messages = []
 
     async def parse(self) -> Form:
         return Form()
