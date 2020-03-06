@@ -128,25 +128,29 @@ class Request(HttpConnection):
     def send(self, send: Send):
         self.__send = send
 
-    async def stream(self) -> bytes:
+    async def stream(self) -> typing.AsyncGenerator[bytes, None]:
         if hasattr(self, "__body"):
-            return self.__body
+            yield self.__body
+            yield b""
+            return
 
-        body = b''
-        more_body = True
-
-        while more_body:
+        while True:
             message = await self.receive()
-            body += message.get('body', b'')
-            more_body = message.get('more_body', False)
+            body = message.get('body', b'')
+            if body:
+                yield body
+            if not message.get('more_body', False):
+                break
 
-        return body
+        yield b""
 
     async def body(self) -> bytes:
-        if hasattr(self, "__body"):
-            return self.__body
+        if not hasattr(self, "__body"):
+            chunks = []
+            async for chunk in self.stream():
+                chunks.append(chunk)
+            self.__body = b"".join(chunks)
 
-        self.__body = await self.stream()
         return self.__body
 
     async def json(self) -> typing.Any:
