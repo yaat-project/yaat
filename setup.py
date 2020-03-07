@@ -11,10 +11,8 @@ setup(
   download_url = 'https://github.com/the-robot/alicorn/releases/download/v0.1.1/alicorn-0.1.1.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
-    "aiofiles",
     "Jinja2",
     "parse",
-    "python-multipart"
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',

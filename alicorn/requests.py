@@ -7,6 +7,7 @@ try:
 except ImportError:
     parse_options_header = None
 
+from .constants import ENCODING_METHOD
 from .datatypes import Address, Form, Headers, QueryParams, URL
 from .formparsers import FormParser, MultiPartParser
 from .types import Scope, Receive, Send, Message
@@ -14,9 +15,6 @@ from .types import Scope, Receive, Send, Message
 
 async def empty_receive() -> Message:
     raise RuntimeError("Receive channel has not been made available")
-
-async def empty_send(message: Message) -> None:
-    raise RuntimeError("Send channel has not been made available")
 
 
 class HttpConnection:
@@ -106,11 +104,9 @@ class Request(HttpConnection):
         self,
         scope: Scope,
         receive: Receive = empty_receive,
-        send: Send = empty_send,
     ):
         super().__init__(scope)
         self.receive = receive
-        self.send = send
 
     @property
     def receive(self) -> Receive:
@@ -120,39 +116,35 @@ class Request(HttpConnection):
     def receive(self, receive: Receive):
         self.__receive = receive
 
-    @property
-    def send(self) -> Send:
-        return self.__send
-
-    @send.setter
-    def send(self, send: Send):
-        self.__send = send
-
-    async def stream(self) -> bytes:
+    async def stream(self) -> typing.AsyncGenerator[bytes, None]:
         if hasattr(self, "__body"):
-            return self.__body
+            yield self.__body
+            yield b""
+            return
 
-        body = b''
-        more_body = True
-
-        while more_body:
+        while True:
             message = await self.receive()
-            body += message.get('body', b'')
-            more_body = message.get('more_body', False)
+            body = message.get('body', b'')
+            if body:
+                yield body
+            if not message.get('more_body', False):
+                break
 
-        return body
+        yield b""
 
     async def body(self) -> bytes:
-        if hasattr(self, "__body"):
-            return self.__body
+        if not hasattr(self, "__body"):
+            chunks = []
+            async for chunk in self.stream():
+                chunks.append(chunk)
+            self.__body = b"".join(chunks)
 
-        self.__body = await self.stream()
         return self.__body
 
     async def json(self) -> typing.Any:
         if not hasattr(self, "__json"):
             body = await self.body()
-            self.__json = {} if body.decode() == '' else json.loads(body)
+            self.__json = {} if body.decode(ENCODING_METHOD) == '' else json.loads(body)
         return self.__json
 
     async def form(self) -> dict:
@@ -164,7 +156,7 @@ class Request(HttpConnection):
             content_type, options = parse_options_header(self.headers.get("content-type"))
 
             if content_type == b"multipart/form-data":
-                multipart_parser = MultiPartParser(self.headers, self.body)
+                multipart_parser = MultiPartParser(self.headers, self.stream())
                 self.__form = await multipart_parser.parse()
 
             elif content_type == b"application/x-www-form-urlencoded":

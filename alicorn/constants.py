@@ -1,0 +1,1 @@
+ENCODING_METHOD = "latin-1"

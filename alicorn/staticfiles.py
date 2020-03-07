@@ -1,33 +1,69 @@
 import os
+import typing
 
-from .exceptions import HttpException
+from .exceptions import NotFoundException
 from .requests import Request
 from .responses import Response, FileResponse
+from .routing import Router, Route
 
 
-def get_abs_path(static_dir: str) -> str:
-    return os.path.abspath(static_dir)
+class StaticFilesHandler:
+    def __init__(self, path: str = "/", directory: str = ""):
+        self.path = path
+        self.directory = directory
 
-def is_file_exists(filepath: str) -> bool:
-    return os.path.exists(filepath)
+    @property
+    def directory(self) -> str:
+        return self.__directory
 
-async def handle_staticfile(request: Request, static_dir: str) -> Response:
-    requested_path = request.path
-    if requested_path.startswith("/"):
-        requested_path = requested_path[1:]
-    filepath = requested_path.split(static_dir, 1)[1]
-    static_path = get_abs_path(static_dir)
+    @directory.setter
+    def directory(self, directory: str):
+        self.__directory = directory[1:] if directory and directory.startswith("/") else directory
 
-    try:
-        if not is_file_exists(f"{static_path}{filepath}"):
-            raise HttpException(
-                status_code=404,
-                details=f"File does not exists"
+    async def __call__(self, request: Request, *args, **kwargs) -> Response:
+        request_path = request.path
+
+        # NOTE: remove route prefix and get file path
+        if request_path.startswith(self.path) and self.path != "/":
+            filepath = request_path[len(self.path):]
+        else:
+            filepath = request_path
+
+        static_path = os.path.abspath(self.directory)
+
+        try:
+            if not os.path.exists(f"{static_path}{filepath}"):
+                raise NotFoundException("File does not exists")
+            response = FileResponse(
+                path=static_path,
+                filename=filepath
             )
-        response = FileResponse(
-            path=static_path,
-            filename=filepath
-        )
-    except HttpException as e:
-        response = e.response
-    return response
+        except NotFoundException as e:
+            response = e.response
+        return response
+
+
+class StaticFiles:
+    def __init__(self, path: str, directory: str):
+        self.path = path
+        self.router = Router()
+        self.router.add_route(path=self.path, handler=StaticFilesHandler(self.path, directory))
+
+    @property
+    def path(self) -> str:
+        return self.__path
+
+    @path.setter
+    def path(self, path: str) -> None:
+        # clean static directory path
+        if path.endswith("/"):
+            path = path[:-1]
+        if not path.startswith("/"):
+            path = f"/{path}"
+
+        self.__path = path
+
+    @property
+    def routes(self) -> typing.List[Route]:
+        return self.router.routes
+

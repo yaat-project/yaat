@@ -25,6 +25,6 @@ class Middleware:
         return response
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        request = Request(scope, receive, send)
+        request = Request(scope, receive)
         response = await self.app.handle_request(request)
-        await response(request.send)
+        await response(send)
