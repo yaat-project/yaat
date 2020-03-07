@@ -1,6 +1,9 @@
 from urllib.parse import parse_qsl
+import tempfile
 import typing
 
+from .constants import ENCODING_METHOD
+from .concurrency import run_in_threadpool
 from .types import Scope
 
 
@@ -67,7 +70,7 @@ class URL:
         host_header = None
         for key, value in headers:
             if key == b"host":
-                host_header = value.decode()
+                host_header = value.decode(ENCODING_METHOD)
                 break
         self.__host_header = host_header
 
@@ -89,7 +92,7 @@ class URL:
                 url = f"{self.scheme}://{host}:{port}{self.path}"
 
         if self.query_string:
-            url += "?" + self.query_string.decode()
+            url += "?" + self.query_string.decode(ENCODING_METHOD)
 
         self.__url = url
 
@@ -139,16 +142,16 @@ class Headers:
         return self._raw_headers
 
     def keys(self) -> typing.List[str]:
-        return [key.decode() for key, value in self._raw_headers]
+        return [key.decode(ENCODING_METHOD) for key, value in self._raw_headers]
 
     def values(self) -> typing.List[str]:
-        return [value.decode() for key, value in self._raw_headers]
+        return [value.decode(ENCODING_METHOD) for key, value in self._raw_headers]
 
     def items(self) -> dict:
         if hasattr(self, "__decoded_header"):
             return self.__decoded_header
 
-        self.__decoded_header = {key.decode(): value.decode() for key, value in self._raw_headers}
+        self.__decoded_header = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in self._raw_headers}
         return self.__decoded_header
 
     def get(self, key: str, default: typing.Any = None) -> str:
@@ -176,7 +179,7 @@ class QueryParams:
         if hasattr(self, "__query"):
             return self.__query
 
-        query_str = self._raw_query.decode()
+        query_str = self._raw_query.decode(ENCODING_METHOD)
         self.__query = dict(parse_qsl(query_str))
         return self.__query
 
@@ -212,6 +215,29 @@ class Form:
                 self.__data[item[0]] = item[1]
         return self.__data
 
-    @property
     def get(self, key: str, default: typing.Any = None) -> typing.Any:
-        return self.data.get(key, default)
+        return self.items().get(key, default)
+
+
+class UploadFile:
+    SPOOL_MAX_SIZE = 1024 * 1024
+
+    def __init__(self, name: str, file: typing.IO = None, content_type: str = "") -> None:
+        self.name = name
+        self.content_type = content_type
+        if file is None:
+            file = tempfile.SpooledTemporaryFile(max_size=self.SPOOL_MAX_SIZE)
+        self.file = file
+
+    async def write(self, data: typing.Union[bytes, str]) -> None:
+        await run_in_threadpool(self.file.write, data)
+
+    async def read(self, size: int = None) -> typing.Union[bytes, str]:
+        return await run_in_threadpool(self.file.read, size)
+
+    async def seek(self, offset: int) -> None:
+        await run_in_threadpool(self.file.seek, offset)
+
+    async def close(self) -> None:
+        await run_in_threadpool(self.file.close)
+

@@ -7,6 +7,7 @@ try:
 except ImportError:
     parse_options_header = None
 
+from .constants import ENCODING_METHOD
 from .datatypes import Address, Form, Headers, QueryParams, URL
 from .formparsers import FormParser, MultiPartParser
 from .types import Scope, Receive, Send, Message
@@ -156,7 +157,7 @@ class Request(HttpConnection):
     async def json(self) -> typing.Any:
         if not hasattr(self, "__json"):
             body = await self.body()
-            self.__json = {} if body.decode() == '' else json.loads(body)
+            self.__json = {} if body.decode(ENCODING_METHOD) == '' else json.loads(body)
         return self.__json
 
     async def form(self) -> dict:
@@ -168,7 +169,7 @@ class Request(HttpConnection):
             content_type, options = parse_options_header(self.headers.get("content-type"))
 
             if content_type == b"multipart/form-data":
-                multipart_parser = MultiPartParser(self.headers, self.body)
+                multipart_parser = MultiPartParser(self.headers, self.stream())
                 self.__form = await multipart_parser.parse()
 
             elif content_type == b"application/x-www-form-urlencoded":

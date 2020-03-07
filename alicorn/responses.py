@@ -4,20 +4,18 @@ from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
 import typing
 
+from .constants import ENCODING_METHOD
 from .types import Scope, Receive, Send
 
 try:
     import aiofiles
-    from aiofiles.os import stat as aio_stat
 except ImportError:
     aiofiles = None
-    aio_stat = None
 
 
 class Response:
     media_type = None
     charset = 'utf-8'
-    encoding_method = 'latin-1'
 
     def __init__(
         self,
@@ -47,7 +45,7 @@ class Response:
             populate_content_type = True
         else:
             raw_headers = [
-                (k.lower().encode(self.encoding_method), v.encode(self.encoding_method))
+                (k.lower().encode(ENCODING_METHOD), v.encode(ENCODING_METHOD))
                 for k, v in headers.items()
             ]
             keys = [h[0] for h in raw_headers]
@@ -57,13 +55,13 @@ class Response:
         body = getattr(self, "body", b"")
         if body and populate_content_length:
             content_length = str(len(body))
-            raw_headers.append((b"content-length", content_length.encode(self.encoding_method)))
+            raw_headers.append((b"content-length", content_length.encode(ENCODING_METHOD)))
         
         content_type = self.media_type
         if content_type is not None and populate_content_type:
             if content_type.startswith("text/"):
                 content_type += "; charset=" + self.charset
-            raw_headers.append((b"content-type", content_type.encode(self.encoding_method)))
+            raw_headers.append((b"content-type", content_type.encode(ENCODING_METHOD)))
 
         self.raw_headers: list = raw_headers
 
@@ -103,7 +101,7 @@ class Response:
             cookie[key]["samesite"] = samesite
         cookie_values = cookie.output(header="").strip()
         self.raw_headers.append(
-            (b"set-cookie", cookie_val.encode(self.encoding_method))
+            (b"set-cookie", cookie_val.encode(ENCODING_METHOD))
         )
 
     def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
