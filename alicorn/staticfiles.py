@@ -5,29 +5,39 @@ from .requests import Request
 from .responses import Response, FileResponse
 
 
-def get_abs_path(static_dir: str) -> str:
-    return os.path.abspath(static_dir)
 
-def is_file_exists(filepath: str) -> bool:
-    return os.path.exists(filepath)
+class StaticFiles:
+    def __init__(self, directory: str = ""):
+        self.directory = directory
 
-async def handle_staticfile(request: Request, static_dir: str) -> Response:
-    requested_path = request.path
-    if requested_path.startswith("/"):
-        requested_path = requested_path[1:]
-    filepath = requested_path.split(static_dir, 1)[1]
-    static_path = get_abs_path(static_dir)
+    @property
+    def directory(self) -> str:
+        return self.__directory
 
-    try:
-        if not is_file_exists(f"{static_path}{filepath}"):
-            raise HttpException(
-                status_code=404,
-                details=f"File does not exists"
+    @directory.setter
+    def directory(self, directory: str):
+        self.__directory = directory[1:] if directory and directory.startswith("/") else directory
+
+
+    async def getResponse(self, request: Request) -> Response:
+        requested_path = request.path
+        if requested_path.startswith("/"):
+            requested_path = requested_path[1:]
+
+        filepath = requested_path.split(self.directory, 1)[1]
+        static_path = os.path.abspath(self.directory)
+
+        try:
+            if not os.path.exists(f"{static_path}{filepath}"):
+                raise HttpException(
+                    status_code=404,
+                    details=f"File does not exists"
+                )
+            response = FileResponse(
+                path=static_path,
+                filename=filepath
             )
-        response = FileResponse(
-            path=static_path,
-            filename=filepath
-        )
-    except HttpException as e:
-        response = e.response
-    return response
+        except HttpException as e:
+            response = e.response
+        return response
+

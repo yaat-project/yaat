@@ -6,14 +6,14 @@ from .middleware import Middleware
 from .requests import Request
 from .responses import Response, FileResponse
 from .routing import Router
-from .staticfiles import handle_staticfile
+from .staticfiles import StaticFiles
 from .types import Scope, Receive, Send
 
 
 class Alicorn:
     def __init__(self,  static_dir=None):
         self.router = Router()
-        self.static_dir = static_dir[1:] if static_dir and static_dir.startswith("/") else static_dir
+        self.static_files = StaticFiles(directory=static_dir) if static_dir else None
         self.middleware = Middleware(self)
         self.exception_handler = None
 
@@ -45,8 +45,8 @@ class Alicorn:
     # NOTE: Handle Request
     async def handle_request(self, request: Request) -> Response:
         # handle static file
-        if self.static_dir and request.path.startswith(f"/{self.static_dir}"):
-            return await handle_staticfile(request, self.static_dir)
+        if self.static_files and request.path.startswith(f"/{self.static_files.directory}"):
+            return await self.static_files.getResponse(request)
 
         route, kwargs = self.router.get_route(request_path=request.path, method=request.method)
 
