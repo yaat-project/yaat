@@ -5,7 +5,6 @@ from .requests import Request
 from .responses import Response, FileResponse
 
 
-
 class StaticFiles:
     def __init__(self, directory: str = ""):
         self.directory = directory
