@@ -11,9 +11,8 @@ from .types import Scope, Receive, Send
 
 
 class Alicorn:
-    def __init__(self,  static_dir=None):
+    def __init__(self):
         self.router = Router()
-        self.static_files = StaticFiles(directory=static_dir) if static_dir else None
         self.middleware = Middleware(self)
         self.exception_handler = None
 
@@ -39,20 +38,28 @@ class Alicorn:
         return wrapper
 
     def mount(self, router: Router, prefix: str = None) -> None:
-        self.router.mount(router, prefix)
+        # check if its static route
+        is_static = isinstance(router, StaticFiles)
+
+        if prefix and is_static:
+            # NOTE: because 'prefix' is already defined in static route
+            raise ValueError("'prefix' must be None when mounting static routes.")
+
+        self.router.mount(
+            router=router,
+            prefix=prefix,
+            is_static=is_static,
+        )
 
 
     # NOTE: Handle Request
     async def handle_request(self, request: Request) -> Response:
-        # handle static file
-        if self.static_files and request.path.startswith(f"/{self.static_files.directory}"):
-            return await self.static_files.getResponse(request)
-
         route, kwargs = self.router.get_route(request_path=request.path, method=request.method)
 
         try:
             if route and route.handler is not None:
                 handler = route.handler
+
                 if inspect.isclass(handler):
                     handler = getattr(handler(), request.method.lower(), None)
                     if handler is None:
@@ -81,3 +88,4 @@ class Alicorn:
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         await self.middleware(scope, receive, send)
+

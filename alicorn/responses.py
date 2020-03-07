@@ -169,8 +169,10 @@ class FileResponse(Response):
         self.media_type = media_type
         self.headers = headers
         self.init_headers(headers)
+
         if self.filename is not None:
             content_disposition_filename = quote(self.filename)
+
             if content_disposition_filename != self.filename:
                 content_disposition = "attachment; filename*=utf-8''{}".format(
                     content_disposition_filename

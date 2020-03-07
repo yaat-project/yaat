@@ -1,12 +1,15 @@
 import os
+import typing
 
 from .exceptions import NotFoundException
 from .requests import Request
 from .responses import Response, FileResponse
+from .routing import Router, Route
 
 
-class StaticFiles:
-    def __init__(self, directory: str = ""):
+class StaticFilesHandler:
+    def __init__(self, path: str = "/", directory: str = ""):
+        self.path = path
         self.directory = directory
 
     @property
@@ -17,13 +20,15 @@ class StaticFiles:
     def directory(self, directory: str):
         self.__directory = directory[1:] if directory and directory.startswith("/") else directory
 
+    async def __call__(self, request: Request, *args, **kwargs) -> Response:
+        request_path = request.path
 
-    async def getResponse(self, request: Request) -> Response:
-        requested_path = request.path
-        if requested_path.startswith("/"):
-            requested_path = requested_path[1:]
+        # NOTE: remove route prefix and get file path
+        if request_path.startswith(self.path) and self.path != "/":
+            filepath = request_path[len(self.path):]
+        else:
+            filepath = request_path
 
-        filepath = requested_path.split(self.directory, 1)[1]
         static_path = os.path.abspath(self.directory)
 
         try:
@@ -36,4 +41,29 @@ class StaticFiles:
         except NotFoundException as e:
             response = e.response
         return response
+
+
+class StaticFiles:
+    def __init__(self, path: str, directory: str):
+        self.path = path
+        self.router = Router()
+        self.router.add_route(path=self.path, handler=StaticFilesHandler(self.path, directory))
+
+    @property
+    def path(self) -> str:
+        return self.__path
+
+    @path.setter
+    def path(self, path: str) -> None:
+        # clean static directory path
+        if path.endswith("/"):
+            path = path[:-1]
+        if not path.startswith("/"):
+            path = f"/{path}"
+
+        self.__path = path
+
+    @property
+    def routes(self) -> typing.List[Route]:
+        return self.router.routes
 
