@@ -16,9 +16,6 @@ from .types import Scope, Receive, Send, Message
 async def empty_receive() -> Message:
     raise RuntimeError("Receive channel has not been made available")
 
-async def empty_send(message: Message) -> None:
-    raise RuntimeError("Send channel has not been made available")
-
 
 class HttpConnection:
     def __init__(self, scope: Scope) -> None:
@@ -107,11 +104,9 @@ class Request(HttpConnection):
         self,
         scope: Scope,
         receive: Receive = empty_receive,
-        send: Send = empty_send,
     ):
         super().__init__(scope)
         self.receive = receive
-        self.send = send
 
     @property
     def receive(self) -> Receive:
@@ -120,14 +115,6 @@ class Request(HttpConnection):
     @receive.setter
     def receive(self, receive: Receive):
         self.__receive = receive
-
-    @property
-    def send(self) -> Send:
-        return self.__send
-
-    @send.setter
-    def send(self, send: Send):
-        self.__send = send
 
     async def stream(self) -> typing.AsyncGenerator[bytes, None]:
         if hasattr(self, "__body"):
