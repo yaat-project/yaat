@@ -1,6 +1,6 @@
 import os
 
-from .exceptions import HttpException
+from .exceptions import NotFoundException
 from .requests import Request
 from .responses import Response, FileResponse
 
@@ -28,15 +28,12 @@ class StaticFiles:
 
         try:
             if not os.path.exists(f"{static_path}{filepath}"):
-                raise HttpException(
-                    status_code=404,
-                    details=f"File does not exists"
-                )
+                raise NotFoundException("File does not exists")
             response = FileResponse(
                 path=static_path,
                 filename=filepath
             )
-        except HttpException as e:
+        except NotFoundException as e:
             response = e.response
         return response
 

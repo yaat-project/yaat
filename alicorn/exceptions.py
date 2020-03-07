@@ -25,10 +25,11 @@ class HttpException(Exception):
 
 
 class NotFoundException(HttpException):
-    def __init__(self):
-        super().__init__(status_code=404, details="Not Found")
+    def __init__(self, details: str = "Not Found"):
+        super().__init__(status_code=404, details=details)
 
 
 class MethodNotAllowException(HttpException):
-    def __init__(self):
-        super().__init__(status_code=405, details="Method Not Allowed")
+    def __init__(self, details: str = "Method Not Allowed"):
+        super().__init__(status_code=405, details=details)
+
