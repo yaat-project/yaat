@@ -88,4 +88,3 @@ class Alicorn:
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         await self.middleware(scope, receive, send)
-
