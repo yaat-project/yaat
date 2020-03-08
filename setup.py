@@ -13,6 +13,7 @@ setup(
   install_requires=[
     "Jinja2",
     "parse",
+    "httpx",
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',
