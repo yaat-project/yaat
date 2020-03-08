@@ -1,11 +1,11 @@
 import typing
 
-from .requests import Request
-from .responses import Response
-from .types import ASGIApp, Scope, Receive, Send
+from ..requests import Request
+from ..responses import Response
+from ..types import ASGIApp, Scope, Receive, Send
 
 
-class Middleware:
+class BaseMiddleware:
     def __init__(self, app: ASGIApp):
         self.app = app
 

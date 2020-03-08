@@ -2,7 +2,7 @@ import inspect
 import typing
 
 from .exceptions import MethodNotAllowException, NotFoundException
-from .middleware import Middleware
+from .middleware import BaseMiddleware
 from .requests import Request
 from .responses import Response, FileResponse
 from .routing import Router
@@ -13,7 +13,7 @@ from .types import Scope, Receive, Send
 class Alicorn:
     def __init__(self):
         self.router = Router()
-        self.middleware = Middleware(self)
+        self.middleware = BaseMiddleware(self)
         self.exception_handler = None
 
     # NOTE: properties
@@ -82,7 +82,7 @@ class Alicorn:
 
 
     # NOTE: Middleware
-    def add_middleware(self, middleware_cls: Middleware) -> None:
+    def add_middleware(self, middleware_cls: BaseMiddleware) -> None:
         self.middleware.add(middleware_cls)
 
 
