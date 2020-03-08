@@ -102,6 +102,11 @@ async def test_redirect_response(app, client):
 
 
 @pytest.mark.asyncio
+async def test_file_response(app, client):
+    pass
+
+
+@pytest.mark.asyncio
 async def test_headers_replace(app, client):
     @app.route("/headers")
     async def handler(request):
@@ -114,4 +119,39 @@ async def test_headers_replace(app, client):
 
     assert res.headers["header-1"] == "abc"
     assert res.headers["header-2"] == "xyz"
+
+
+@pytest.mark.asyncio
+async def test_response_phrase(app, client):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_file_response_directory_error(app, client):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_file_response_missing_file(app, client):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_set_cookie(app, client):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_delete_cookie(app, client):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_populate_headers(app, client):
+    pass
+
+
+@pytest.mark.asyncio
+async def test_head_method(app, client):
+    pass
 
