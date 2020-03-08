@@ -1,3 +1,4 @@
+import httpx
 import inspect
 import typing
 
@@ -84,6 +85,14 @@ class Alicorn:
     # NOTE: Middleware
     def add_middleware(self, middleware_cls: BaseMiddleware) -> None:
         self.middleware.add(middleware_cls)
+
+
+    # NOTE: Session
+    def session(self, base_url="http://testserver") -> httpx.AsyncClient:
+        if not hasattr(self, "__session"):
+            self.__session = httpx.AsyncClient(app=self, base_url="http://testserver")
+
+        return self.__session
 
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
