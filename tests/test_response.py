@@ -102,7 +102,7 @@ async def test_redirect_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_file_response(app, client):
+async def test_file_response(app, client, tmpdir):
     pass
 
 
@@ -133,13 +133,25 @@ async def test_response_status_code(app, client):
 
 
 @pytest.mark.asyncio
-async def test_file_response_directory_error(app, client):
-    pass
+async def test_file_response_directory_error(app, client, tmpdir):
+    @app.route("/directory")
+    async def handler(request):
+        return FileResponse(path=tmpdir + "/notfound", filename="example.txt")
+
+    res = await client.get("/directory")
+
+    assert res.status_code == 404
 
 
 @pytest.mark.asyncio
-async def test_file_response_missing_file(app, client):
-    pass
+async def test_file_response_missing_file(app, client, tmpdir):
+    @app.route("/file")
+    async def handler(request):
+        return FileResponse(path=tmpdir, filename="404.txt")
+
+    res = await client.get("/file")
+
+    assert res.status_code == 404
 
 
 @pytest.mark.asyncio
