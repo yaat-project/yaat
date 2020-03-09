@@ -2,6 +2,7 @@ import json
 import http.cookies
 from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
+import os
 import typing
 
 from .constants import ENCODING_METHOD
@@ -37,8 +38,9 @@ class Response:
             return content
         return content.encode(self.charset)
 
-    def get_raw_headers(self) -> list:
-        headers: typing.Mapping[str, str] = self.headers
+    def get_raw_headers(self, headers: typing.Mapping[str, str] = None) -> list:
+        if headers == None:
+            headers = self.headers
 
         if headers is None:
             raw_headers = []  # type: typing.List[typing.Tuple[bytes, bytes]]
@@ -57,7 +59,7 @@ class Response:
         if body and populate_content_length:
             content_length = str(len(body))
             raw_headers.append((b"content-length", content_length.encode(ENCODING_METHOD)))
-        
+ 
         content_type = self.media_type
         if content_type is not None and populate_content_type:
             if content_type.startswith("text/"):
@@ -180,6 +182,26 @@ class FileResponse(Response):
             # self.headers.setdefault("content-disposition", content_disposition)
 
     async def __call__(self, send: Send) -> None:
+        path = f"{self.path}{self.filename}" if self.filename.startswith("/") else f"{self.path}/{self.filename}"
+
+        # Send 404 if file does not exists
+        if not os.path.exists(path):
+            # clear custom headers
+            await send(
+                {
+                    "type": "http.response.start",
+                    "status": 404,
+                    "headers": self.get_raw_headers(headers={}),
+                }
+            )
+            await send(
+                {
+                    "type": "http.response.body",
+                    "body": b"file not found",
+                }
+            )
+            return
+
         await send(
             {
                 "type": "http.response.start",
@@ -189,8 +211,7 @@ class FileResponse(Response):
         )
         if self.send_header_only:
             await send({"type": "http.response.body"})
-        else:
-            path = f"{self.path}{self.filename}" if self.filename.startswith("/") else f"{self.path}/{self.filename}"
+        else:    
             async with aiofiles.open(path, mode="rb") as file:
                 more_body = True
                 while more_body:
