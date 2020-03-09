@@ -122,8 +122,14 @@ async def test_headers_replace(app, client):
 
 
 @pytest.mark.asyncio
-async def test_response_phrase(app, client):
-    pass
+async def test_response_status_code(app, client):
+    @app.route("/phrase")
+    async def handler(request):
+        return Response(status_code=204)
+
+    res = await client.get("/phrase")
+
+    assert res.status_code == 204
 
 
 @pytest.mark.asyncio
