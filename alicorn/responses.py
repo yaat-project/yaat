@@ -28,7 +28,6 @@ class Response:
         if media_type is not None:
             self.media_type = media_type
         self.headers = headers
-        self.init_headers(headers)  # will set self.raw_headers
         self.body = self.render_content(content)
 
     def render_content(self, content: typing.Any) -> bytes:
@@ -38,7 +37,9 @@ class Response:
             return content
         return content.encode(self.charset)
 
-    def init_headers(self, headers: typing.Mapping[str, str] = None) -> None:
+    def get_raw_headers(self) -> list:
+        headers: typing.Mapping[str, str] = self.headers
+
         if headers is None:
             raw_headers = []  # type: typing.List[typing.Tuple[bytes, bytes]]
             populate_content_length = True
@@ -63,7 +64,7 @@ class Response:
                 content_type += "; charset=" + self.charset
             raw_headers.append((b"content-type", content_type.encode(ENCODING_METHOD)))
 
-        self.raw_headers: list = raw_headers
+        return raw_headers
 
     def set_cookie(
         self,
@@ -100,9 +101,7 @@ class Response:
             ], "samesite must be either 'strict', 'lax' or 'none'"
             cookie[key]["samesite"] = samesite
         cookie_values = cookie.output(header="").strip()
-        self.raw_headers.append(
-            (b"set-cookie", cookie_val.encode(ENCODING_METHOD))
-        )
+        self.headers["set-cookie"] = cookie_val.encode(ENCODING_METHOD)
 
     def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
@@ -111,7 +110,7 @@ class Response:
         await send({
             "type": "http.response.start",
             "status": self.status_code,
-            "headers": self.raw_headers,
+            "headers": self.get_raw_headers(),
         })
         await send({
             "type": "http.response.body",
@@ -168,7 +167,6 @@ class FileResponse(Response):
             media_type = guess_type(filename or path)[0] or "text/plain"
         self.media_type = media_type
         self.headers = headers
-        self.init_headers(headers)
 
         if self.filename is not None:
             content_disposition_filename = quote(self.filename)
@@ -186,7 +184,7 @@ class FileResponse(Response):
             {
                 "type": "http.response.start",
                 "status": self.status_code,
-                "headers": self.raw_headers,
+                "headers": self.get_raw_headers(),
             }
         )
         if self.send_header_only:
