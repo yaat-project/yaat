@@ -208,10 +208,26 @@ async def test_delete_cookie(app, client):
 
 @pytest.mark.asyncio
 async def test_populate_headers(app, client):
-    pass
+    CONTENT = "hello world"
+
+    @app.route("/headers")
+    async def handler(request):
+        return Response(content=CONTENT, headers={}, media_type="text/html")
+
+    res = await client.get("/headers")
+
+    assert res.text == CONTENT
+    assert res.headers["content-length"] == str(len(CONTENT))
+    assert "text/html" in res.headers["content-type"]
 
 
 @pytest.mark.asyncio
 async def test_head_method(app, client):
-    pass
+    @app.route("/head")
+    async def handler(request):
+        return PlainTextResponse(content="hello world")
+
+    res = await client.head("/head")
+
+    assert res.text == ""
 
