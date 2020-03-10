@@ -114,10 +114,6 @@ class Response:
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
     async def __call__(self, send: Send) -> None:
-        print("\n\n=====")
-        print(self.get_raw_headers())
-        print("=====\n\n")
-
         await send({
             "type": "http.response.start",
             "status": self.status_code,
