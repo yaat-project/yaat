@@ -171,12 +171,39 @@ async def test_file_response_missing_file(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_set_cookie(app, client):
-    pass
+    @app.route("/cookie")
+    async def handler(request):
+        response = Response(content="hello world")
+        response.set_cookie(
+            key="mycookie",
+            value="myvalue",
+            max_age=1800,
+            expires=1800,
+            path="/",
+            domain="localhost",
+            secure=False,
+            httponly=False,
+            samesite="none",
+        )
+        return response
+
+    res = await client.get("/cookie")
+
+    assert "mycookie=myvalue" in res.headers["set-cookie"]
 
 
 @pytest.mark.asyncio
 async def test_delete_cookie(app, client):
-    pass
+    @app.route("/cookie")
+    async def handler(request):
+        response = Response(content="hello world")
+        response.delete_cookie(key="mycookie")
+        return response
+
+    res = await client.get("/cookie")
+
+    assert "mycookie" in res.headers["set-cookie"]
+    assert not res.cookies.get("mycookie")
 
 
 @pytest.mark.asyncio
