@@ -1,4 +1,5 @@
 import pytest
+import tempfile
 
 from alicorn import Alicorn
 from alicorn.responses import (
@@ -103,7 +104,21 @@ async def test_redirect_response(app, client):
 
 @pytest.mark.asyncio
 async def test_file_response(app, client, tmpdir):
-    pass
+    CONTENT = b"xxxx"
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    @app.route("/directory")
+    async def handler(request):
+        # temp.name already has file path, so put path = ''
+        return FileResponse(path='', filename=temp.name)
+
+    res = await client.get("/directory")
+
+    assert res.content == CONTENT
+    assert "image/png" in res.headers["content-type"]
 
 
 @pytest.mark.asyncio
