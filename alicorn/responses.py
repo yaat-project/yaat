@@ -8,6 +8,9 @@ import typing
 from .constants import ENCODING_METHOD
 from .types import Scope, Receive, Send
 
+# Workaround for adding samesite support to pre 3.8 python
+http.cookies.Morsel._reserved["samesite"] = "SameSite"  # type: ignore
+
 try:
     import aiofiles
 except ImportError:
@@ -28,7 +31,7 @@ class Response:
         self.status_code = status_code
         if media_type is not None:
             self.media_type = media_type
-        self.headers = headers
+        self.headers = headers if headers is not None else {}
         self.body = self.render_content(content)
 
     def render_content(self, content: typing.Any) -> bytes:
@@ -54,7 +57,7 @@ class Response:
             keys = [h[0] for h in raw_headers]
             populate_content_length = b"content-length" not in keys
             populate_content_type = b"content-type" not in keys
-        
+ 
         body = getattr(self, "body", b"")
         if body and populate_content_length:
             content_length = str(len(body))
@@ -101,14 +104,20 @@ class Response:
                 "lax",
                 "none",
             ], "samesite must be either 'strict', 'lax' or 'none'"
+
             cookie[key]["samesite"] = samesite
-        cookie_values = cookie.output(header="").strip()
-        self.headers["set-cookie"] = cookie_val.encode(ENCODING_METHOD)
+
+        self.headers["set-cookie"] = cookie.output(header="").strip()
+
 
     def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
     async def __call__(self, send: Send) -> None:
+        print("\n\n=====")
+        print(self.get_raw_headers())
+        print("=====\n\n")
+
         await send({
             "type": "http.response.start",
             "status": self.status_code,
