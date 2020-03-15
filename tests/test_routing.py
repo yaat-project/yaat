@@ -5,7 +5,7 @@ from alicorn import Alicorn
 from alicorn.responses import (
     JSONResponse,
     PlainTextResponse,
-    )
+)
 from alicorn.routing import Router
 
 
