@@ -7,7 +7,7 @@ from .concurrency import run_in_threadpool
 from .types import Scope
 
 
-class URL:
+class URL(str):
     def __init__(self, scope: Scope):
         self.scheme = scope.get("scheme", "http")
         self.server = scope.get("server", None)  
@@ -15,7 +15,6 @@ class URL:
         self.query_string = scope.get("query_string", b"")
         self.host_header = scope["headers"]
         self.__init_url()
-
 
     @property
     def scheme(self) -> str:
@@ -135,59 +134,73 @@ class Address:
 
 class Headers:
     def __init__(self, raw_headers: typing.List[typing.Tuple[bytes, bytes]]):
-        self._raw_headers = raw_headers
+        self.__raw_headers = raw_headers
+        self.__init_headers()
 
     @property
     def raw(self) -> typing.List[typing.Tuple[bytes, bytes]]:
         return self._raw_headers
 
-    def keys(self) -> typing.List[str]:
-        return [key.decode(ENCODING_METHOD) for key, value in self._raw_headers]
-
-    def values(self) -> typing.List[str]:
-        return [value.decode(ENCODING_METHOD) for key, value in self._raw_headers]
+    def __init_headers(self):
+        self.__headers = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in self.__raw_headers}
 
     def items(self) -> dict:
-        if hasattr(self, "__decoded_header"):
-            return self.__decoded_header
-
-        self.__decoded_header = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in self._raw_headers}
-        return self.__decoded_header
+        return self.__headers.items()
 
     def get(self, key: str, default: typing.Any = None) -> str:
         try:
-            return self.items()[key]
+            return self.__headers[key]
         except KeyError:
             return default
+
+    def __contains__(self, key: typing.Any) -> bool:
+        return key in self.__headers
+
+    def __getitems__(self, key: typing.Any) -> str:
+        return self.__headers[key]
+
+    def __iter__(self) -> typing.Iterator[typing.Any]:
+        for key, value in self.items():
+            yield key, value
+
+    def __len__(self) -> int:
+        return len(self.__headers)
 
 
 class QueryParams:
     def __init__(self, raw_query: str):
-        self._raw_query = raw_query
+        self.__raw_query = raw_query
+        self.__init_query()
 
     @property
     def raw(self) -> bytes:
-        return self._raw_query
+        return self.__raw_query
 
-    def keys(self) -> typing.List[str]:
-        return [key for key, value in self.items().items()]
-
-    def values(self) -> typing.List[str]:
-        return [value for key, value in self.items().items()]
+    def __init_query(self):
+        query_str = self.raw.decode(ENCODING_METHOD)
+        self.__query = dict(parse_qsl(query_str))
 
     def items(self) -> dict:
-        if hasattr(self, "__query"):
-            return self.__query
-
-        query_str = self._raw_query.decode(ENCODING_METHOD)
-        self.__query = dict(parse_qsl(query_str))
-        return self.__query
+        return self.__query.items()
 
     def get(self, key: str, default: typing.Any = None) -> str:
         try:
-            return self.items()[key]
+            return self.__query[key]
         except KeyError:
             return default
+
+    def __contains__(self, key: typing.Any) -> bool:
+        return key in self.__query
+
+    def __getitems__(self, key: typing.Any) -> str:
+        return self.__query[key]
+
+    def __iter__(self) -> typing.Iterator[typing.Any]:
+        for key, value in self.items():
+            yield key, value
+
+    def __len__(self) -> int:
+        return len(self.__query)
 
 
 class Form:
@@ -201,22 +214,31 @@ class Form:
     @raw.setter
     def raw(self, form_data: typing.List[typing.Tuple[str, str]]) -> typing.List:
         self.__raw = form_data
+        self.__init_data()
 
-    def keys(self) -> typing.List:
-        return self.items().keys()
-
-    def values(self) -> typing.List:
-        return self.items().values()
+    def __init_data(self):
+        self.__data = {}
+        for item in self.raw:
+            self.__data[item[0]] = item[1]
 
     def items(self) -> typing.Dict:
-        if not hasattr(self, "__data"):
-            self.__data = {}
-            for item in self.raw:
-                self.__data[item[0]] = item[1]
-        return self.__data
+        return self.__data.items()
 
     def get(self, key: str, default: typing.Any = None) -> typing.Any:
         return self.items().get(key, default)
+
+    def __contains__(self, key: typing.Any) -> bool:
+        return key in self.__data
+
+    def __getitems__(self, key: typing.Any) -> str:
+        return self.__data[key]
+
+    def __iter__(self) -> typing.Iterator[typing.Any]:
+        for key, value in self.items():
+            yield key, value
+
+    def __len__(self) -> int:
+        return len(self.__data)
 
 
 class UploadFile:

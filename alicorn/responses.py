@@ -23,10 +23,10 @@ class Response:
 
     def __init__(
         self,
-        status_code: int = 200,
-        media_type: str = None,
-        headers: dict = None,
         content: typing.Any = None,
+        status_code: int = 200,
+        headers: dict = None,
+        media_type: str = None,
     ) -> None:
         self.status_code = status_code
         if media_type is not None:

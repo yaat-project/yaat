@@ -144,7 +144,10 @@ class Request(HttpConnection):
     async def json(self) -> typing.Any:
         if not hasattr(self, "__json"):
             body = await self.body()
-            self.__json = {} if body.decode(ENCODING_METHOD) == '' else json.loads(body)
+            self.__json = {}
+
+            if not body == b'':
+                self.__json = json.loads(body)
         return self.__json
 
     async def form(self) -> dict:
