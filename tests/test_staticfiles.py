@@ -97,7 +97,27 @@ async def test_head_method(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_304_with_etag_match(app, client, tmpdir):
-    pass
+    CONTENT = b"xxxx"
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    directory = f"/{str(tmpdir)}"
+    imagename = temp.name.split("/")[-1]
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    first_res = await client.get(f"/static/{imagename}")
+
+    assert first_res.status_code == 200
+
+    etag = first_res.headers["etag"]
+    second_res = await client.get(f"/static/{imagename}", headers={"if-none-match": etag})
+
+    assert second_res.status_code == 304
+    assert second_res.content == b""
 
 
 @pytest.mark.asyncio
