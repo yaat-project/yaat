@@ -40,15 +40,26 @@ async def test_post_method(app, client, tmpdir):
     assert res.status_code == 405
 
 
-
 @pytest.mark.asyncio
 async def test_missing_file(app, client, tmpdir):
-    pass
+    directory = f"/{str(tmpdir)}"
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    res = await client.get(f"/static/404.png")
+    assert res.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_missing_directory(app, client, tmpdir):
-    pass
+    directory = f"/{str(tmpdir)}"
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    res = await client.get(f"/static/sub/404.png")
+    assert res.status_code == 404
 
 
 @pytest.mark.asyncio
