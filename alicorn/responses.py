@@ -1,7 +1,9 @@
-import json
 import http.cookies
+from email.utils import formatdate
 from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
+import hashlib
+import json
 import os
 import typing
 
@@ -12,9 +14,11 @@ from .types import Scope, Receive, Send
 http.cookies.Morsel._reserved["samesite"] = "SameSite"  # type: ignore
 
 try:
+    from aiofiles.os import stat as aio_stat
     import aiofiles
 except ImportError:
     aiofiles = None
+    aio_stat = None
 
 
 class Response:
@@ -33,6 +37,7 @@ class Response:
             self.media_type = media_type
         self.headers = headers if headers is not None else {}
         self.body = self.render_content(content)
+
 
     def render_content(self, content: typing.Any) -> bytes:
         if content is None:
@@ -173,7 +178,7 @@ class FileResponse(Response):
         if media_type is None:
             media_type = guess_type(filename or path)[0] or "text/plain"
         self.media_type = media_type
-        self.headers = headers
+        self.headers = headers if headers is not None else {}
 
         if self.filename is not None:
             content_disposition_filename = quote(self.filename)
@@ -184,7 +189,16 @@ class FileResponse(Response):
                 )
             else:
                 content_disposition = 'attachment; filename="{}"'.format(self.filename)
-            # self.headers.setdefault("content-disposition", content_disposition)
+
+    def set_stat_headers(self, stat_result: os.stat_result) -> None:
+        content_length = str(stat_result.st_size)
+        last_modified = formatdate(stat_result.st_mtime, usegmt=True)
+        etag_base = str(stat_result.st_mtime) + "-" + str(stat_result.st_size)
+        etag = hashlib.md5(etag_base.encode()).hexdigest()
+
+        self.headers["content-length"] = content_length
+        self.headers["last-modified"] = last_modified
+        self.headers["etag"] = etag
 
     async def __call__(self, send: Send) -> None:
         path = f"{self.path}{self.filename}" if self.filename.startswith("/") else f"{self.path}/{self.filename}"
@@ -206,6 +220,10 @@ class FileResponse(Response):
                 }
             )
             return
+
+        # when file exists, get file stats and set to header
+        stat_result = await aio_stat(path)
+        self.set_stat_headers(stat_result)
 
         await send(
             {

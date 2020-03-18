@@ -18,7 +18,9 @@ class StaticFilesHandler:
 
     @directory.setter
     def directory(self, directory: str):
-        self.__directory = directory[1:] if directory and directory.startswith("/") else directory
+        if os.path.isfile(directory):
+            raise RuntimeError(f"StaticFiles directory {directory} is not a directory.")
+        self.__directory = directory
 
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
         request_path = request.path
@@ -33,7 +35,7 @@ class StaticFilesHandler:
             if not os.path.exists(f"{self.directory}{filepath}"):
                 raise NotFoundException("File does not exists")
             response = FileResponse(
-                    path=self.directory,
+                path=self.directory,
                 filename=filepath
             )
         except NotFoundException as e:
@@ -48,7 +50,7 @@ class StaticFiles:
         self.router.add_route(
             path=self.path,
             handler=StaticFilesHandler(self.path, directory),
-            methods=["GET"]
+            methods=["GET", "HEAD"]
         )
 
     @property
