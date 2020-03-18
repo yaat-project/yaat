@@ -64,17 +64,35 @@ async def test_missing_directory(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_configured_with_file(app, client, tmpdir):
-    pass
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(b"xxxx")
+    temp.close()
 
+    with pytest.raises(RuntimeError) as exc_info:
+        statics = StaticFiles(path="/static", directory=temp.name)
 
-@pytest.mark.asyncio
-async def test_breaking_out_of_directory(app, client, tmpdir):
-    pass
+    assert "is not a directory" in str(exc_info.value)
 
 
 @pytest.mark.asyncio
 async def test_head_method(app, client, tmpdir):
-    pass
+    CONTENT = b"xxxx"
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    directory = f"/{str(tmpdir)}"
+    imagename = temp.name.split("/")[-1]
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    res = await client.head(f"/static/{imagename}")
+
+    assert res.status_code == 200
+    assert res.content == b""
+    assert res.headers["content-length"] == str(len(CONTENT))
 
 
 @pytest.mark.asyncio
