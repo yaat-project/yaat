@@ -29,13 +29,11 @@ class StaticFilesHandler:
         else:
             filepath = request_path
 
-        static_path = os.path.abspath(self.directory)
-
         try:
-            if not os.path.exists(f"{static_path}{filepath}"):
+            if not os.path.exists(f"{self.directory}{filepath}"):
                 raise NotFoundException("File does not exists")
             response = FileResponse(
-                path=static_path,
+                    path=self.directory,
                 filename=filepath
             )
         except NotFoundException as e:
@@ -47,7 +45,11 @@ class StaticFiles:
     def __init__(self, path: str, directory: str):
         self.path = path
         self.router = Router()
-        self.router.add_route(path=self.path, handler=StaticFilesHandler(self.path, directory))
+        self.router.add_route(
+            path=self.path,
+            handler=StaticFilesHandler(self.path, directory),
+            methods=["GET"]
+        )
 
     @property
     def path(self) -> str:
