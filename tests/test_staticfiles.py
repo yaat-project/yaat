@@ -1,16 +1,44 @@
 import pytest
+import tempfile
 
 from alicorn.staticfiles import StaticFiles
 
 
 @pytest.mark.asyncio
 async def test_staticfiles(app, client, tmpdir):
-    pass
+    CONTENT = b"xxxx"
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    directory = f"/{str(tmpdir)}"
+    imagename = temp.name.split("/")[-1]
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    res = await client.get(f"/static/{imagename}")
+    assert res.content == CONTENT
 
 
 @pytest.mark.asyncio
 async def test_post_method(app, client, tmpdir):
-    pass
+    CONTENT = b"xxxx"
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    directory = f"/{str(tmpdir)}"
+    imagename = temp.name.split("/")[-1]
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    res = await client.post(f"/static/{imagename}")
+    assert res.status_code == 405
+
 
 
 @pytest.mark.asyncio
