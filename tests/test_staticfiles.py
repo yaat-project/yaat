@@ -110,11 +110,11 @@ async def test_304_with_etag_match(app, client, tmpdir):
     app.mount(statics)
 
     first_res = await client.get(f"/static/{imagename}")
+    first_etag = first_res.headers["etag"]
 
     assert first_res.status_code == 200
 
-    etag = first_res.headers["etag"]
-    second_res = await client.get(f"/static/{imagename}", headers={"if-none-match": etag})
+    second_res = await client.get(f"/static/{imagename}", headers={"if-none-match": first_etag})
 
     assert second_res.status_code == 304
     assert second_res.content == b""
