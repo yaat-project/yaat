@@ -163,4 +163,3 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
 @pytest.mark.asyncio
 async def test_static_html(app, client, tmpdir):
     pass
-
