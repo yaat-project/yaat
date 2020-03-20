@@ -112,7 +112,6 @@ class Response:
 
         self.headers["set-cookie"] = cookie.output(header="").strip()
 
-
     def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
@@ -250,6 +249,10 @@ class FileResponse(Response):
 
 
 class NotModifiedResponse(Response):
+    """ Use when the file requested from user is not modifed
+         so instead of sending FileResponse, send NotModifiedResponse with
+         empty body """
+
     NOT_MODIFIED_HEADERS = (
         "cache-control",
         "content-location",
