@@ -80,13 +80,13 @@ class StaticFilesHandler:
 
                 # if directory, check if there is index file
                 if is_index_exists and is_directory:
-                    response = FileResponse(path=index_path)
-                # if user requested html file exists
-                elif is_file_exists and not is_directory:
-                    response = FileResponse(path=full_path)
-                # raise 404
-                else:
+                    full_path = index_path
+                # raise 404 if not directory and file also not exists
+                elif not is_file_exists and not is_directory:
                     raise NotFoundException("Not Found")
+
+                stat_result = await aio_stat(full_path)
+                response = FileResponse(path=full_path, stat_result=stat_result)
 
             # if file response
             else:
