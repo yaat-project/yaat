@@ -248,3 +248,21 @@ class FileResponse(Response):
                         }
                     )
 
+
+class NotModifiedResponse(Response):
+    NOT_MODIFIED_HEADERS = (
+        "cache-control",
+        "content-location",
+        "date",
+        "etag",
+        "expires",
+        "vary",
+    )
+
+    def __init__(self, headers: dict):
+        headers = {
+            name: value
+            for name, value in headers.items()
+            if name in self.NOT_MODIFIED_HEADERS
+        }
+        super().__init__(status_code=304, headers=headers)
