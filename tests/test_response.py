@@ -1,7 +1,6 @@
 import pytest
 import tempfile
 
-from alicorn import Alicorn
 from alicorn.responses import (
     FileResponse,
     HTMLResponse,
