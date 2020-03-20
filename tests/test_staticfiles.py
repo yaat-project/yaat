@@ -1,5 +1,7 @@
+import os
 import pytest
 import tempfile
+import time
 
 from alicorn.staticfiles import StaticFiles
 
@@ -122,7 +124,40 @@ async def test_304_with_etag_match(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_304_last_modified_compare_last_request(app, client, tmpdir):
-    pass
+    CONTENT = b"xxxx"
+    FILE_LAST_MODIFIED_TIME = time.mktime(
+        time.strptime("2020-02-02 01:00:00", "%Y-%m-%d %H:%M:%S")
+    )
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    directory = f"/{str(tmpdir)}"
+    imagename = temp.name.split("/")[-1]
+
+    # change the time of created temporary file
+    os.utime(temp.name, (FILE_LAST_MODIFIED_TIME, FILE_LAST_MODIFIED_TIME))
+
+    statics = StaticFiles(path="/static", directory=directory)
+    app.mount(statics)
+
+    # file last modified date < last request
+    # means no modification, should get HTTP 304 with empty body
+    first_res = await client.get(f"/static/{imagename}", headers={
+        "if-modified-since": "Mon, 03 Feb 2020 12:00:00 GMT"
+    })
+    assert first_res.status_code == 304
+    assert first_res.content == b""
+
+    # file last modified date > last request
+    # means there are changes, and file need to be sent back
+    # should get HTTP 200 with content in body
+    second_res = await client.get(f"/static/{imagename}", headers={
+        "if-modified-since": "Sat, 01 Feb 2020 04:00:00 GMT"
+    })
+    assert second_res.status_code == 200
+    assert second_res.content == CONTENT
 
 
 @pytest.mark.asyncio
