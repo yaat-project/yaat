@@ -162,4 +162,31 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_static_html(app, client, tmpdir):
-    pass
+    # create html file with name
+    named_html = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.html', delete=False)
+    named_html.write(b"<h1>Hello World</h1>")
+    named_html.close()
+
+    # create index html file
+    index_html = open(os.path.join(tmpdir, "index.html"), "w+b")
+    index_html.write(b"<h1>Index</h1>")
+    index_html.close()
+
+    directory = f"/{str(tmpdir)}"
+    named_html_file = named_html.name.split("/")[-1]
+
+    statics = StaticFiles(path="/", directory=directory, html=True)
+    app.mount(statics)
+
+
+    first_res = await client.get(f"/{named_html_file}")
+    assert first_res.status_code == 200
+    assert first_res.text == "<h1>Hello World</h1>"
+
+    second_res = await client.get(f"/")
+    assert second_res.status_code == 200
+    assert second_res.text == "<h1>Index</h1>"
+
+    third_res = await client.get(f"/notfound.html")
+    assert third_res.status_code == 404
+

@@ -14,9 +14,10 @@ except ImportError:
 
 
 class StaticFilesHandler:
-    def __init__(self, path: str = "/", directory: str = ""):
+    def __init__(self, path: str = "/", directory: str = "", html: bool = False):
         self.path = path
         self.directory = directory
+        self.html = html
 
     @property
     def directory(self) -> str:
@@ -55,7 +56,6 @@ class StaticFilesHandler:
 
         return False
 
-
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
         assert aio_stat is not None, "'aiofiles' must be installed to use StaticFilesHandler"
 
@@ -65,19 +65,40 @@ class StaticFilesHandler:
             filepath = request_path[len(self.path):]
         else:
             filepath = request_path
+        # if starts with / remove
+        filepath = filepath[1:] if filepath.startswith("/") else filepath
 
         try:
-            full_path = f"{self.directory}{filepath}" if filepath.startswith("/") else f"{self.directory}/{filepath}"
+            full_path = os.path.join(self.directory, filepath)
+            is_directory = os.path.isdir(full_path)
+            is_file_exists = os.path.exists(full_path)
 
-            if not os.path.exists(full_path):
-                raise NotFoundException("File does not exists")
+            # if html response
+            if self.html:
+                index_path = os.path.join(self.directory, "index.html")
+                is_index_exists = os.path.exists(index_path)
 
-            stat_result = await aio_stat(full_path)
-            response = FileResponse(path=full_path, stat_result=stat_result)
+                # if directory, check if there is index file
+                if is_index_exists and is_directory:
+                    response = FileResponse(path=index_path)
+                # if user requested html file exists
+                elif is_file_exists and not is_directory:
+                    response = FileResponse(path=full_path)
+                # raise 404
+                else:
+                    raise NotFoundException("Not Found")
 
-            # check if file is modified
-            if self.is_not_modified(dict(request.headers), response.headers):
-                response = NotModifiedResponse(response.headers)
+            # if file response
+            else:
+                if is_directory or not is_file_exists:
+                    raise NotFoundException("File does not exists")
+
+                stat_result = await aio_stat(full_path)
+                response = FileResponse(path=full_path, stat_result=stat_result)
+
+                # check if file is modified
+                if self.is_not_modified(dict(request.headers), response.headers):
+                    response = NotModifiedResponse(response.headers)
 
         except NotFoundException as e:
             response = e.response
@@ -86,12 +107,12 @@ class StaticFilesHandler:
 
 
 class StaticFiles:
-    def __init__(self, path: str, directory: str):
+    def __init__(self, path: str, directory: str, html: bool = False):
         self.path = path
         self.router = Router()
         self.router.add_route(
             path=self.path,
-            handler=StaticFilesHandler(self.path, directory),
+            handler=StaticFilesHandler(self.path, directory, html),
             methods=["GET", "HEAD"]
         )
 
