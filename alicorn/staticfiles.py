@@ -6,6 +6,11 @@ from .requests import Request
 from .responses import Response, FileResponse
 from .routing import Router, Route
 
+try:
+    from aiofiles.os import stat as aio_stat
+except ImportError:
+    aio_stat = None
+
 
 class StaticFilesHandler:
     def __init__(self, path: str = "/", directory: str = ""):
@@ -23,8 +28,9 @@ class StaticFilesHandler:
         self.__directory = directory
 
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
-        request_path = request.path
+        assert aio_stat is not None, "'aiofiles' must be installed to use StaticFilesHandler"
 
+        request_path = request.path
         # NOTE: remove route prefix and get file path
         if request_path.startswith(self.path) and self.path != "/":
             filepath = request_path[len(self.path):]
@@ -32,14 +38,17 @@ class StaticFilesHandler:
             filepath = request_path
 
         try:
-            if not os.path.exists(f"{self.directory}{filepath}"):
+            full_path = f"{self.directory}{filepath}" if filepath.startswith("/") else f"{self.directory}/{filepath}"
+
+            if not os.path.exists(full_path):
                 raise NotFoundException("File does not exists")
-            response = FileResponse(
-                path=self.directory,
-                filename=filepath
-            )
+
+            stat_result = await aio_stat(full_path)
+            response = FileResponse(path=full_path, stat_result=stat_result)
+
         except NotFoundException as e:
             response = e.response
+
         return response
 
 

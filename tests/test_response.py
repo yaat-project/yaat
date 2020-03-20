@@ -113,7 +113,7 @@ async def test_file_response(app, client, tmpdir):
     @app.route("/directory")
     async def handler(request):
         # temp.name already has file path, so put path = ''
-        return FileResponse(path='', filename=temp.name)
+        return FileResponse(path=temp.name)
 
     res = await client.get("/directory")
 
@@ -151,7 +151,7 @@ async def test_response_status_code(app, client):
 async def test_file_response_directory_error(app, client, tmpdir):
     @app.route("/directory")
     async def handler(request):
-        return FileResponse(path=tmpdir + "/notfound", filename="example.txt")
+        return FileResponse(path=tmpdir + "/notfound/example.txt")
 
     res = await client.get("/directory")
 
@@ -162,7 +162,7 @@ async def test_file_response_directory_error(app, client, tmpdir):
 async def test_file_response_missing_file(app, client, tmpdir):
     @app.route("/file")
     async def handler(request):
-        return FileResponse(path=tmpdir, filename="404.txt")
+        return FileResponse(path="404.txt")
 
     res = await client.get("/file")
 

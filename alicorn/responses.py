@@ -14,11 +14,9 @@ from .types import Scope, Receive, Send
 http.cookies.Morsel._reserved["samesite"] = "SameSite"  # type: ignore
 
 try:
-    from aiofiles.os import stat as aio_stat
     import aiofiles
 except ImportError:
     aiofiles = None
-    aio_stat = None
 
 
 class Response:
@@ -163,22 +161,24 @@ class FileResponse(Response):
     def __init__(
         self,
         path: str,
-        filename: str,
+        filename: str = None,
         status_code: int = 200,
-        media_type: str = None,
         headers: dict = None,
+        media_type: str = None,
+        stat_result: os.stat_result = None,
         method: str = None,
     ) -> None:
         assert aiofiles is not None, "'aiofiles' must be installed to use FileResponse"
 
         self.path = path
-        self.status_code = status_code
         self.filename = filename
+        self.status_code = status_code
         self.send_header_only = method is not None and method.upper() == "HEAD"
         if media_type is None:
             media_type = guess_type(filename or path)[0] or "text/plain"
-        self.media_type = media_type
         self.headers = headers if headers is not None else {}
+        self.media_type = media_type
+        self.stat_result = stat_result
 
         if self.filename is not None:
             content_disposition_filename = quote(self.filename)
@@ -189,6 +189,11 @@ class FileResponse(Response):
                 )
             else:
                 content_disposition = 'attachment; filename="{}"'.format(self.filename)
+            self.headers["content-disposition"] = content_disposition
+
+        if stat_result is not None:
+            self.set_stat_headers(stat_result)
+
 
     def set_stat_headers(self, stat_result: os.stat_result) -> None:
         content_length = str(stat_result.st_size)
@@ -200,11 +205,10 @@ class FileResponse(Response):
         self.headers["last-modified"] = last_modified
         self.headers["etag"] = etag
 
-    async def __call__(self, send: Send) -> None:
-        path = f"{self.path}{self.filename}" if self.filename.startswith("/") else f"{self.path}/{self.filename}"
 
+    async def __call__(self, send: Send) -> None:
         # Send 404 if file does not exists
-        if not os.path.exists(path):
+        if not os.path.exists(self.path):
             # clear custom headers
             await send(
                 {
@@ -221,10 +225,6 @@ class FileResponse(Response):
             )
             return
 
-        # when file exists, get file stats and set to header
-        stat_result = await aio_stat(path)
-        self.set_stat_headers(stat_result)
-
         await send(
             {
                 "type": "http.response.start",
@@ -235,7 +235,7 @@ class FileResponse(Response):
         if self.send_header_only:
             await send({"type": "http.response.body"})
         else:    
-            async with aiofiles.open(path, mode="rb") as file:
+            async with aiofiles.open(self.path, mode="rb") as file:
                 more_body = True
                 while more_body:
                     chunk = await file.read(self.chunk_size)
@@ -247,3 +247,4 @@ class FileResponse(Response):
                             "more_body": more_body,
                         }
                     )
+
