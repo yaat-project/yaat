@@ -2,7 +2,7 @@ from email.utils import parsedate
 import os
 import typing
 
-from .exceptions import NotFoundException
+from .exceptions import HttpException
 from .requests import Request
 from .responses import FileResponse, NotModifiedResponse, Response
 from .routing import Router, Route
@@ -83,7 +83,7 @@ class StaticFilesHandler:
                     full_path = index_path
                 # raise 404 if not directory and file also not exists
                 elif not is_file_exists and not is_directory:
-                    raise NotFoundException("Not Found")
+                    raise HttpException(404)
 
                 stat_result = await aio_stat(full_path)
                 response = FileResponse(path=full_path, stat_result=stat_result)
@@ -91,7 +91,10 @@ class StaticFilesHandler:
             # if file response
             else:
                 if is_directory or not is_file_exists:
-                    raise NotFoundException("File does not exists")
+                    raise HttpException(
+                        status_code=404,
+                        details="File does not exists"
+                    )
 
                 stat_result = await aio_stat(full_path)
                 response = FileResponse(path=full_path, stat_result=stat_result)
@@ -100,7 +103,7 @@ class StaticFilesHandler:
                 if self.is_not_modified(dict(request.headers), response.headers):
                     response = NotModifiedResponse(response.headers)
 
-        except NotFoundException as e:
+        except HttpException as e:
             response = e.response
 
         return response

@@ -2,7 +2,7 @@ import httpx
 import inspect
 import typing
 
-from .exceptions import MethodNotAllowException, NotFoundException
+from .exceptions import HttpException
 from .middleware import BaseMiddleware
 from .requests import Request
 from .responses import Response, FileResponse
@@ -64,18 +64,18 @@ class Alicorn:
                 if inspect.isclass(handler):
                     handler = getattr(handler(), request.method.lower(), None)
                     if handler is None:
-                        raise MethodNotAllowException
+                        raise HttpException(405)
                 if not route.is_valid_method(request.method):
-                    raise MethodNotAllowException
+                    raise HttpException(405)
 
                 response = await handler(request, **kwargs)
             else:
                 # default response when path not found
-                raise NotFoundException
+                raise HttpException(404)
         except Exception as e:
             if self.exception_handler is not None:
                 response = self.exception_handler(request, e)
-            elif isinstance(e, MethodNotAllowException) or isinstance(e, NotFoundException):
+            elif isinstance(e, HttpException) or isinstance(e, HttpException):
                 response = e.response
             else:
                 raise e
