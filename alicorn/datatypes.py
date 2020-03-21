@@ -296,15 +296,30 @@ class Form:
         self.__init_data()
 
     def __init_data(self):
-        self.__data = {}
+        data = {}
         for item in self.raw:
-            self.__data[item[0]] = item[1]
+            key = item[0]
+            value = item[1]
+
+            if not key in data:
+                data[key] = value
+                continue
+
+             # if key exists, store multiple values in list
+            values = data[key]
+            # convert to list if not a list already
+            if type(values) != list:
+                values = [values]
+            values.append(value)
+            data[key] = values
+
+        self.__data = data
 
     def items(self) -> typing.Dict:
         return self.__data.items()
 
     def get(self, key: str, default: typing.Any = None) -> typing.Any:
-        return self.items().get(key, default)
+        return self.__data.get(key, default)
 
     def __contains__(self, key: typing.Any) -> bool:
         return key in self.__data
