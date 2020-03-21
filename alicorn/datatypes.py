@@ -341,4 +341,3 @@ class UploadFile:
 
     async def close(self) -> None:
         await run_in_threadpool(self.file.close)
-
