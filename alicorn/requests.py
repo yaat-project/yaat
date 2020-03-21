@@ -46,7 +46,7 @@ class HttpConnection:
     @property
     def url(self) -> URL:
         if not hasattr(self, "__url"):
-            self.__url = URL(self.scope)
+            self.__url = URL(scope=self.scope)
         return self.__url
 
     @property

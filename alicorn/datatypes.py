@@ -1,4 +1,4 @@
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qsl, urlparse
 import tempfile
 import typing
 
@@ -7,13 +7,30 @@ from .concurrency import run_in_threadpool
 from .types import Scope
 
 
-class URL(str):
-    def __init__(self, scope: Scope):
-        self.scheme = scope.get("scheme", "http")
-        self.server = scope.get("server", None)  
-        self.path = scope.get("root_path", "") + scope["path"]
-        self.query_string = scope.get("query_string", b"")
-        self.host_header = scope["headers"]
+class URL:
+    def __init__(self, url: str = "", scope: Scope = None):
+        if scope is not None:
+            assert not url, 'Cannot set both "url" and "scope".'
+
+            self.scheme = scope.get("scheme", "http")
+            self.server = scope.get("server", None)  
+            self.path = scope.get("root_path", "") + scope["path"]
+            self.query = scope.get("query_string", b"")
+            self.host_header = scope["headers"]
+        else:
+            assert not scope, 'Cannot set both "url" and "scope".'
+
+            components = urlparse(url)
+            netloc = components.netloc.split(":")
+
+            self.scheme = components.scheme
+            self.server = (netloc[0], netloc[1] if len(netloc) > 1 else None)
+            self.path = components.path
+            self.query = components.query
+            self.host_header = []
+            self.fragment = components.fragment
+
+        # init url
         self.__init_url()
 
     @property
@@ -33,6 +50,13 @@ class URL(str):
         self.__server = server # ip and port
 
     @property
+    def netloc(self) -> str:
+        if self.port:
+            return f"{self.host}:{self.port}"
+        else:
+            return self.host
+
+    @property
     def host(self) -> str:
         if not hasattr(self, "__host"):
             self.__host = None
@@ -49,16 +73,19 @@ class URL(str):
 
             if self.server:
                 host, port = self.server
-                self.__port = port
+                self.__port = int(port) if port else None
         return self.__port
 
     @property
-    def query_string(self) -> bytes:
-        return self.__query_string
+    def query(self) -> str:
+        return self.__query
 
-    @query_string.setter
-    def query_string(self, query_str: bytes):
-        self.__query_string = query_str
+    @query.setter
+    def query(self, query: bytes):
+        try:
+            self.__query = query.decode(ENCODING_METHOD)
+        except (AttributeError, UnicodeDecodeError):
+            self.__query = query
 
     @property
     def host_header(self) -> str:
@@ -72,6 +99,14 @@ class URL(str):
                 host_header = value.decode(ENCODING_METHOD)
                 break
         self.__host_header = host_header
+
+    @property
+    def fragment(self) -> str:
+        return self.__fragment
+
+    @fragment.setter
+    def fragment(self, fragment: str):
+        self.__fragment = fragment
 
     @property
     def url(self) -> str:
@@ -90,8 +125,8 @@ class URL(str):
             else:
                 url = f"{self.scheme}://{host}:{port}{self.path}"
 
-        if self.query_string:
-            url += "?" + self.query_string.decode(ENCODING_METHOD)
+        if self.query:
+            url += "?" + self.query
 
         self.__url = url
 
@@ -168,7 +203,7 @@ class Headers:
 
 
 class QueryParams:
-    def __init__(self, raw_query: str):
+    def __init__(self, raw_query: bytes):
         self.__raw_query = raw_query
         self.__init_query()
 
@@ -177,8 +212,33 @@ class QueryParams:
         return self.__raw_query
 
     def __init_query(self):
-        query_str = self.raw.decode(ENCODING_METHOD)
-        self.__query = dict(parse_qsl(query_str))
+        try:
+            query = self.raw.decode(ENCODING_METHOD)
+        except (AttributeError, UnicodeDecodeError):
+            query = self.raw
+
+        self.__query = self.__format_to_dict(parse_qsl(query, keep_blank_values=True))
+
+    def __format_to_dict(self, query_list: list):
+        query = {}
+
+        for qs in query_list:
+            key = qs[0]
+            value = qs[1]
+
+            if not key in query:
+                query[key] = value
+                continue
+
+            # if key exists, store multiple values in list
+            values = query[key]
+            # convert to list if not a list already
+            if type(values) != list:
+                values = [values]
+            values.append(value)
+            query[key] = values
+
+        return query
 
     def items(self) -> dict:
         return self.__query.items()
@@ -201,6 +261,25 @@ class QueryParams:
 
     def __len__(self) -> int:
         return len(self.__query)
+
+    def __str__(self) -> str:
+        query_string = None
+
+        for key, value in self.items():
+            # if no value, just add back key
+            if not value:
+                query_string = f"{key}" if not query_string else f"{query_string}&{key}"
+            # if list, iterate and add back
+            elif type(value) == list:
+                for each in value:
+                    query_string = f"{key}={each}" if not query_string else\
+                        f"{query_string}&{key}={each}"
+            # just add
+            else:
+                query_string = f"{key}={value}" if not query_string else\
+                    f"{query_string}&{key}={value}"
+
+        return query_string
 
 
 class Form:
