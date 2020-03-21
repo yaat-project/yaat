@@ -52,7 +52,25 @@ async def test_address():
 
 @pytest.mark.asyncio
 async def test_headers(app, client):
-    pass
+    header = Headers([
+        (b"content-type", b"application/json"),
+        (b"api-token", b"secret"),
+        (b"location", b"localhost"),
+    ])
+
+    assert "content-type" in header
+    assert "api-token" in header
+    assert "location" in header
+    assert "xyz" not in header
+    assert header.get("content-type") == "application/json"
+    assert header.get("api-token") == "secret"
+    assert header.get("location") == "localhost"
+    assert list(dict(header).keys()) == ["content-type", "api-token", "location"]
+    assert dict(header) == {
+        "content-type": "application/json",
+        "api-token": "secret",
+        "location": "localhost"
+    }
 
 
 @pytest.mark.asyncio
@@ -86,4 +104,3 @@ async def test_url_blank_params():
 @pytest.mark.asyncio
 async def test_form(app, client):
     pass
-
