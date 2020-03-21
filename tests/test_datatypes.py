@@ -1,3 +1,4 @@
+import io
 import pytest
 
 from alicorn.datatypes import (
@@ -103,4 +104,23 @@ async def test_url_blank_params():
 
 @pytest.mark.asyncio
 async def test_form(app, client):
-    pass
+    upload = io.BytesIO(b"test")
+    form = Form([
+        ("abc", "123"),
+        ("abc", "456"),
+        ("def", "789"),
+        ("xyz", upload)
+    ])
+
+    assert "abc" in form
+    assert "xyz" in form
+    assert "def" in form
+    assert "hij" not in form
+    assert form.get("abc") == ["123", "456"]
+    assert form.get("def") == "789"
+    assert form.get("xyz") == upload
+    assert dict(form) == {
+        "abc": ["123", "456"],
+        "def": "789",
+        "xyz": upload
+    }
