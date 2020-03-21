@@ -11,7 +11,7 @@ async def test_request_url(app, client):
         data = {"method": request.method, "url": str(request.url)}
         return JSONResponse(data)
 
-    res = await client.get("/")
+    res = await client.get("/#anchor")
     res_data = res.json()
 
     assert res_data["method"] == "GET"
