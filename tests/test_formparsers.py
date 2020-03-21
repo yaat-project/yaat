@@ -79,4 +79,3 @@ async def test_urlencoded_multi_field_reads_body(app, client, tmpdir):
 @pytest.mark.asyncio
 async def test_multipart_multi_field_reads_body(app, client, tmpdir):
     pass
-
