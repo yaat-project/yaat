@@ -90,8 +90,8 @@ class Alicorn:
         self.middleware.add(middleware_cls)
 
 
-    # NOTE: Session
-    def session(self, base_url="http://testserver") -> httpx.AsyncClient:
+    # NOTE: Test Client
+    def test_client(self, base_url="http://testserver") -> httpx.AsyncClient:
         if not hasattr(self, "_session"):
             self._session = httpx.AsyncClient(app=self, base_url="http://testserver")
 

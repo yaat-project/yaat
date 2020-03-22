@@ -10,4 +10,4 @@ def app() -> Alicorn:
 
 @pytest.fixture
 def client(app) -> httpx.AsyncClient:
-    return app.session()
+    return app.test_client()
