@@ -1,4 +1,4 @@
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qsl, urlparse
 import tempfile
 import typing
 
@@ -8,14 +8,30 @@ from .types import Scope
 
 
 class URL:
-    def __init__(self, scope: Scope):
-        self.scheme = scope.get("scheme", "http")
-        self.server = scope.get("server", None)  
-        self.path = scope.get("root_path", "") + scope["path"]
-        self.query_string = scope.get("query_string", b"")
-        self.host_header = scope["headers"]
-        self.__init_url()
+    def __init__(self, url: str = "", scope: Scope = None):
+        if scope is not None:
+            assert not url, 'Cannot set both "url" and "scope".'
 
+            self.scheme = scope.get("scheme", "http")
+            self.server = scope.get("server", None)  
+            self.path = scope.get("root_path", "") + scope["path"]
+            self.query = scope.get("query_string", b"")
+            self.host_header = scope["headers"]
+        else:
+            assert not scope, 'Cannot set both "url" and "scope".'
+
+            components = urlparse(url)
+            netloc = components.netloc.split(":")
+
+            self.scheme = components.scheme
+            self.server = (netloc[0], netloc[1] if len(netloc) > 1 else None)
+            self.path = components.path
+            self.query = components.query
+            self.host_header = []
+            self.fragment = components.fragment
+
+        # init url
+        self.__init_url()
 
     @property
     def scheme(self) -> str:
@@ -34,32 +50,42 @@ class URL:
         self.__server = server # ip and port
 
     @property
+    def netloc(self) -> str:
+        if self.port:
+            return f"{self.host}:{self.port}"
+        else:
+            return self.host
+
+    @property
     def host(self) -> str:
-        if not hasattr(self, "__host"):
+        if not hasattr(self, "_host"):
             self.__host = None
 
             if self.server:
                 host, port = self.server
-                self.__host = host
-        return self.__host
+                self._host = host
+        return self._host
 
     @property
     def port(self) -> int:
-        if not hasattr(self, "__port"):
-            self.__port = None
+        if not hasattr(self, "_port"):
+            self._port = None
 
             if self.server:
                 host, port = self.server
-                self.__port = port
-        return self.__port
+                self._port = int(port) if port else None
+        return self._port
 
     @property
-    def query_string(self) -> bytes:
-        return self.__query_string
+    def query(self) -> str:
+        return self.__query
 
-    @query_string.setter
-    def query_string(self, query_str: bytes):
-        self.__query_string = query_str
+    @query.setter
+    def query(self, query: bytes):
+        try:
+            self.__query = query.decode(ENCODING_METHOD)
+        except (AttributeError, UnicodeDecodeError):
+            self.__query = query
 
     @property
     def host_header(self) -> str:
@@ -73,6 +99,14 @@ class URL:
                 host_header = value.decode(ENCODING_METHOD)
                 break
         self.__host_header = host_header
+
+    @property
+    def fragment(self) -> str:
+        return self.__fragment
+
+    @fragment.setter
+    def fragment(self, fragment: str):
+        self.__fragment = fragment
 
     @property
     def url(self) -> str:
@@ -91,8 +125,8 @@ class URL:
             else:
                 url = f"{self.scheme}://{host}:{port}{self.path}"
 
-        if self.query_string:
-            url += "?" + self.query_string.decode(ENCODING_METHOD)
+        if self.query:
+            url += "?" + self.query
 
         self.__url = url
 
@@ -135,59 +169,117 @@ class Address:
 
 class Headers:
     def __init__(self, raw_headers: typing.List[typing.Tuple[bytes, bytes]]):
-        self._raw_headers = raw_headers
+        self.__raw_headers = raw_headers
+        self.__init_headers()
 
     @property
     def raw(self) -> typing.List[typing.Tuple[bytes, bytes]]:
         return self._raw_headers
 
-    def keys(self) -> typing.List[str]:
-        return [key.decode(ENCODING_METHOD) for key, value in self._raw_headers]
-
-    def values(self) -> typing.List[str]:
-        return [value.decode(ENCODING_METHOD) for key, value in self._raw_headers]
+    def __init_headers(self):
+        self.__headers = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in self.__raw_headers}
 
     def items(self) -> dict:
-        if hasattr(self, "__decoded_header"):
-            return self.__decoded_header
-
-        self.__decoded_header = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in self._raw_headers}
-        return self.__decoded_header
+        return self.__headers.items()
 
     def get(self, key: str, default: typing.Any = None) -> str:
         try:
-            return self.items()[key]
+            return self.__headers[key]
         except KeyError:
             return default
+
+    def __contains__(self, key: typing.Any) -> bool:
+        return key in self.__headers
+
+    def __getitems__(self, key: typing.Any) -> str:
+        return self.__headers[key]
+
+    def __iter__(self) -> typing.Iterator[typing.Any]:
+        for key, value in self.items():
+            yield key, value
+
+    def __len__(self) -> int:
+        return len(self.__headers)
 
 
 class QueryParams:
-    def __init__(self, raw_query: str):
-        self._raw_query = raw_query
+    def __init__(self, raw_query: bytes):
+        self.__raw_query = raw_query
+        self.__init_query()
 
     @property
     def raw(self) -> bytes:
-        return self._raw_query
+        return self.__raw_query
 
-    def keys(self) -> typing.List[str]:
-        return [key for key, value in self.items().items()]
+    def __init_query(self):
+        try:
+            query = self.raw.decode(ENCODING_METHOD)
+        except (AttributeError, UnicodeDecodeError):
+            query = self.raw
 
-    def values(self) -> typing.List[str]:
-        return [value for key, value in self.items().items()]
+        self.__query = self.__format_to_dict(parse_qsl(query, keep_blank_values=True))
+
+    def __format_to_dict(self, query_list: list):
+        query = {}
+
+        for qs in query_list:
+            key = qs[0]
+            value = qs[1]
+
+            if not key in query:
+                query[key] = value
+                continue
+
+            # if key exists, store multiple values in list
+            values = query[key]
+            # convert to list if not a list already
+            if type(values) != list:
+                values = [values]
+            values.append(value)
+            query[key] = values
+
+        return query
 
     def items(self) -> dict:
-        if hasattr(self, "__query"):
-            return self.__query
-
-        query_str = self._raw_query.decode(ENCODING_METHOD)
-        self.__query = dict(parse_qsl(query_str))
-        return self.__query
+        return self.__query.items()
 
     def get(self, key: str, default: typing.Any = None) -> str:
         try:
-            return self.items()[key]
+            return self.__query[key]
         except KeyError:
             return default
+
+    def __contains__(self, key: typing.Any) -> bool:
+        return key in self.__query
+
+    def __getitems__(self, key: typing.Any) -> str:
+        return self.__query[key]
+
+    def __iter__(self) -> typing.Iterator[typing.Any]:
+        for key, value in self.items():
+            yield key, value
+
+    def __len__(self) -> int:
+        return len(self.__query)
+
+    def __str__(self) -> str:
+        query_string = None
+
+        for key, value in self.items():
+            # if no value, just add back key
+            if not value:
+                query_string = f"{key}" if not query_string else f"{query_string}&{key}"
+            # if list, iterate and add back
+            elif type(value) == list:
+                for each in value:
+                    query_string = f"{key}={each}" if not query_string else\
+                        f"{query_string}&{key}={each}"
+            # just add
+            else:
+                query_string = f"{key}={value}" if not query_string else\
+                    f"{query_string}&{key}={value}"
+
+        return query_string
 
 
 class Form:
@@ -201,22 +293,46 @@ class Form:
     @raw.setter
     def raw(self, form_data: typing.List[typing.Tuple[str, str]]) -> typing.List:
         self.__raw = form_data
+        self.__init_data()
 
-    def keys(self) -> typing.List:
-        return self.items().keys()
+    def __init_data(self):
+        data = {}
+        for item in self.raw:
+            key = item[0]
+            value = item[1]
 
-    def values(self) -> typing.List:
-        return self.items().values()
+            if not key in data:
+                data[key] = value
+                continue
+
+             # if key exists, store multiple values in list
+            values = data[key]
+            # convert to list if not a list already
+            if type(values) != list:
+                values = [values]
+            values.append(value)
+            data[key] = values
+
+        self.__data = data
 
     def items(self) -> typing.Dict:
-        if not hasattr(self, "__data"):
-            self.__data = {}
-            for item in self.raw:
-                self.__data[item[0]] = item[1]
-        return self.__data
+        return self.__data.items()
 
     def get(self, key: str, default: typing.Any = None) -> typing.Any:
-        return self.items().get(key, default)
+        return self.__data.get(key, default)
+
+    def __contains__(self, key: typing.Any) -> bool:
+        return key in self.__data
+
+    def __getitems__(self, key: typing.Any) -> str:
+        return self.__data[key]
+
+    def __iter__(self) -> typing.Iterator[typing.Any]:
+        for key, value in self.items():
+            yield key, value
+
+    def __len__(self) -> int:
+        return len(self.__data)
 
 
 class UploadFile:
@@ -240,4 +356,3 @@ class UploadFile:
 
     async def close(self) -> None:
         await run_in_threadpool(self.file.close)
-

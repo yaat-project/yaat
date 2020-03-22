@@ -1,12 +1,17 @@
-import json
 import http.cookies
+from email.utils import formatdate
 from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
+import hashlib
+import json
 import os
 import typing
 
 from .constants import ENCODING_METHOD
 from .types import Scope, Receive, Send
+
+# Workaround for adding samesite support to pre 3.8 python
+http.cookies.Morsel._reserved["samesite"] = "SameSite"  # type: ignore
 
 try:
     import aiofiles
@@ -20,16 +25,17 @@ class Response:
 
     def __init__(
         self,
-        status_code: int = 200,
-        media_type: str = None,
-        headers: dict = None,
         content: typing.Any = None,
+        status_code: int = 200,
+        headers: dict = None,
+        media_type: str = None,
     ) -> None:
         self.status_code = status_code
         if media_type is not None:
             self.media_type = media_type
-        self.headers = headers
+        self.headers = headers if headers is not None else {}
         self.body = self.render_content(content)
+
 
     def render_content(self, content: typing.Any) -> bytes:
         if content is None:
@@ -54,7 +60,7 @@ class Response:
             keys = [h[0] for h in raw_headers]
             populate_content_length = b"content-length" not in keys
             populate_content_type = b"content-type" not in keys
-        
+ 
         body = getattr(self, "body", b"")
         if body and populate_content_length:
             content_length = str(len(body))
@@ -101,9 +107,10 @@ class Response:
                 "lax",
                 "none",
             ], "samesite must be either 'strict', 'lax' or 'none'"
+
             cookie[key]["samesite"] = samesite
-        cookie_values = cookie.output(header="").strip()
-        self.headers["set-cookie"] = cookie_val.encode(ENCODING_METHOD)
+
+        self.headers["set-cookie"] = cookie.output(header="").strip()
 
     def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
@@ -153,22 +160,24 @@ class FileResponse(Response):
     def __init__(
         self,
         path: str,
-        filename: str,
+        filename: str = None,
         status_code: int = 200,
-        media_type: str = None,
         headers: dict = None,
+        media_type: str = None,
+        stat_result: os.stat_result = None,
         method: str = None,
     ) -> None:
         assert aiofiles is not None, "'aiofiles' must be installed to use FileResponse"
 
         self.path = path
-        self.status_code = status_code
         self.filename = filename
+        self.status_code = status_code
         self.send_header_only = method is not None and method.upper() == "HEAD"
         if media_type is None:
             media_type = guess_type(filename or path)[0] or "text/plain"
+        self.headers = headers if headers is not None else {}
         self.media_type = media_type
-        self.headers = headers
+        self.stat_result = stat_result
 
         if self.filename is not None:
             content_disposition_filename = quote(self.filename)
@@ -179,13 +188,26 @@ class FileResponse(Response):
                 )
             else:
                 content_disposition = 'attachment; filename="{}"'.format(self.filename)
-            # self.headers.setdefault("content-disposition", content_disposition)
+            self.headers["content-disposition"] = content_disposition
+
+        if stat_result is not None:
+            self.set_stat_headers(stat_result)
+
+
+    def set_stat_headers(self, stat_result: os.stat_result) -> None:
+        content_length = str(stat_result.st_size)
+        last_modified = formatdate(stat_result.st_mtime, usegmt=True)
+        etag_base = str(stat_result.st_mtime) + "-" + str(stat_result.st_size)
+        etag = hashlib.md5(etag_base.encode()).hexdigest()
+
+        self.headers["content-length"] = content_length
+        self.headers["last-modified"] = last_modified
+        self.headers["etag"] = etag
+
 
     async def __call__(self, send: Send) -> None:
-        path = f"{self.path}{self.filename}" if self.filename.startswith("/") else f"{self.path}/{self.filename}"
-
         # Send 404 if file does not exists
-        if not os.path.exists(path):
+        if not os.path.exists(self.path):
             # clear custom headers
             await send(
                 {
@@ -212,7 +234,7 @@ class FileResponse(Response):
         if self.send_header_only:
             await send({"type": "http.response.body"})
         else:    
-            async with aiofiles.open(path, mode="rb") as file:
+            async with aiofiles.open(self.path, mode="rb") as file:
                 more_body = True
                 while more_body:
                     chunk = await file.read(self.chunk_size)
@@ -224,3 +246,26 @@ class FileResponse(Response):
                             "more_body": more_body,
                         }
                     )
+
+
+class NotModifiedResponse(Response):
+    """ Use when the file requested from user is not modifed
+         so instead of sending FileResponse, send NotModifiedResponse with
+         empty body """
+
+    NOT_MODIFIED_HEADERS = (
+        "cache-control",
+        "content-location",
+        "date",
+        "etag",
+        "expires",
+        "vary",
+    )
+
+    def __init__(self, headers: dict):
+        headers = {
+            name: value
+            for name, value in headers.items()
+            if name in self.NOT_MODIFIED_HEADERS
+        }
+        super().__init__(status_code=304, headers=headers)

@@ -19,8 +19,9 @@ class FormParser:
 
     async def parse(self) -> Form:
         body_data = await self.body()
-        form_data = [] if body_data.decode(ENCODING_METHOD) == '' else parse_qsl(body_data)
-        form_data = [(item[0].decode(ENCODING_METHOD), item[1].decode(ENCODING_METHOD)) for item in form_data]
+        body_data = body_data.decode(ENCODING_METHOD)
+        form_data = [] if body_data == '' else parse_qsl(body_data)
+        form_data = [(item[0], item[1]) for item in form_data]
         return Form(form_data)
 
 
@@ -133,7 +134,7 @@ class MultiPartParser:
 
                 elif message_type == events.PART_END:
                     if file is None:
-                        items.append((field_name, _user_safe_decode(data, charset)))
+                        items.append((field_name, self.__user_safe_decode(data, charset)))
                     else:
                         await file.seek(0)
                         items.append((field_name, file))

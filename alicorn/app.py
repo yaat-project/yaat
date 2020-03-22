@@ -2,8 +2,8 @@ import httpx
 import inspect
 import typing
 
-from .exceptions import MethodNotAllowException, NotFoundException
-from .middleware import BaseMiddleware
+from .exceptions import HttpException
+from .middleware import BaseMiddleware, ExceptionMiddleware
 from .requests import Request
 from .responses import Response, FileResponse
 from .routing import Router
@@ -16,6 +16,9 @@ class Alicorn:
         self.router = Router()
         self.middleware = BaseMiddleware(self)
         self.exception_handler = None
+
+        # register exception handling middleware
+        self.add_middleware(ExceptionMiddleware)
 
     # NOTE: properties
     @property
@@ -64,18 +67,18 @@ class Alicorn:
                 if inspect.isclass(handler):
                     handler = getattr(handler(), request.method.lower(), None)
                     if handler is None:
-                        raise MethodNotAllowException
+                        raise HttpException(405)
                 if not route.is_valid_method(request.method):
-                    raise MethodNotAllowException
+                    raise HttpException(405)
 
                 response = await handler(request, **kwargs)
             else:
                 # default response when path not found
-                raise NotFoundException
+                raise HttpException(404)
         except Exception as e:
             if self.exception_handler is not None:
                 response = self.exception_handler(request, e)
-            elif isinstance(e, MethodNotAllowException) or isinstance(e, NotFoundException):
+            elif isinstance(e, HttpException) or isinstance(e, HttpException):
                 response = e.response
             else:
                 raise e
@@ -89,10 +92,10 @@ class Alicorn:
 
     # NOTE: Session
     def session(self, base_url="http://testserver") -> httpx.AsyncClient:
-        if not hasattr(self, "__session"):
-            self.__session = httpx.AsyncClient(app=self, base_url="http://testserver")
+        if not hasattr(self, "_session"):
+            self._session = httpx.AsyncClient(app=self, base_url="http://testserver")
 
-        return self.__session
+        return self._session
 
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
