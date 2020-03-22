@@ -326,20 +326,64 @@ async def test_multipart_with_encoded_value(app, client):
 
 
 @pytest.mark.asyncio
-async def test_urlencoded_data(app, client, tmpdir):
-    pass
+async def test_urlencoding(app, client, tmpdir):
+    @app.route("/")
+    async def handler(request):
+        form = await request.form()
+        return JSONResponse(dict(form))
+
+    res = await client.post("/", data={
+        "abc": "hello mars!",
+        "hello world": "hi!",
+    })
+    assert res.json() == {
+        "abc": "hello mars!",
+        "hello world": "hi!",
+    }
 
 
 @pytest.mark.asyncio
 async def test_no_request_data(app, client, tmpdir):
-    pass
+    @app.route("/")
+    async def handler(request):
+        form = await request.form()
+        return JSONResponse(dict(form))
+
+    res = await client.post("/")
+    assert res.json() == {}
 
 
 @pytest.mark.asyncio
 async def test_urlencoded_multi_field_reads_body(app, client, tmpdir):
-    pass
+    @app.route("/")
+    async def handler(request):
+        await request.body()
+        form = await request.form()
+        return JSONResponse(dict(form))
+
+    res = await client.post("/", data={
+        "abc": "hello mars!",
+        "hello world": "hi!",
+    })
+    assert res.json() == {
+        "abc": "hello mars!",
+        "hello world": "hi!",
+    }
 
 
 @pytest.mark.asyncio
 async def test_multipart_multi_field_reads_body(app, client, tmpdir):
-    pass
+    @app.route("/")
+    async def handler(request):
+        await request.body()
+        form = await request.form()
+        return JSONResponse(dict(form))
+
+    res = await client.post("/", data={
+        "abc": "hello mars!",
+        "hello world": "hi!",
+    }, files=FORCE_MULTIPART)
+    assert res.json() == {
+        "abc": "hello mars!",
+        "hello world": "hi!",
+    }
