@@ -65,7 +65,7 @@ uvicorn example:app
 
 ## TODO
 
-- [ ] Test Client for Unit Testing
+- [ ] Migrate Github Wiki to Read the docs
 - [ ] Session Middleware
 - [ ] Authentication Middleware
 - [ ] Built-in background tasks and scheduler
