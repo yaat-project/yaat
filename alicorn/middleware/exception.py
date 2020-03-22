@@ -1,7 +1,6 @@
 import traceback
 
 from .base import BaseMiddleware
-
 from ..exceptions import HttpException
 from ..requests import Request
 from ..responses import Response
