@@ -1,7 +1,7 @@
 import pytest
 import tempfile
 
-from alicorn.responses import (
+from nymph.responses import (
     FileResponse,
     HTMLResponse,
     JSONResponse,

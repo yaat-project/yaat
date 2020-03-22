@@ -3,7 +3,7 @@ import pytest
 import tempfile
 import time
 
-from alicorn.staticfiles import StaticFiles
+from nymph.staticfiles import StaticFiles
 
 
 @pytest.mark.asyncio

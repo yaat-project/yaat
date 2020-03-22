@@ -11,7 +11,7 @@ from .staticfiles import StaticFiles
 from .types import Scope, Receive, Send
 
 
-class Alicorn:
+class Nymph:
     def __init__(self):
         self.router = Router()
         self.middleware = BaseMiddleware(self)

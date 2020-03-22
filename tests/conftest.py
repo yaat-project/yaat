@@ -1,12 +1,12 @@
 import httpx
 import pytest
 
-from alicorn import Alicorn
+from nymph import Nymph
 
 
 @pytest.fixture
-def app() -> Alicorn:
-    return Alicorn()
+def app() -> Nymph:
+    return Nymph()
 
 @pytest.fixture
 def client(app) -> httpx.AsyncClient:

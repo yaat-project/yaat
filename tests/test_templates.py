@@ -1,8 +1,8 @@
 import pytest
 import tempfile
 
-from alicorn import Alicorn
-from alicorn.templating import Jinja2Templates
+from nymph import Nymph
+from nymph.templating import Jinja2Templates
 
 
 @pytest.mark.asyncio

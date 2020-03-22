@@ -2,15 +2,15 @@ from urllib.parse import parse_qsl
 from enum import Enum
 import typing
 
-from .constants import ENCODING_METHOD
-from .datatypes import Form, Headers, UploadFile
-
 try:
     from multipart.multipart import parse_options_header
     import multipart
 except ImportError:  # pragma: nocover
     parse_options_header = None
     multipart = None
+
+from .constants import ENCODING_METHOD
+from .datatypes import Form, Headers, UploadFile
 
 
 class FormParser:

@@ -1,7 +1,7 @@
 import io
 import pytest
 
-from alicorn.datatypes import (
+from nymph.datatypes import (
     URL,
     Address,
     Headers,

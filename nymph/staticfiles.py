@@ -2,15 +2,15 @@ from email.utils import parsedate
 import os
 import typing
 
-from .exceptions import HttpException
-from .requests import Request
-from .responses import FileResponse, NotModifiedResponse, Response
-from .routing import Router, Route
-
 try:
     from aiofiles.os import stat as aio_stat
 except ImportError:
     aio_stat = None
+
+from .exceptions import HttpException
+from .requests import Request
+from .responses import FileResponse, NotModifiedResponse, Response
+from .routing import Router, Route
 
 
 class StaticFilesHandler:

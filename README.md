@@ -1,12 +1,12 @@
-<h1 align="center">Alicorn 🦄</h1>  
+<h1 align="center">Nymph 🦄</h1>  
 <p align="center">
-<img src="https://i.ya-webdesign.com/images/flying-unicorn-png-5.png" height="300" alt="Alicorn"/>
+<img src="https://i.ya-webdesign.com/images/flying-unicorn-png-5.png" height="300" alt="Nymph"/>
 </p>
 <p align="center"><i>lightweight ASGI framework</i> </p>
 
-## Alicorn
+## Nymph
 
-Alicorn is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
+Nymph is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
 This is not ready for production however you can try it out.
 
 **Features**  
@@ -23,7 +23,7 @@ Python 3.6+
 ## Setup
 
 ```bash
-pip3 install alicorn
+pip3 install nymph
 ```
 
 > or just clone this and use directly to get the latest development version.
@@ -38,10 +38,10 @@ pip3 install uvicorn
 
 **example.py**
 ```python
-from alicorn import Alicorn
-from alicorn.responses import PlainTextResponse
+from nymph import Nymph
+from nymph.responses import PlainTextResponse
 
-app = Alicorn()
+app = Nymph()
 
 @app.route("/")
 async def index(req):
@@ -55,7 +55,7 @@ Then run using uvicorn:
 uvicorn example:app
 ```
 
-> See <a href="https://github.com/the-robot/alicorn/wiki">Wiki</a> for documentation and complete examples
+> See <a href="https://github.com/the-robot/nymph/wiki">Wiki</a> for documentation and complete examples
 
 ## FYI
 

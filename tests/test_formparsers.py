@@ -1,7 +1,7 @@
 import pytest
 import tempfile
 
-from alicorn.responses import JSONResponse
+from nymph.responses import JSONResponse
 
 
 class ForceMultipart(dict):

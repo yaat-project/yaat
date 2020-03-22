@@ -1,7 +1,7 @@
 import pytest
 
-from alicorn import Alicorn
-from alicorn.responses import JSONResponse, PlainTextResponse
+from nymph import Nymph
+from nymph.responses import JSONResponse, PlainTextResponse
 
 
 @pytest.mark.asyncio

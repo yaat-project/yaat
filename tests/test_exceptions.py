@@ -1,7 +1,7 @@
 import pytest
 
-from alicorn.exceptions import HttpException
-from alicorn.responses import PlainTextResponse
+from nymph.exceptions import HttpException
+from nymph.responses import PlainTextResponse
 
 
 @pytest.mark.asyncio

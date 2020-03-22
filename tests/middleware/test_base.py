@@ -1,8 +1,8 @@
 import pytest
 
-from alicorn.middleware import BaseMiddleware
-from alicorn.responses import PlainTextResponse, Response
-from alicorn.requests import Request
+from nymph.middleware import BaseMiddleware
+from nymph.responses import PlainTextResponse, Response
+from nymph.requests import Request
 
 
 class CustomMiddleware(BaseMiddleware):

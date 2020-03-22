@@ -1,12 +1,12 @@
 from urllib.parse import unquote
 import pytest
 
-from alicorn import Alicorn
-from alicorn.responses import (
+from nymph import Nymph
+from nymph.responses import (
     JSONResponse,
     PlainTextResponse,
 )
-from alicorn.routing import Router
+from nymph.routing import Router
 
 
 @pytest.mark.asyncio

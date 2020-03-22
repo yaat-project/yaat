@@ -1,14 +1,11 @@
-import http.cookies
 from email.utils import formatdate
 from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
 import hashlib
+import http.cookies
 import json
 import os
 import typing
-
-from .constants import ENCODING_METHOD
-from .types import Scope, Receive, Send
 
 # Workaround for adding samesite support to pre 3.8 python
 http.cookies.Morsel._reserved["samesite"] = "SameSite"  # type: ignore
@@ -17,6 +14,9 @@ try:
     import aiofiles
 except ImportError:
     aiofiles = None
+
+from .constants import ENCODING_METHOD
+from .types import Scope, Receive, Send
 
 
 class Response:

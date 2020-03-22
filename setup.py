@@ -1,19 +1,21 @@
 from distutils.core import setup
 setup(
-  name = 'alicorn',
-  packages = ['alicorn'],
-  version = '0.1.1',
+  name = 'nymphs',
+  packages = ['nymphs'],
+  version = '0.1.2',
   license='MIT',
   description = 'Lightweight asynchronous web framework',
   author = 'Khant',
   author_email = 'contact@khant.dev',
-  url = 'https://github.com/the-robot/alicorn',
-  download_url = 'https://github.com/the-robot/alicorn/releases/download/v0.1.1/alicorn-0.1.1.tar.gz',
+  url = 'https://github.com/the-robot/nymphs',
+  download_url = 'https://github.com/the-robot/nymphs/releases/download/v0.1.1/nymphs-0.1.2.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
     "Jinja2",
-    "parse",
+    "aiofiles",
     "httpx",
+    "parse",
+    "python-multipart",
   ],
   classifiers=[
     'Development Status :: 3 - Alpha',
