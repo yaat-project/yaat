@@ -1,7 +1,4 @@
-<h1 align="center">Nymph 🦄</h1>  
-<p align="center">
-<img src="https://i.ya-webdesign.com/images/flying-unicorn-png-5.png" height="300" alt="Nymph"/>
-</p>
+<h1 align="center">Nymph 🧝‍♀️</h1>  
 <p align="center"><i>lightweight ASGI framework</i> </p>
 
 ## Nymph
