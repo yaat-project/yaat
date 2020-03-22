@@ -189,4 +189,3 @@ async def test_static_html(app, client, tmpdir):
 
     third_res = await client.get(f"/notfound.html")
     assert third_res.status_code == 404
-

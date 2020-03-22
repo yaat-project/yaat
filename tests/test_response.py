@@ -229,4 +229,3 @@ async def test_head_method(app, client):
     res = await client.head("/head")
 
     assert res.text == ""
-

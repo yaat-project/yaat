@@ -20,4 +20,3 @@ async def test_templates(app, client, tmpdir):
 
     res = await client.get("/")
     assert res.content == b"<html>Hello World</html>"
-

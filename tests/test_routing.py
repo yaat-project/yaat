@@ -211,4 +211,3 @@ async def test_list_paths(app, client):
 
     assert "/" in routes
     assert "/list" in routes
-

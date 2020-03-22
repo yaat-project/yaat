@@ -122,4 +122,3 @@ async def test_request_cookies(app, client):
 
     res = await client.get("/")
     assert res.text == COOKIE_VALUE
-
