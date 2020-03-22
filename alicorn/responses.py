@@ -213,7 +213,9 @@ class FileResponse(Response):
                 {
                     "type": "http.response.start",
                     "status": 404,
-                    "headers": self.get_raw_headers(headers={}),
+                    "headers": self.get_raw_headers(headers={
+                        "content-type": "text/plain"
+                    }),
                 }
             )
             await send(
