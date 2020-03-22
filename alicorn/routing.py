@@ -1,23 +1,14 @@
 from parse import parse
 import typing
 
+from .constants import HTTP_METHODS
+
 
 class Route:
-    HTTP_METHODS = [
-        "GET",
-        "HEAD",
-        "POST",
-        "PUT",
-        "DELETE",
-        "CONNECT",
-        "OPTIONS",
-        "TRACE",
-    ]
-
     def __init__(self, path: str, handler: callable, methods: list = None, is_static: bool = False):
         self.path = path
         self.handler = handler
-        self.methods = methods if methods else self.HTTP_METHODS
+        self.methods = methods if methods else HTTP_METHODS
         self.is_static = is_static  # check if it is static route
 
     @property
