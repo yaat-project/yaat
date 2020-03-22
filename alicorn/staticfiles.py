@@ -136,4 +136,3 @@ class StaticFiles:
     @property
     def routes(self) -> typing.List[Route]:
         return self.router.routes
-

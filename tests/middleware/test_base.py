@@ -25,4 +25,3 @@ async def test_plain_text_response(app, client):
     res = await client.get("/")
 
     assert res.text == "modified body"
-
