@@ -134,7 +134,7 @@ class MultiPartParser:
 
                 elif message_type == events.PART_END:
                     if file is None:
-                        items.append((field_name, _user_safe_decode(data, charset)))
+                        items.append((field_name, self.__user_safe_decode(data, charset)))
                     else:
                         await file.seek(0)
                         items.append((field_name, file))

@@ -89,10 +89,10 @@ class Alicorn:
 
     # NOTE: Session
     def session(self, base_url="http://testserver") -> httpx.AsyncClient:
-        if not hasattr(self, "__session"):
-            self.__session = httpx.AsyncClient(app=self, base_url="http://testserver")
+        if not hasattr(self, "_session"):
+            self._session = httpx.AsyncClient(app=self, base_url="http://testserver")
 
-        return self.__session
+        return self._session
 
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:

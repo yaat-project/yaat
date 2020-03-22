@@ -58,23 +58,23 @@ class URL:
 
     @property
     def host(self) -> str:
-        if not hasattr(self, "__host"):
+        if not hasattr(self, "_host"):
             self.__host = None
 
             if self.server:
                 host, port = self.server
-                self.__host = host
-        return self.__host
+                self._host = host
+        return self._host
 
     @property
     def port(self) -> int:
-        if not hasattr(self, "__port"):
-            self.__port = None
+        if not hasattr(self, "_port"):
+            self._port = None
 
             if self.server:
                 host, port = self.server
-                self.__port = int(port) if port else None
-        return self.__port
+                self._port = int(port) if port else None
+        return self._port
 
     @property
     def query(self) -> str:
