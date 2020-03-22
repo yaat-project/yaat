@@ -3,7 +3,7 @@ import inspect
 import typing
 
 from .exceptions import HttpException
-from .middleware import BaseMiddleware
+from .middleware import BaseMiddleware, ExceptionMiddleware
 from .requests import Request
 from .responses import Response, FileResponse
 from .routing import Router
@@ -16,6 +16,9 @@ class Alicorn:
         self.router = Router()
         self.middleware = BaseMiddleware(self)
         self.exception_handler = None
+
+        # register exception handling middleware
+        self.add_middleware(ExceptionMiddleware)
 
     # NOTE: properties
     @property

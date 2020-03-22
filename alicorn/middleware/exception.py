@@ -1,9 +1,22 @@
+import traceback
+
 from .base import BaseMiddleware
+
+from ..exceptions import HttpException
+from ..requests import Request
+from ..responses import Response
 
 
 class ExceptionMiddleware(BaseMiddleware):
-    async def process_request(self, request: Request):
-        print("Processing request", request.url)
+    async def handle_request(self, request: Request) -> Response:
+        await self.process_request(request)
 
-    async def process_response(self, response: Request):
-        print("Processing response", response.body)
+        try:
+            response = await self.app.handle_request(request)
+        except Exception as err:
+            # print traceback and send 500 Internal Server Error
+            traceback.print_tb(err.__traceback__)
+            response = HttpException(500).response        
+
+        await self.process_response(response)
+        return response
