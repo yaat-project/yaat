@@ -1,7 +1,7 @@
 import pytest
 
-from nymph.exceptions import HttpException
-from nymph.responses import PlainTextResponse
+from yaat.exceptions import HttpException
+from yaat.responses import PlainTextResponse
 
 
 @pytest.mark.asyncio

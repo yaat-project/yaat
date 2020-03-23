@@ -1,7 +1,7 @@
 import pytest
 import tempfile
 
-from nymph.responses import (
+from yaat.responses import (
     FileResponse,
     HTMLResponse,
     JSONResponse,

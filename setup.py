@@ -1,14 +1,14 @@
 from distutils.core import setup
 setup(
-  name = 'nymph',
-  packages = ['nymph', 'nymph.middleware'],
-  version = '0.1.5',
+  name = 'yaat',
+  packages = ['yaat', 'yaat.middleware'],
+  version = '0.1.0',
   license='LGPL',
-  description = 'Lightweight asynchronous web framework',
+  description = 'Yet another ASGI toolkit',
   author = 'Khant',
   author_email = 'contact@khant.dev',
-  url = 'https://github.com/nymph-project/nymph',
-  download_url = 'https://github.com/nymph-project/nymph/releases/download/v0.1.5/nymph-0.1.5.tar.gz',
+  url = 'https://github.com/yaat-project/yaat',
+  download_url = 'https://github.com/yaat-project/yaat/releases/download/v0.1.0/yaat-0.1.0.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
     "Jinja2",

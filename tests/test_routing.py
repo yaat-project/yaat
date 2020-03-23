@@ -1,12 +1,12 @@
 from urllib.parse import unquote
 import pytest
 
-from nymph import Nymph
-from nymph.responses import (
+from yaat import Yaat
+from yaat.responses import (
     JSONResponse,
     PlainTextResponse,
 )
-from nymph.routing import Router
+from yaat.routing import Router
 
 
 @pytest.mark.asyncio

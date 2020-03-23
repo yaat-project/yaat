@@ -1,12 +1,12 @@
 import httpx
 import pytest
 
-from nymph import Nymph
+from yaat import Yaat
 
 
 @pytest.fixture
-def app() -> Nymph:
-    return Nymph()
+def app() -> Yaat:
+    return Yaat()
 
 @pytest.fixture
 def client(app) -> httpx.AsyncClient:

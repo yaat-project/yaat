@@ -1,9 +1,9 @@
-<h1 align="center">Nymph 🧚</h1>  
+<h1 align="center">Yaat 🧚</h1>  
 <p align="center"><i>lightweight ASGI framework</i> </p>
 
-## Nymph
+## Yaat
 
-Nymph is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
+Yaat is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
 This is not ready for production however you can try it out.
 
 **Features**  
@@ -20,7 +20,7 @@ Python 3.6+
 ## Setup
 
 ```bash
-pip3 install nymph
+pip3 install yaat
 ```
 
 > or just clone this and use directly to get the latest development version.
@@ -35,10 +35,10 @@ pip3 install uvicorn
 
 **example.py**
 ```python
-from nymph import Nymph
-from nymph.responses import PlainTextResponse
+from yaat import Yaat
+from yaat.responses import PlainTextResponse
 
-app = Nymph()
+app = Yaat()
 
 @app.route("/")
 async def index(req):
@@ -52,7 +52,7 @@ Then run using uvicorn:
 uvicorn example:app
 ```
 
-> See <a href="https://github.com/the-robot/nymph/wiki">Wiki</a> for documentation and complete examples
+> See <a href="https://github.com/the-robot/yaat/wiki">Wiki</a> for documentation and complete examples
 
 ## FYI
 

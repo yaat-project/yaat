@@ -11,7 +11,7 @@ from .staticfiles import StaticFiles
 from .types import Scope, Receive, Send
 
 
-class Nymph:
+class Yaat:
     def __init__(self):
         self.router = Router()
         self.middleware = BaseMiddleware(self)

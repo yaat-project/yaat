@@ -1,7 +1,7 @@
 import pytest
 
-from nymph import Nymph
-from nymph.responses import JSONResponse, PlainTextResponse
+from yaat import Yaat
+from yaat.responses import JSONResponse, PlainTextResponse
 
 
 @pytest.mark.asyncio
