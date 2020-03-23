@@ -11,6 +11,8 @@ Yaat is a lightweight asynchronous web framework/toolkit. Learn more about <a hr
 - Cookie support
 - Template responses using <a href="https://jinja.palletsprojects.com/en/2.11.x/">Jinja2</a>
 - Static file responses
+- Static HTML serving
+- Test Client
 
 ## Requirements
 
