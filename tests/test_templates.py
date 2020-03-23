@@ -1,8 +1,8 @@
 import pytest
 import tempfile
 
-from nymph import Nymph
-from nymph.templating import Jinja2Templates
+from yaas import Yaas
+from yaas.templating import Jinja2Templates
 
 
 @pytest.mark.asyncio

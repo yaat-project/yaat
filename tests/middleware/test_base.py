@@ -1,8 +1,8 @@
 import pytest
 
-from nymph.middleware import BaseMiddleware
-from nymph.responses import PlainTextResponse, Response
-from nymph.requests import Request
+from yaas.middleware import BaseMiddleware
+from yaas.responses import PlainTextResponse, Response
+from yaas.requests import Request
 
 
 class CustomMiddleware(BaseMiddleware):

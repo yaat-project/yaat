@@ -1,7 +1,7 @@
 import io
 import pytest
 
-from nymph.datatypes import (
+from yaas.datatypes import (
     URL,
     Address,
     Headers,

@@ -1,14 +1,14 @@
 from distutils.core import setup
 setup(
-  name = 'nymph',
-  packages = ['nymph', 'nymph.middleware'],
+  name = 'yaas',
+  packages = ['yaas', 'yaas.middleware'],
   version = '0.1.5',
   license='LGPL',
   description = 'Lightweight asynchronous web framework',
   author = 'Khant',
   author_email = 'contact@khant.dev',
-  url = 'https://github.com/nymph-project/nymph',
-  download_url = 'https://github.com/nymph-project/nymph/releases/download/v0.1.5/nymph-0.1.5.tar.gz',
+  url = 'https://github.com/yaas-project/yaas',
+  download_url = 'https://github.com/yaas-project/yaas/releases/download/v0.1.5/yaas-0.1.5.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
     "Jinja2",
