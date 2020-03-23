@@ -1,4 +1,4 @@
-<h1 align="center">Nymph 🧝‍♀️</h1>  
+<h1 align="center">Nymph 🧚</h1>  
 <p align="center"><i>lightweight ASGI framework</i> </p>
 
 ## Nymph
