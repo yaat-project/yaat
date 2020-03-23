@@ -1,14 +1,14 @@
 from distutils.core import setup
 setup(
   name = 'nymph',
-  packages = ['nymph'],
-  version = '0.1.2',
+  packages = ['nymph', 'nymph.middleware'],
+  version = '0.1.5',
   license='LGPL',
   description = 'Lightweight asynchronous web framework',
   author = 'Khant',
   author_email = 'contact@khant.dev',
-  url = 'https://github.com/the-robot/nymph',
-  download_url = 'https://github.com/the-robot/nymph/releases/download/v0.1.2/nymph-0.1.2.tar.gz',
+  url = 'https://github.com/nymph-project/nymph',
+  download_url = 'https://github.com/nymph-project/nymph/releases/download/v0.1.5/nymph-0.1.5.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
     "Jinja2",
