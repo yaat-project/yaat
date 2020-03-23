@@ -1,10 +1,9 @@
-<h1 align="center">Yaat 🧚</h1>  
-<p align="center"><i>lightweight ASGI framework</i> </p>
+<h1 align="center">Yaat</h1>  
+<p align="center"><i>yet another ASGI toolkit</i> </p>
 
 ## Yaat
 
 Yaat is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
-This is not ready for production however you can try it out.
 
 **Features**  
 
@@ -56,11 +55,7 @@ uvicorn example:app
 
 ## FYI
 
-1. Can I use this for my projects?
-    - No. Not at this point because it is still under development and there are so many things left to be done/improved. Besides, there is no test coverage yet.
-    - You can see the list of things I planned to work in the near future at the bottom.
-
-2. Is this just another web framework?
+1. Is this just another web framework?
     - I started this to learn how a framework like <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a> actually works and I am also interested in ASGI, so I decided to build this in ASGI instead of WSGI. However, after I used <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a> and <a href="https://www.djangoproject.com" target="_blank">Django</a> for a long time, I found things that I love and hate from each. So when I started working on this, I made it to include good features that both of those have (I.e. `individual small applications` feature from Django).
 
 ## TODO
