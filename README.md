@@ -3,7 +3,7 @@
 
 ## Yaat
 
-Yaat is an asynchronous web framework (currently under development). Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
+Yaat is a lightweight asynchronous web framework/toolkit. Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
 
 **Features**  
 
