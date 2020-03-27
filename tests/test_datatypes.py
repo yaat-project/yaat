@@ -65,8 +65,8 @@ async def test_headers(app, client):
     assert "xyz" not in header
     assert header.get("content-type") == "application/json"
     assert header.get("api-token") == "secret"
-    assert header.get("location") == "localhost"
-    assert list(dict(header).keys()) == ["content-type", "api-token", "location"]
+    assert header["location"] == "localhost"
+    assert list(header.keys()) == ["content-type", "api-token", "location"]
     assert dict(header) == {
         "content-type": "application/json",
         "api-token": "secret",
@@ -82,9 +82,9 @@ async def test_queryparams(app, client):
     assert "y" not in query
     assert "z" not in query
     assert query.get("a") == ["123", "456"]
-    assert query.get("b") == "789"
+    assert query["b"] == "789"
     assert dict(query) == {"a": ["123", "456"], "b": "789", "c": ""}
-    assert list(dict(query).keys()) == ["a", "b", "c"]
+    assert list(query.keys()) == ["a", "b", "c"]
     assert str(query) == "a=123&a=456&b=789&c"
 
 
@@ -99,7 +99,7 @@ async def test_url_blank_params():
     assert "def" not in query
     assert len(query.get("abc")) == 0
     assert len(query.get("a")) == 3
-    assert list(dict(query).keys()) == ["a", "b", "abc", "xyz"]
+    assert list(query.keys()) == ["a", "b", "abc", "xyz"]
 
 
 @pytest.mark.asyncio
@@ -118,7 +118,7 @@ async def test_form(app, client):
     assert "hij" not in form
     assert form.get("abc") == ["123", "456"]
     assert form.get("def") == "789"
-    assert form.get("xyz") == upload
+    assert form["xyz"] == upload
     assert dict(form) == {
         "abc": ["123", "456"],
         "def": "789",
