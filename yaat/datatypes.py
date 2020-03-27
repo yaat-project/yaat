@@ -11,7 +11,7 @@ class DictMapper(dict):
     def __cmp__(self, dict_: dict):
         return self.__cmp__(self.__dict__, dict_)
 
-    def __contains__(self, item: any) -> bool:
+    def __contains__(self, item: typing.Any) -> bool:
         return item in self.__dict__
 
     def __delitem__(self, key: str):
@@ -29,7 +29,7 @@ class DictMapper(dict):
     def __repr__(self):
         return repr(self.__dict__)
 
-    def __setitem__(self, key: str, item: any):
+    def __setitem__(self, key: str, item: typing.Any):
         self.__dict__[key] = item
 
     def __unicode__(self):
@@ -41,7 +41,7 @@ class DictMapper(dict):
     def copy(self):
         return self.__dict__.copy()
 
-    def get(self, key: str, default: any = None):
+    def get(self, key: str, default: typing.Any = None):
         return self.__dict__.get(key, default)
 
     def has_key(self, k: str):
