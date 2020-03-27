@@ -11,7 +11,7 @@ class DictMapper(dict):
     def __cmp__(self, dict_: dict):
         return self.__cmp__(self.__dict__, dict_)
 
-    def __contains__(self, item):
+    def __contains__(self, item: any) -> bool:
         return item in self.__dict__
 
     def __delitem__(self, key: str):
@@ -225,80 +225,33 @@ class Address:
 
 class Headers(DictMapper):
     def __init__(self, raw_headers: typing.List[typing.Tuple[bytes, bytes]]):
-        self.raw = raw_headers
-        self.__init_headers()
-
-    @property
-    def raw(self) -> typing.List[typing.Tuple[bytes, bytes]]:
-        return self.__raw_headers
-
-    @raw.setter
-    def raw(self, raw_headers: typing.List[typing.Tuple[bytes, bytes]]):
-        self.__raw_headers = raw_headers
-
-    def __init_headers(self):
-        self.__dict__ = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in self.raw}
+        self.__dict__ = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in raw_headers}
 
 
-class QueryParams:
+class QueryParams(DictMapper):
     def __init__(self, raw_query: bytes):
-        self.__raw_query = raw_query
-        self.__init_query()
-
-    @property
-    def raw(self) -> bytes:
-        return self.__raw_query
-
-    def __init_query(self):
         try:
-            query = self.raw.decode(ENCODING_METHOD)
+            query_str = raw_query.decode(ENCODING_METHOD)
         except (AttributeError, UnicodeDecodeError):
-            query = self.raw
-
-        self.__query = self.__format_to_dict(parse_qsl(query, keep_blank_values=True))
-
-    def __format_to_dict(self, query_list: list):
-        query = {}
+            query_str = raw_query
+        # parse the query string
+        query_list = parse_qsl(query_str, keep_blank_values=True)
 
         for qs in query_list:
             key = qs[0]
             value = qs[1]
 
-            if not key in query:
-                query[key] = value
+            if not key in self.__dict__:
+                self.__dict__[key] = value
                 continue
 
             # if key exists, store multiple values in list
-            values = query[key]
+            values = self.__dict__[key]
             # convert to list if not a list already
             if type(values) != list:
                 values = [values]
             values.append(value)
-            query[key] = values
-
-        return query
-
-    def items(self) -> dict:
-        return self.__query.items()
-
-    def get(self, key: str, default: typing.Any = None) -> str:
-        try:
-            return self.__query[key]
-        except KeyError:
-            return default
-
-    def __contains__(self, key: typing.Any) -> bool:
-        return key in self.__query
-
-    def __getitems__(self, key: typing.Any) -> str:
-        return self.__query[key]
-
-    def __iter__(self) -> typing.Iterator[typing.Any]:
-        for key, value in self.items():
-            yield key, value
-
-    def __len__(self) -> int:
-        return len(self.__query)
+            self.__dict__[key] = values
 
     def __str__(self) -> str:
         query_string = None
@@ -320,57 +273,26 @@ class QueryParams:
         return query_string
 
 
-class Form:
+class Form(DictMapper):
     def __init__(self, form_data: typing.List[typing.Tuple[str, str]] = None):
-        self.raw = form_data if form_data else []
+        if not form_data:
+            form_data = []
 
-    @property
-    def raw(self):
-        return self.__raw
-
-    @raw.setter
-    def raw(self, form_data: typing.List[typing.Tuple[str, str]]) -> typing.List:
-        self.__raw = form_data
-        self.__init_data()
-
-    def __init_data(self):
-        data = {}
-        for item in self.raw:
+        for item in form_data:
             key = item[0]
             value = item[1]
 
-            if not key in data:
-                data[key] = value
+            if not key in self.__dict__:
+                self.__dict__[key] = value
                 continue
 
              # if key exists, store multiple values in list
-            values = data[key]
+            values = self.__dict__[key]
             # convert to list if not a list already
             if type(values) != list:
                 values = [values]
             values.append(value)
-            data[key] = values
-
-        self.__data = data
-
-    def items(self) -> typing.Dict:
-        return self.__data.items()
-
-    def get(self, key: str, default: typing.Any = None) -> typing.Any:
-        return self.__data.get(key, default)
-
-    def __contains__(self, key: typing.Any) -> bool:
-        return key in self.__data
-
-    def __getitems__(self, key: typing.Any) -> str:
-        return self.__data[key]
-
-    def __iter__(self) -> typing.Iterator[typing.Any]:
-        for key, value in self.items():
-            yield key, value
-
-    def __len__(self) -> int:
-        return len(self.__data)
+            self.__dict__[key] = values
 
 
 class UploadFile:
