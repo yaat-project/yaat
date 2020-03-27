@@ -15,6 +15,7 @@ try:
 except ImportError:
     aiofiles = None
 
+from .background import BackgroundTask
 from .constants import ENCODING_METHOD
 from .types import Scope, Receive, Send
 
@@ -271,3 +272,15 @@ class NotModifiedResponse(Response):
             if name in self.NOT_MODIFIED_HEADERS
         }
         super().__init__(status_code=304, headers=headers)
+
+
+class BackgroundResponse:
+    """ Use to return response and run background task(s) after """
+
+    def __init__(self, response: Response, background: BackgroundTask):
+        self.response = response
+        self.background = background
+
+    async def __call__(self, send: Send):
+        await self.response(send)
+        await self.background()
