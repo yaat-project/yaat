@@ -65,8 +65,8 @@ async def test_headers(app, client):
     assert "xyz" not in header
     assert header.get("content-type") == "application/json"
     assert header.get("api-token") == "secret"
-    assert header.get("location") == "localhost"
-    assert list(dict(header).keys()) == ["content-type", "api-token", "location"]
+    assert header["location"] == "localhost"
+    assert list(header.keys()) == ["content-type", "api-token", "location"]
     assert dict(header) == {
         "content-type": "application/json",
         "api-token": "secret",
