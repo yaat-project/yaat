@@ -298,21 +298,21 @@ class Form(DictMapper):
 class UploadFile:
     SPOOL_MAX_SIZE = 1024 * 1024
 
-    def __init__(self, name: str, file: typing.IO = None, content_type: str = "") -> None:
+    def __init__(self, name: str, file: typing.IO = None, content_type: str = ""):
         self.name = name
         self.content_type = content_type
         if file is None:
             file = tempfile.SpooledTemporaryFile(max_size=self.SPOOL_MAX_SIZE)
         self.file = file
 
-    async def write(self, data: typing.Union[bytes, str]) -> None:
+    async def write(self, data: typing.Union[bytes, str]):
         await run_in_threadpool(self.file.write, data)
 
     async def read(self, size: int = None) -> typing.Union[bytes, str]:
         return await run_in_threadpool(self.file.read, size)
 
-    async def seek(self, offset: int) -> None:
+    async def seek(self, offset: int):
         await run_in_threadpool(self.file.seek, offset)
 
-    async def close(self) -> None:
+    async def close(self):
         await run_in_threadpool(self.file.close)

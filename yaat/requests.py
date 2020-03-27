@@ -18,7 +18,7 @@ async def empty_receive() -> Message:
 
 
 class HttpConnection:
-    def __init__(self, scope: Scope) -> None:
+    def __init__(self, scope: Scope):
         assert scope["type"] in ("http", "websocket")
         self.scope = scope
 

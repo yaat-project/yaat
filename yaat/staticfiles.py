@@ -124,7 +124,7 @@ class StaticFiles:
         return self.__path
 
     @path.setter
-    def path(self, path: str) -> None:
+    def path(self, path: str):
         # clean static directory path
         if path.endswith("/"):
             path = path[:-1]

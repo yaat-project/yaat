@@ -24,7 +24,7 @@ class BaseMiddleware:
         await self.process_response(response)
         return response
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
         request = Request(scope, receive)
         response = await self.handle_request(request)
         await response(send)

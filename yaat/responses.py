@@ -29,7 +29,7 @@ class Response:
         status_code: int = 200,
         headers: dict = None,
         media_type: str = None,
-    ) -> None:
+    ):
         self.status_code = status_code
         if media_type is not None:
             self.media_type = media_type
@@ -85,7 +85,7 @@ class Response:
         secure: bool = False,
         httponly: bool = False,
         samesite: str = "lax",
-    ) -> None:
+    ):
         cookie: http.cookies.BaseCookie = http.cookies.SimpleCookie()
         cookie[key] = value
         if max_age is not None:
@@ -112,10 +112,10 @@ class Response:
 
         self.headers["set-cookie"] = cookie.output(header="").strip()
 
-    def delete_cookie(self, key: str, path: str = "/",domain: str = None) -> None:
+    def delete_cookie(self, key: str, path: str = "/",domain: str = None):
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
-    async def __call__(self, send: Send) -> None:
+    async def __call__(self, send: Send):
         await send({
             "type": "http.response.start",
             "status": self.status_code,
@@ -149,7 +149,7 @@ class JSONResponse(Response):
 
 
 class RedirectResponse(Response):
-    def __init__(self, url: str, status_code: int = 307, headers: dict={}) -> None:
+    def __init__(self, url: str, status_code: int = 307, headers: dict={}):
         headers["location"] = quote_plus(str(url), safe=":/%#?&=@[]!$&'()*+,;")
         super().__init__(content=b"", status_code=status_code, headers=headers)
 
@@ -166,7 +166,7 @@ class FileResponse(Response):
         media_type: str = None,
         stat_result: os.stat_result = None,
         method: str = None,
-    ) -> None:
+    ):
         assert aiofiles is not None, "'aiofiles' must be installed to use FileResponse"
 
         self.path = path
@@ -194,7 +194,7 @@ class FileResponse(Response):
             self.set_stat_headers(stat_result)
 
 
-    def set_stat_headers(self, stat_result: os.stat_result) -> None:
+    def set_stat_headers(self, stat_result: os.stat_result):
         content_length = str(stat_result.st_size)
         last_modified = formatdate(stat_result.st_mtime, usegmt=True)
         etag_base = str(stat_result.st_mtime) + "-" + str(stat_result.st_size)
@@ -205,7 +205,7 @@ class FileResponse(Response):
         self.headers["etag"] = etag
 
 
-    async def __call__(self, send: Send) -> None:
+    async def __call__(self, send: Send):
         # Send 404 if file does not exists
         if not os.path.exists(self.path):
             # clear custom headers

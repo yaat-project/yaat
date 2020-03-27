@@ -23,7 +23,7 @@ class Jinja2Templates(BaseTemplates):
         return self.__directory
 
     @directory.setter
-    def directory(self, directory: str) -> None:
+    def directory(self, directory: str):
         abspath = os.path.abspath(directory)
 
         # if path not exists, raise error
