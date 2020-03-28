@@ -11,7 +11,7 @@ class DictMapper(dict):
     def __cmp__(self, dict_: dict):
         return self.__cmp__(self.__dict__, dict_)
 
-    def __contains__(self, item: any) -> bool:
+    def __contains__(self, item: typing.Any) -> bool:
         return item in self.__dict__
 
     def __delitem__(self, key: str):
@@ -29,7 +29,7 @@ class DictMapper(dict):
     def __repr__(self):
         return repr(self.__dict__)
 
-    def __setitem__(self, key: str, item: any):
+    def __setitem__(self, key: str, item: typing.Any):
         self.__dict__[key] = item
 
     def __unicode__(self):
@@ -41,7 +41,7 @@ class DictMapper(dict):
     def copy(self):
         return self.__dict__.copy()
 
-    def get(self, key: str, default: any = None):
+    def get(self, key: str, default: typing.Any = None):
         return self.__dict__.get(key, default)
 
     def has_key(self, k: str):
@@ -298,21 +298,21 @@ class Form(DictMapper):
 class UploadFile:
     SPOOL_MAX_SIZE = 1024 * 1024
 
-    def __init__(self, name: str, file: typing.IO = None, content_type: str = "") -> None:
+    def __init__(self, name: str, file: typing.IO = None, content_type: str = ""):
         self.name = name
         self.content_type = content_type
         if file is None:
             file = tempfile.SpooledTemporaryFile(max_size=self.SPOOL_MAX_SIZE)
         self.file = file
 
-    async def write(self, data: typing.Union[bytes, str]) -> None:
+    async def write(self, data: typing.Union[bytes, str]):
         await run_in_threadpool(self.file.write, data)
 
     async def read(self, size: int = None) -> typing.Union[bytes, str]:
         return await run_in_threadpool(self.file.read, size)
 
-    async def seek(self, offset: int) -> None:
+    async def seek(self, offset: int):
         await run_in_threadpool(self.file.seek, offset)
 
-    async def close(self) -> None:
+    async def close(self):
         await run_in_threadpool(self.file.close)

@@ -26,12 +26,12 @@ class Yaat:
         return self.__exception_handler
 
     @exception_handler.setter
-    def exception_handler(self, exception: callable) -> None:
+    def exception_handler(self, exception: callable):
         self.__exception_handler = exception
 
 
     # NOTE: Routing
-    def add_route(self, path: str, handler: callable, methods: list = None) -> None:
+    def add_route(self, path: str, handler: callable, methods: list = None):
         self.router.add_route(path, handler, methods)
 
     def route(self, path: str, methods: list = None) -> callable:
@@ -41,7 +41,7 @@ class Yaat:
 
         return wrapper
 
-    def mount(self, router: Router, prefix: str = None) -> None:
+    def mount(self, router: Router, prefix: str = None):
         # check if its static route
         is_static = isinstance(router, StaticFiles)
 
@@ -86,7 +86,7 @@ class Yaat:
 
 
     # NOTE: Middleware
-    def add_middleware(self, middleware_cls: BaseMiddleware) -> None:
+    def add_middleware(self, middleware_cls: BaseMiddleware):
         self.middleware.add(middleware_cls)
 
 
@@ -98,5 +98,5 @@ class Yaat:
         return self._session
 
 
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
         await self.middleware(scope, receive, send)

@@ -16,7 +16,7 @@ class Route:
         return self.__path
 
     @path.setter
-    def path(self, path: str) -> None:
+    def path(self, path: str):
         self.__path = path
 
     @property
@@ -24,7 +24,7 @@ class Route:
         return self.__handler
 
     @handler.setter
-    def handler(self, handler: callable) -> None:
+    def handler(self, handler: callable):
         self.__handler = handler
 
     @property
@@ -32,7 +32,7 @@ class Route:
         return self.__methods
 
     @methods.setter
-    def methods(self, methods: list) -> None:
+    def methods(self, methods: list):
         # make sure all HTTP methods are upper
         self.__methods = [method.upper() for method in methods]
 
@@ -59,7 +59,7 @@ class Router:
             paths.add(route.path)
         return list(paths)
 
-    def add_route(self, path: str, handler: callable, methods: list = None, is_static: bool = False) -> None:
+    def add_route(self, path: str, handler: callable, methods: list = None, is_static: bool = False):
         assert path not in self.paths, f"Route {path}, already exists"
         self.routes.append(
             Route(path=path, handler=handler, methods=methods, is_static=is_static)
@@ -72,7 +72,7 @@ class Router:
 
         return wrapper
 
-    def mount(self, router: callable, prefix: str = None, is_static: bool = False) -> None:
+    def mount(self, router: callable, prefix: str = None, is_static: bool = False):
         """Mount another router"""
         routes = router.routes
 

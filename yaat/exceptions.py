@@ -4,7 +4,7 @@ from .responses import PlainTextResponse
 
 
 class HttpException(Exception):
-    def __init__(self, status_code: int, details: str = None) -> None:
+    def __init__(self, status_code: int, details: str = None):
         if details is None:
             details = http.HTTPStatus(status_code).phrase
         self.status_code = status_code
