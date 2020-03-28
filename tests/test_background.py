@@ -113,4 +113,3 @@ async def test_multiple_both_async_sync_tasks(app, client):
     res = await client.get("/")
     assert TASK1_COMPLETE == True
     assert TASK2_COMPLETE == True
-
