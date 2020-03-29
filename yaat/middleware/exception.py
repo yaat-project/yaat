@@ -1,7 +1,7 @@
 import traceback
 
 from .base import BaseMiddleware
-from ..exceptions import HttpException
+from ..exceptions import HTTPException
 from ..requests import Request
 from ..responses import Response
 
@@ -15,7 +15,7 @@ class ExceptionMiddleware(BaseMiddleware):
         except Exception as err:
             # print traceback and send 500 Internal Server Error
             traceback.print_exc()
-            response = HttpException(500).response        
+            response = HTTPException(500).response        
 
         await self.process_response(response)
         return response

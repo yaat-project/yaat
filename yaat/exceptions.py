@@ -3,7 +3,7 @@ import http
 from .responses import PlainTextResponse
 
 
-class HttpException(Exception):
+class HTTPException(Exception):
     def __init__(self, status_code: int, details: str = None):
         if details is None:
             details = http.HTTPStatus(status_code).phrase
@@ -24,3 +24,8 @@ class HttpException(Exception):
     def __str__(self) -> str:
         class_name = self.__class__.__name__
         return f"{class_name}(status_code={self.status_code!r}, detail={self.details!r})"
+
+
+class WebSocketDisconnectException(Exception):
+    def __init__(self, code: int = 1000):
+        self.code = code
