@@ -14,6 +14,7 @@ Yaat is a lightweight asynchronous web framework/toolkit. Learn more about <a hr
 - Static HTML serving
 - Test Client
 - Background Task Runner
+- WebSocket
 
 ## Requirements
 
