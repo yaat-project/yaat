@@ -1,16 +1,12 @@
+from multipart.multipart import parse_options_header
 from urllib.parse import parse_qsl
 from enum import Enum
+import multipart
 import typing
 
-try:
-    from multipart.multipart import parse_options_header
-    import multipart
-except ImportError:  # pragma: nocover
-    parse_options_header = None
-    multipart = None
 
-from .constants import ENCODING_METHOD
-from .datatypes import Form, Headers, UploadFile
+from yaat.constants import ENCODING_METHOD
+from yaat.datatypes import Form, Headers, UploadFile
 
 
 class FormParser:
@@ -81,7 +77,8 @@ class MultiPartParser:
         file = None
 
         items = (
-            []  # type: typing.List[typing.Tuple[str, typing.Union[str, UploadFile]]]
+            # typing.List[typing.Tuple[str, typing.Union[str, UploadFile]]]
+            []
         )
 
         # Data from the request

@@ -2,9 +2,9 @@ from urllib.parse import parse_qsl, urlparse
 import tempfile
 import typing
 
-from .constants import ENCODING_METHOD
-from .concurrency import run_in_threadpool
-from .types import Scope
+from yaat.constants import ENCODING_METHOD
+from yaat.concurrency import run_in_threadpool
+from yaat.types import Scope
 
 
 class DictMapper(dict):

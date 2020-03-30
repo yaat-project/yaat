@@ -1,16 +1,12 @@
+from multipart.multipart import parse_options_header
 import http.cookies
 import json
 import typing
 
-try:
-    from multipart.multipart import parse_options_header
-except ImportError:
-    parse_options_header = None
-
-from .constants import ENCODING_METHOD
-from .datatypes import Address, Form, Headers, QueryParams, URL
-from .formparsers import FormParser, MultiPartParser
-from .types import Scope, Receive, Send, Message
+from yaat.constants import ENCODING_METHOD
+from yaat.datatypes import Address, Form, Headers, QueryParams, URL
+from yaat.formparsers import FormParser, MultiPartParser
+from yaat.types import Scope, Receive, Send, Message
 
 
 async def empty_receive() -> Message:
@@ -62,11 +58,6 @@ class HTTPConnection:
         return self._query_params
 
     @property
-    def session(self) -> dict:
-        # TODO: implement after Session Middleware
-        return None
-
-    @property
     def cookies(self) -> typing.Dict[str, str]:
         if not hasattr(self, "_cookies"):
             cookies = {}
@@ -87,16 +78,6 @@ class HTTPConnection:
     def client(self) -> Address:
         host, port = self.scope.get("client") or (None, None)
         return Address(host, port) if host else None
-
-    @property
-    async def auth(self) -> typing.Any:
-        # TODO: implement after Authentication Middleware
-        pass
-
-    @property
-    async def user(self) -> typing.Any:
-        # TODO: implement after Authentication Middleware
-        pass
 
 
 class Request(HTTPConnection):
@@ -153,10 +134,6 @@ class Request(HTTPConnection):
 
     async def form(self) -> dict:
         if not hasattr(self, "_form"):
-            assert (
-                parse_options_header is not None
-            ), "'python-multipart' must be installed to use form."
-
             content_type, options = parse_options_header(self.headers.get("content-type"))
 
             if content_type == b"multipart/form-data":

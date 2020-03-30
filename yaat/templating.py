@@ -1,7 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 import os
 
-from .responses import HTMLResponse
+from yaat.responses import HTMLResponse
 
 
 class BaseTemplates:

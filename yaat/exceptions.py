@@ -1,6 +1,6 @@
 import http
 
-from .responses import PlainTextResponse
+from yaat.responses import PlainTextResponse
 
 
 class HTTPException(Exception):

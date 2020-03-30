@@ -1,7 +1,7 @@
 from parse import parse
 import typing
 
-from .constants import HTTP_METHODS
+from yaat.constants import HTTP_METHODS
 
 
 class Route:

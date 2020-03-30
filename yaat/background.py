@@ -1,7 +1,7 @@
 import asyncio
 import typing
 
-from .concurrency import run_in_threadpool
+from yaat.concurrency import run_in_threadpool
 
 
 class BackgroundTask:
@@ -18,6 +18,11 @@ class BackgroundTask:
 
 
 class BackgroundTasks:
+    """
+    to group individual background tasks and run multiple
+    background tasks in single call
+    """
+
     def __init__(self):
         self.tasks = []
 

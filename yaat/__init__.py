@@ -1,1 +1,1 @@
-from .app import Yaat
+from yaat.app import Yaat

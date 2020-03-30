@@ -1,9 +1,9 @@
 import typing
 
-from ..requests import Request
-from ..responses import Response
-from ..types import ASGIApp, Scope, Receive, Send
-from ..websockets import WebSocket
+from yaat.requests import Request
+from yaat.responses import Response
+from yaat.types import ASGIApp, Scope, Receive, Send
+from yaat.websockets import WebSocket
 
 
 class BaseMiddleware:
