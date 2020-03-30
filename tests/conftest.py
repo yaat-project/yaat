@@ -34,10 +34,31 @@ def ws_background_server() -> typing.AsyncGenerator:
     app = Yaat()
 
     # Endpoints
-    @app.websocket_route("/")
+    @app.websocket_route("/hello")
     async def handler(websocket: WebSocket):
         await websocket.accept()
         await websocket.send_text("Hello")
+        await websocket.close()
+
+    @app.websocket_route("/text")
+    async def handler(websocket: WebSocket):
+        await websocket.accept()
+        data = await websocket.receive_text()
+        await websocket.send_text(f"You sent me '{data}'")
+        await websocket.close()
+
+    @app.websocket_route("/json")
+    async def handler(websocket: WebSocket):
+        await websocket.accept()
+        data = await websocket.receive_json()
+        await websocket.send_json(data)
+        await websocket.close()
+
+    @app.websocket_route("/bytes")
+    async def handler(websocket: WebSocket):
+        await websocket.accept("binary")
+        data = await websocket.receive_bytes()
+        await websocket.send_bytes(data)
         await websocket.close()
 
 
