@@ -1,6 +1,3 @@
-import enum
-
-
 ENCODING_METHOD = "latin-1"
 
 HTTP_METHODS = [
@@ -26,7 +23,7 @@ class WebSocketMessages:
     CLOSE = "websocket.close"
 
 
-class WebSocketCloseEvent(enum.Enum):
+class WebSocketCloseEvent:
     # https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
 
     NORMAL_CLOSURE = 1000
