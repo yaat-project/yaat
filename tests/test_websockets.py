@@ -2,9 +2,6 @@ import json
 import pytest
 import websocket
 
-from yaat.responses import HTMLResponse
-from yaat.websockets import WebSocket, WebSocketDisconnect
-
 
 @pytest.mark.asyncio
 async def test_websocket_url(ws_uri):
