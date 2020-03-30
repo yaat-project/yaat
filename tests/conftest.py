@@ -10,7 +10,7 @@ from yaat.websockets import WebSocket, WebSocketDisconnect
 
 # CONSTANTS
 WS_TEST_SERVER_HOST = 'localhost'
-WS_TEST_SERVER_PORT = 13370
+WS_TEST_SERVER_PORT = 41864
 
 
 @pytest.fixture
