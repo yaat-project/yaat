@@ -1,5 +1,6 @@
 import httpx
 import pytest
+import websocket
 
 from yaat import Yaat
 
