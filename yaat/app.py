@@ -123,11 +123,11 @@ class Yaat:
 
 
     # NOTE: Test Client
-    def test_client(self, base_url="http://testserver") -> httpx.AsyncClient:
-        if not hasattr(self, "_session"):
-            self._session = httpx.AsyncClient(app=self, base_url="http://testserver")
+    def test_client(self, base_url: str = "http://testserver") -> httpx.AsyncClient:
+        if not hasattr(self, "_test_client"):
+            self._test_client = httpx.AsyncClient(app=self, base_url=base_url)
 
-        return self._session
+        return self._test_client
 
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
