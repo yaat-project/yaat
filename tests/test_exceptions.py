@@ -1,6 +1,6 @@
 import pytest
 
-from yaat.exceptions import HttpException
+from yaat.exceptions import HTTPException
 from yaat.responses import PlainTextResponse
 
 
@@ -8,7 +8,7 @@ from yaat.responses import PlainTextResponse
 async def test_not_acceptable(app, client):
     @app.route("/")
     async def handler(request):
-        raise HttpException(status_code=406)
+        raise HTTPException(status_code=406)
 
     res = await client.get("/")
     assert res.status_code == 406
@@ -18,7 +18,7 @@ async def test_not_acceptable(app, client):
 async def test_not_found(app, client):
     @app.route("/")
     async def handler(request):
-        raise HttpException(status_code=404)
+        raise HTTPException(status_code=404)
 
     res = await client.get("/")
     assert res.status_code == 404
@@ -28,7 +28,7 @@ async def test_not_found(app, client):
 async def test_method_not_allow(app, client):
     @app.route("/")
     async def handler(request):
-        raise HttpException(status_code=405)
+        raise HTTPException(status_code=405)
 
     res = await client.get("/")
     assert res.status_code == 405
@@ -38,7 +38,7 @@ async def test_method_not_allow(app, client):
 async def test_not_modified(app, client):
     @app.route("/")
     async def handler(request):
-        raise HttpException(status_code=304)
+        raise HTTPException(status_code=304)
 
     res = await client.get("/")
     assert res.status_code == 304

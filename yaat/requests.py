@@ -17,7 +17,7 @@ async def empty_receive() -> Message:
     raise RuntimeError("Receive channel has not been made available")
 
 
-class HttpConnection:
+class HTTPConnection:
     def __init__(self, scope: Scope):
         assert scope["type"] in ("http", "websocket")
         self.scope = scope
@@ -99,7 +99,7 @@ class HttpConnection:
         pass
 
 
-class Request(HttpConnection):
+class Request(HTTPConnection):
     def __init__(
         self,
         scope: Scope,
@@ -107,6 +107,7 @@ class Request(HttpConnection):
     ):
         super().__init__(scope)
         self.receive = receive
+        assert scope["type"] == "http"
 
     @property
     def receive(self) -> Receive:

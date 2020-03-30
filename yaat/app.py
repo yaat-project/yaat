@@ -2,23 +2,25 @@ import httpx
 import inspect
 import typing
 
-from .exceptions import HttpException
+from .exceptions import HTTPException
 from .middleware import BaseMiddleware, ExceptionMiddleware
 from .requests import Request
 from .responses import Response, FileResponse
 from .routing import Router
 from .staticfiles import StaticFiles
 from .types import Scope, Receive, Send
+from .websockets import WebSocket
 
 
 class Yaat:
-    def __init__(self):
+    def __init__(self, middlewares: typing.Sequence[BaseMiddleware] = None):
         self.router = Router()
         self.middleware = BaseMiddleware(self)
         self.exception_handler = None
 
-        # register exception handling middleware
-        self.add_middleware(ExceptionMiddleware)
+        # NOTE: middleware registration
+        self.__register_middlewares(middlewares)
+
 
     # NOTE: properties
     @property
@@ -31,71 +33,101 @@ class Yaat:
 
 
     # NOTE: Routing
-    def add_route(self, path: str, handler: callable, methods: list = None):
-        self.router.add_route(path, handler, methods)
-
     def route(self, path: str, methods: list = None) -> callable:
         def wrapper(handler):
             self.add_route(path, handler, methods)
             return handler
-
         return wrapper
 
-    def mount(self, router: Router, prefix: str = None):
-        # check if its static route
-        is_static = isinstance(router, StaticFiles)
+    def add_route(self, path: str, handler: callable, methods: list = None):
+        self.router.add_route(path=path, handler=handler, methods=methods)
 
-        if prefix and is_static:
+    def websocket_route(self, path: str) -> callable:
+        def wrapper(handler):
+            self.add_websocket_route(path, handler)
+            return handler
+        return wrapper 
+
+    def add_websocket_route(self, path: str, handler: callable):
+        self.router.add_websocket_route(path=path, handler=handler)
+
+    def mount(self, router: Router, prefix: str = None, websocket: bool = False):
+        # check if its static route
+        static = isinstance(router, StaticFiles)
+
+        if prefix and static:
             # NOTE: because 'prefix' is already defined in static route
             raise ValueError("'prefix' must be None when mounting static routes.")
+        if websocket and static:
+            raise ValueError("'websocket' must be None when mounting static routes.")
 
         self.router.mount(
             router=router,
             prefix=prefix,
-            is_static=is_static,
+            static=static,
+            websocket=websocket,
         )
 
 
-    # NOTE: Handle Request
+    # NOTE: Handle HTTP Request
     async def handle_request(self, request: Request) -> Response:
-        route, kwargs = self.router.get_route(request_path=request.path, method=request.method)
+        route, kwargs = self.router.get_route(request_path=request.path)
 
         try:
-            if route and route.handler is not None:
+            # check if route exists and it is not websocket route
+            if route and route.handler is not None and not route.is_websocket:
                 handler = route.handler
 
                 if inspect.isclass(handler):
                     handler = getattr(handler(), request.method.lower(), None)
                     if handler is None:
-                        raise HttpException(405)
+                        raise HTTPException(405)
                 if not route.is_valid_method(request.method):
-                    raise HttpException(405)
+                    raise HTTPException(405)
 
                 response = await handler(request, **kwargs)
             else:
-                # default response when path not found
-                raise HttpException(404)
+                raise HTTPException(404)
         except Exception as e:
             if self.exception_handler is not None:
                 response = self.exception_handler(request, e)
-            elif isinstance(e, HttpException) or isinstance(e, HttpException):
+            elif isinstance(e, HTTPException) or isinstance(e, HTTPException):
                 response = e.response
             else:
                 raise e
         return response
 
 
+    # NOTE: Handle Websocket
+    async def handle_websocket(self, websocket: WebSocket):
+        route, _ = self.router.get_route(request_path=websocket.path)
+
+        if route and route.handler is not None:
+            handler = route.handler
+            await handler(websocket)
+
+
     # NOTE: Middleware
     def add_middleware(self, middleware_cls: BaseMiddleware):
         self.middleware.add(middleware_cls)
 
+    def __register_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
+        # register exception handling middleware
+        self.add_middleware(ExceptionMiddleware)
+
+        # register user defined middlewares
+        if not middlewares:
+            middlewares = []
+        for middleware in middlewares:
+            self.add_middleware(middleware)
+
 
     # NOTE: Test Client
-    def test_client(self, base_url="http://testserver") -> httpx.AsyncClient:
-        if not hasattr(self, "_session"):
-            self._session = httpx.AsyncClient(app=self, base_url="http://testserver")
+    def test_client(self, base_url: str = "http://testserver") -> httpx.AsyncClient:
+        if not hasattr(self, "_test_client"):
+            self._test_client = httpx.AsyncClient(app=self, base_url=base_url)
 
-        return self._session
+        return self._test_client
 
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):

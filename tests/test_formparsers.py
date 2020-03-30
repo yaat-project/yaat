@@ -4,11 +4,11 @@ import tempfile
 from yaat.responses import JSONResponse
 
 
-class ForceMultipart(dict):
+class ForceMultipartRequest(dict):
     def __bol__(self):
         return True
 
-FORCE_MULTIPART = ForceMultipart()
+FORCE_MULTIPART_REQ = ForceMultipartRequest()
 
 
 @pytest.mark.asyncio
@@ -32,7 +32,7 @@ async def test_data(app, client):
         response_data = dict(form)
         return JSONResponse(response_data)
 
-    res = await client.post("/", data={"abc": "123"}, files=FORCE_MULTIPART)
+    res = await client.post("/", data={"abc": "123"}, files=FORCE_MULTIPART_REQ)
     assert res.json() == {"abc": "123"}
 
 
@@ -382,7 +382,7 @@ async def test_multipart_multi_field_reads_body(app, client, tmpdir):
     res = await client.post("/", data={
         "abc": "hello mars!",
         "hello world": "hi!",
-    }, files=FORCE_MULTIPART)
+    }, files=FORCE_MULTIPART_REQ)
     assert res.json() == {
         "abc": "hello mars!",
         "hello world": "hi!",

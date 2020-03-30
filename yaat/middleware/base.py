@@ -3,6 +3,7 @@ import typing
 from ..requests import Request
 from ..responses import Response
 from ..types import ASGIApp, Scope, Receive, Send
+from ..websockets import WebSocket
 
 
 class BaseMiddleware:
@@ -24,7 +25,16 @@ class BaseMiddleware:
         await self.process_response(response)
         return response
 
+    async def handle_websocket(self, websocket: WebSocket):
+        await self.app.handle_websocket(websocket)
+
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        request = Request(scope, receive)
-        response = await self.handle_request(request)
-        await response(send)
+        # Handle Websocket
+        if scope["type"] == "websocket":
+            websocket = WebSocket(scope=scope, receive=receive, send=send)
+            await self.handle_websocket(websocket)
+        # Handle Request
+        else:
+            request = Request(scope, receive)
+            response = await self.handle_request(request)
+            await response(send)

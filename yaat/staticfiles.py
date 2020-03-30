@@ -7,7 +7,7 @@ try:
 except ImportError:
     aio_stat = None
 
-from .exceptions import HttpException
+from .exceptions import HTTPException
 from .requests import Request
 from .responses import FileResponse, NotModifiedResponse, Response
 from .routing import Router, Route
@@ -83,7 +83,7 @@ class StaticFilesHandler:
                     full_path = index_path
                 # raise 404 if not directory and file also not exists
                 elif not is_file_exists and not is_directory:
-                    raise HttpException(404)
+                    raise HTTPException(404)
 
                 stat_result = await aio_stat(full_path)
                 response = FileResponse(path=full_path, stat_result=stat_result)
@@ -91,7 +91,7 @@ class StaticFilesHandler:
             # if file response
             else:
                 if is_directory or not is_file_exists:
-                    raise HttpException(
+                    raise HTTPException(
                         status_code=404,
                         details="File does not exists"
                     )
@@ -103,7 +103,7 @@ class StaticFilesHandler:
                 if self.is_not_modified(dict(request.headers), response.headers):
                     response = NotModifiedResponse(response.headers)
 
-        except HttpException as e:
+        except HTTPException as e:
             response = e.response
 
         return response
