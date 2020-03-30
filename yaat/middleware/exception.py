@@ -1,9 +1,10 @@
 import traceback
 
 from .base import BaseMiddleware
-from ..exceptions import HTTPException
+from ..exceptions import HTTPException, WebSocketException
 from ..requests import Request
 from ..responses import Response
+from ..websockets import WebSocket, WebSocketDisconnect
 
 
 class ExceptionMiddleware(BaseMiddleware):
@@ -19,3 +20,17 @@ class ExceptionMiddleware(BaseMiddleware):
 
         await self.process_response(response)
         return response
+
+    async def handle_websocket(self, websocket: WebSocket):
+        try:
+            await self.app.handle_websocket(websocket)
+
+        except WebSocketDisconnect as ws_err:
+            raise ws_err
+
+        except WebSocketException as ws_err:
+            traceback.print_exc()
+            raise ws_err
+
+        except Exception as err:
+            traceback.print_exc()
