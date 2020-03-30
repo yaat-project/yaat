@@ -2,7 +2,6 @@ import json
 import pytest
 import websocket
 
-from yaat.constants import WebSocketCloseEvent
 from yaat.responses import HTMLResponse
 from yaat.websockets import WebSocket, WebSocketDisconnect
 
@@ -60,38 +59,3 @@ async def test_websocket_headers(ws_uri):
     ws.connect(f"{ws_uri}/headers", header={"hello": "world"})
     res = json.loads(ws.recv())
     assert res == {"hello": "world"}
-
-
-@pytest.mark.asyncio
-async def test_client_close(ws_uri):
-    pass
-
-
-@pytest.mark.asyncio
-async def test_server_close(ws_uri):
-    pass
-
-
-@pytest.mark.asyncio
-async def test_reject_connection(ws_uri):
-    pass
-
-
-@pytest.mark.asyncio
-async def test_subprotocol(ws_uri):
-    pass
-
-
-@pytest.mark.asyncio
-async def test_websocket_exception(ws_uri):
-    pass
-
-
-@pytest.mark.asyncio
-async def test_duplicate_close(ws_uri):
-    pass
-
-
-@pytest.mark.asyncio
-async def test_duplicate_disconnect(ws_uri):
-    pass

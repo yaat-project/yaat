@@ -5,6 +5,7 @@ import typing
 import uvicorn
 
 from yaat import Yaat
+from yaat.constants import WebSocketCloseEvent
 from yaat.websockets import WebSocket, WebSocketDisconnect
 
 
@@ -35,41 +36,41 @@ def ws_background_server() -> typing.AsyncGenerator:
 
     # Endpoints
     @app.websocket_route("/hello")
-    async def handler(websocket: WebSocket):
+    async def hello_handler(websocket: WebSocket):
         await websocket.accept()
         await websocket.send_text("Hello")
         await websocket.close()
 
     @app.websocket_route("/text")
-    async def handler(websocket: WebSocket):
+    async def text_handler(websocket: WebSocket):
         await websocket.accept()
         data = await websocket.receive_text()
         await websocket.send_text(f"You sent me '{data}'")
         await websocket.close()
 
     @app.websocket_route("/json")
-    async def handler(websocket: WebSocket):
+    async def json_handler(websocket: WebSocket):
         await websocket.accept()
         data = await websocket.receive_json()
         await websocket.send_json(data)
         await websocket.close()
 
     @app.websocket_route("/bytes")
-    async def handler(websocket: WebSocket):
+    async def bytes_handler(websocket: WebSocket):
         await websocket.accept("binary")
         data = await websocket.receive_bytes()
         await websocket.send_bytes(data)
         await websocket.close()
 
     @app.websocket_route("/query-param")
-    async def handler(websocket: WebSocket):
+    async def query_handler(websocket: WebSocket):
         await websocket.accept()
         query = dict(websocket.query_params)
         await websocket.send_json(query)
         await websocket.close()
 
     @app.websocket_route("/headers")
-    async def handler(websocket: WebSocket):
+    async def headers_handler(websocket: WebSocket):
         await websocket.accept()
         headers = websocket.headers
         await websocket.send_json({"hello": headers["hello"]})
