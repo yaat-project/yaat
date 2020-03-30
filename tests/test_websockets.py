@@ -48,12 +48,18 @@ async def test_websocket_bytes(ws_uri):
 
 @pytest.mark.asyncio
 async def test_websocket_query_params(ws_uri):
-    pass
+    ws = websocket.WebSocket()
+    ws.connect(f"{ws_uri}/query-param?a=123&b=xyz")
+    res = json.loads(ws.recv())
+    assert res == {"a": "123", "b": "xyz"}
 
 
 @pytest.mark.asyncio
 async def test_websocket_headers(ws_uri):
-    pass
+    ws = websocket.WebSocket()
+    ws.connect(f"{ws_uri}/headers", header={"hello": "world"})
+    res = json.loads(ws.recv())
+    assert res == {"hello": "world"}
 
 
 @pytest.mark.asyncio

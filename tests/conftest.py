@@ -61,6 +61,20 @@ def ws_background_server() -> typing.AsyncGenerator:
         await websocket.send_bytes(data)
         await websocket.close()
 
+    @app.websocket_route("/query-param")
+    async def handler(websocket: WebSocket):
+        await websocket.accept()
+        query = dict(websocket.query_params)
+        await websocket.send_json(query)
+        await websocket.close()
+
+    @app.websocket_route("/headers")
+    async def handler(websocket: WebSocket):
+        await websocket.accept()
+        headers = websocket.headers
+        await websocket.send_json({"hello": headers["hello"]})
+        await websocket.close()
+
 
     # run server with uvicorn as daemon
     process = Process(
