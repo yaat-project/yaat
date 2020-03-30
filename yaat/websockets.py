@@ -2,7 +2,6 @@ import enum
 import json
 import typing
 
-from .exceptions import WebSocketDisconnectException
 from .requests import HTTPConnection
 from .types import Message, Scope, Receive, Send
 
@@ -20,6 +19,18 @@ class WebSocketMessages:
     SEND = "websocket.send"
     RECEIVE = "websocket.receive"
     CLOSE = "websocket.close"
+
+
+class WebSocketDisconnect(Exception):
+    def __init__(self, code: int = 1000):
+        self.code = code
+
+    def __repr__(self) -> str:
+        class_name = self.__class__.__name__
+        return f"{class_name} (Status Code: {self.code!r})"
+
+    def __str__(self) -> str:
+        return f"WebSocket Disconnected with ({self.code!r})"
 
 
 class WebSocket(HTTPConnection):
@@ -133,4 +144,4 @@ class WebSocket(HTTPConnection):
     # Exception handlers
     def __raise_if_disconnected(self, message: Message):
         if message["type"] == WebSocketMessages.DISCONNECT:
-            raise WebSocketDisconnectException(message["code"])
+            raise WebSocketDisconnect(message["code"])
