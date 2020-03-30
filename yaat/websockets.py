@@ -128,14 +128,14 @@ class WebSocket(HTTPConnection):
         return message["text"]
 
     async def receive_bytes(self) -> bytes:
-        assert self.server_state == WebSocketState.CONNECTED
+        assert self.server_state == WebSocketStates.CONNECTED
         message = await self.receive()
         self.__raise_if_disconnected(message)
         return message["bytes"]
 
     async def receive_json(self, mode: str = "text") -> typing.Any:
         assert mode in ["text", "binary"]
-        assert self.server_state == WebSocketState.CONNECTED
+        assert self.server_state == WebSocketStates.CONNECTED
 
         message = await self.receive()
         self.__raise_if_disconnected(message)
