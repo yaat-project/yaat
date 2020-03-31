@@ -1,16 +1,12 @@
+from aiofiles.os import stat as aio_stat
 from email.utils import parsedate
 import os
 import typing
 
-try:
-    from aiofiles.os import stat as aio_stat
-except ImportError:
-    aio_stat = None
-
-from .exceptions import HTTPException
-from .requests import Request
-from .responses import FileResponse, NotModifiedResponse, Response
-from .routing import Router, Route
+from yaat.exceptions import HTTPException
+from yaat.requests import Request
+from yaat.responses import FileResponse, NotModifiedResponse, Response
+from yaat.routing import Router, Route
 
 
 class StaticFilesHandler:
@@ -57,8 +53,6 @@ class StaticFilesHandler:
         return False
 
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
-        assert aio_stat is not None, "'aiofiles' must be installed to use StaticFilesHandler"
-
         request_path = request.path
         # NOTE: remove route prefix and get file path
         if request_path.startswith(self.path) and self.path != "/":

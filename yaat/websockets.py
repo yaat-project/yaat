@@ -2,13 +2,13 @@ import enum
 import json
 import typing
 
-from .constants import (
+from yaat.constants import (
     WebSocketCloseEvent as WsCloseEvent,
     WebSocketMessages as WsMessages,
 )
-from .exceptions import WebSocketException
-from .requests import HTTPConnection
-from .types import Message, Scope, Receive, Send
+from yaat.exceptions import WebSocketException
+from yaat.requests import HTTPConnection
+from yaat.types import Message, Scope, Receive, Send
 
 
 # CONSTANTS
@@ -115,7 +115,7 @@ class WebSocket(HTTPConnection):
         if mode == "text":
             message = {"type": WsMessages.SEND, "text": raw}
         else:
-            mssage = {"type": WsMessages.SEND, "bytes": raw.encode("utf-8")}
+            message = {"type": WsMessages.SEND, "bytes": raw.encode("utf-8")}
 
         await self.send(message)
 

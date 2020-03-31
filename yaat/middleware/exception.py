@@ -1,10 +1,10 @@
 import traceback
 
-from .base import BaseMiddleware
-from ..exceptions import HTTPException, WebSocketException
-from ..requests import Request
-from ..responses import Response
-from ..websockets import WebSocket, WebSocketDisconnect
+from yaat.exceptions import HTTPException, WebSocketException
+from yaat.middleware.base import BaseMiddleware
+from yaat.requests import Request
+from yaat.responses import Response
+from yaat.websockets import WebSocket, WebSocketDisconnect
 
 
 class ExceptionMiddleware(BaseMiddleware):

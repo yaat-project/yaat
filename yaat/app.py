@@ -2,14 +2,14 @@ import httpx
 import inspect
 import typing
 
-from .exceptions import HTTPException
-from .middleware import BaseMiddleware, ExceptionMiddleware
-from .requests import Request
-from .responses import Response, FileResponse
-from .routing import Router
-from .staticfiles import StaticFiles
-from .types import Scope, Receive, Send
-from .websockets import WebSocket
+from yaat.exceptions import HTTPException
+from yaat.middleware import BaseMiddleware, ExceptionMiddleware
+from yaat.requests import Request
+from yaat.responses import Response, FileResponse
+from yaat.routing import Router
+from yaat.staticfiles import StaticFiles
+from yaat.types import Scope, Receive, Send
+from yaat.websockets import WebSocket
 
 
 class Yaat:

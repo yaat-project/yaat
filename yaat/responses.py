@@ -1,23 +1,21 @@
 from email.utils import formatdate
 from mimetypes import guess_type
 from urllib.parse import quote, quote_plus
+import aiofiles
 import hashlib
 import http.cookies
 import json
 import os
 import typing
 
-# Workaround for adding samesite support to pre 3.8 python
-http.cookies.Morsel._reserved["samesite"] = "SameSite"  # type: ignore
+from yaat.background import BackgroundTask
+from yaat.constants import ENCODING_METHOD
+from yaat.types import Scope, Receive, Send
 
-try:
-    import aiofiles
-except ImportError:
-    aiofiles = None
 
-from .background import BackgroundTask
-from .constants import ENCODING_METHOD
-from .types import Scope, Receive, Send
+# Workaround for adding samesite support to python versions below 3.8
+# https://stackoverflow.com/a/50813092
+http.cookies.Morsel._reserved["samesite"] = "SameSite"
 
 
 class Response:
@@ -168,8 +166,6 @@ class FileResponse(Response):
         stat_result: os.stat_result = None,
         method: str = None,
     ):
-        assert aiofiles is not None, "'aiofiles' must be installed to use FileResponse"
-
         self.path = path
         self.filename = filename
         self.status_code = status_code
