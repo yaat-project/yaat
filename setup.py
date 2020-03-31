@@ -11,9 +11,9 @@ setup(
   download_url = 'https://github.com/yaat-project/yaat/releases/download/v0.1.0/yaat-0.1.0.tar.gz',
   keywords = ['Asynchronous', 'Web framework'],
   install_requires=[
-    "Jinja2",
     "aiofiles",
     "httpx",
+    "Jinja2",
     "parse",
     "python-multipart",
   ],
