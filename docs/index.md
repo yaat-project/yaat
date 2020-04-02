@@ -15,7 +15,7 @@ async def index(request):
 
 ## Features
 
-- Provides decorator routes & class based routes.
+- Provide decorator routes & class based routes.
 - Template support with [Jinja2](https://jinja.palletsprojects.com/).
 - Cookie support.
 - WebSocket support.
