@@ -138,7 +138,7 @@ For example if pdf document is uploaded from the client, you can access as below
 ```python
 form = await request.form()
 
-document = form["document]
+document = form["document"]
 filename = document.filename
 content = await document.read()
 ```
