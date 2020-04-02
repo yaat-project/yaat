@@ -1,5 +1,11 @@
 <h1 align="center">Yaat</h1>  
-<p align="center"><i>yet another ASGI toolkit</i> </p>
+<p align="center"><i>yet another ASGI toolkit</i></p>
+
+<p align="center">
+    <a href="https://pypi.org/project/yaat/">
+        <img src="https://badge.fury.io/py/yaat.svg" alt="pypi package version">
+    </a>
+</p>
 
 ## Yaat
 
