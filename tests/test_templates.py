@@ -2,7 +2,7 @@ import pytest
 import tempfile
 
 from yaat import Yaat
-from yaat.templating import Jinja2Templates
+from yaat.templating import Jinja2Template
 
 
 @pytest.mark.asyncio
@@ -11,7 +11,7 @@ async def test_templates(app, client, tmpdir):
     temp.write(b"<html>Hello World</html>")
     temp.close()
 
-    templates = Jinja2Templates(directory=tmpdir)
+    templates = Jinja2Template(directory=tmpdir)
     template_name = temp.name.split("/")[-1]
 
     @app.route("/")
