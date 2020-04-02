@@ -6,6 +6,8 @@ When an endpoint receives a HTTP request, the router will pass a `Request` objec
 from yaat import Yaat
 from yaat.responses import TextResponse
 
+app = Yaat()
+
 @app.route("/")
 async def index(request):
     return TextResponse("Hello World")
