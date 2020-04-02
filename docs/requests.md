@@ -2,8 +2,6 @@
 
 When an endpoint receives a HTTP request, the router will pass a `Request` object.
 
-## Request
-
 ```python
 from yaat import Yaat
 from yaat.responses import TextResponse
