@@ -98,6 +98,15 @@ app.add_route(path="/blog", handler=blog)
 When your application grows, it is better to break down into smaller applications. Each application will have their own routes
 and mount those routes back to the main application.
 
+`mount(prefix, router, websocket)`
+
+- `prefix` - url prefix to be added to all routes under the router.
+- `router` - Yaat `Router` object.
+- `websocket` - to indicates the routes under the Router are websocket routes.
+
+> WebSocket parameter is explained further in websocket section.  
+> read more about WebSockets [here](/websockets).
+
 **app.py**
 ```python
 from yaat import Yaat
