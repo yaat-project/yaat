@@ -1,6 +1,6 @@
 # Introduction
 
-Yaat is a lightweight asynchronous web toolkit. It is as simple as..
+Yaat is an asynchronous web toolkit. It is as simple as..
 
 ```python
 from yaat import Yaat
@@ -9,7 +9,7 @@ from yaat.responses import TextResponse
 app = Yaat()
 
 @app.route("/")
-async def index(req):
+async def index(request):
     return TextResponse("Hello World")
 ```
 
