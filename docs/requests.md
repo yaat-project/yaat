@@ -131,7 +131,7 @@ While there is a file inside the form, the file will be translated into Yaat's `
 - `await read(size)` - to read `int` characters/bytes of the file.
 - `await seek(offset)` - to go to the byte position `int` of the file.
     - `await upload.seek(0)` will be the beginning of the file.
-- `await close()` - to close the file
+- `await close()` - to close the file.
 
 For example if pdf document is uploaded from the client, you can access as below.
 
