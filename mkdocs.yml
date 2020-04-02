@@ -16,7 +16,7 @@ nav:
     - Middlewares: middlewares.md
     - Test Client: testclient.md
     - Yaat Examples: examples.md
-    - Release Notes: releasenotes.md
+    # - Release Notes: releasenotes.md
 
 theme:
     name: 'material'

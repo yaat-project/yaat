@@ -11,7 +11,7 @@ templates = Jinja2Template(directory="templates")
 
 @app.route("/")
 async def about(request):
-   return templates.TemplateResponse("index.html", context={"name": "Stranger"})
+   return templates.TemplateResponse("index.html", {"name": "Stranger"})
 ```
 
 Then create a directory `templates` and write `index.html` inside.
