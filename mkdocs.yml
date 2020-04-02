@@ -1,12 +1,6 @@
 site_name: Yaat
 site_description: Yet another ASGI toolkit.
 
-theme:
-    name: 'material'
-
-extra_css:
-    - 'stylesheets/extra.css'
-
 repo_name: yaat-project/yaat
 repo_url: https://github.com/yaat-project/yaat
 
@@ -19,6 +13,16 @@ nav:
     - Static Files: staticfiles.md
     - Templates: templates.md
     - Background Tasks: backgroundtasks.md
+    - Middlewares: middlewares.md
     - Test Client: testclient.md
-    - Third Party Libraries: thirdparty.md
+    - Yaat Examples: examples.md
     - Release Notes: releasenotes.md
+
+theme:
+    name: 'material'
+
+markdown_extensions:
+    - codehilite
+
+extra_css:
+    - 'stylesheets/extra.css'
