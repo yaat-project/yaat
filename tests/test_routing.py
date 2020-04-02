@@ -4,7 +4,7 @@ import pytest
 from yaat import Yaat
 from yaat.responses import (
     JSONResponse,
-    PlainTextResponse,
+    TextResponse,
 )
 from yaat.routing import Router
 
@@ -15,7 +15,7 @@ async def test_no_method_specify(app, client):
 
     @app.route("/")
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.get("/")
     assert res.text == RESPONSE
@@ -27,7 +27,7 @@ async def test_get_method(app, client):
 
     @app.route("/", methods=["GET"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.get("/")
     assert res.text == RESPONSE
@@ -39,7 +39,7 @@ async def test_post_method(app, client):
 
     @app.route("/", methods=["POST"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.post("/")
     assert res.text == RESPONSE
@@ -51,7 +51,7 @@ async def test_put_method(app, client):
 
     @app.route("/", methods=["PUT"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.put("/")
     assert res.text == RESPONSE
@@ -63,7 +63,7 @@ async def test_patch_method(app, client):
 
     @app.route("/", methods=["PATCH"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.patch("/")
     assert res.text == RESPONSE
@@ -75,7 +75,7 @@ async def test_delete_method(app, client):
 
     @app.route("/", methods=["DELETE"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.delete("/")
     assert res.text == RESPONSE
@@ -87,7 +87,7 @@ async def test_multiple_method(app, client):
 
     @app.route("/multiple", methods=["GET", "POST"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.get("/multiple")
     assert res.text == RESPONSE
@@ -102,7 +102,7 @@ async def test_invalid_method(app, client):
 
     @app.route("/", methods=["GET"])
     async def handler(request):
-        return PlainTextResponse(RESPONSE)
+        return TextResponse(RESPONSE)
 
     res = await client.post("/")
 
@@ -115,7 +115,7 @@ async def test_url_param(app, client):
     @app.route("/{name}")
     async def handler(request, name):
         name = unquote(name)
-        return PlainTextResponse(f"hello {name}")
+        return TextResponse(f"hello {name}")
 
     res = await client.get("/John Doe")
 
@@ -127,10 +127,10 @@ async def test_class_based_view(app, client):
     @app.route("/")
     class Handler:
         async def get(self, request):
-            return PlainTextResponse("This is get method.")
+            return TextResponse("This is get method.")
 
         async def post(self, request):
-            return PlainTextResponse("This is post method.")
+            return TextResponse("This is post method.")
 
     res = await client.get("/")
     assert res.text == "This is get method."
@@ -145,7 +145,7 @@ async def test_class_based_view(app, client):
 @pytest.mark.asyncio
 async def test_method_register_function_view(app, client):
     async def handler(request):
-        return PlainTextResponse("hello world")
+        return TextResponse("hello world")
 
     app.add_route(path="/", handler=handler, methods=["GET"])
 
@@ -157,10 +157,10 @@ async def test_method_register_function_view(app, client):
 async def test_method_register_class_view(app, client):
     class Handler:
         async def get(self, request):
-            return PlainTextResponse("This is get method.")
+            return TextResponse("This is get method.")
 
         async def post(self, request):
-            return PlainTextResponse("This is post method.")
+            return TextResponse("This is post method.")
 
     app.add_route(path="/", handler=Handler)
 
@@ -178,13 +178,13 @@ async def test_method_register_class_view(app, client):
 async def test_mount_sub_application(app, client):
     @app.route("/")
     async def main(request):
-        return PlainTextResponse("This is main app.")
+        return TextResponse("This is main app.")
 
     blogRouter = Router()
 
     @blogRouter.route("/")
     async def blog(request):
-        return PlainTextResponse("This is blog app.")
+        return TextResponse("This is blog app.")
 
     app.mount(prefix="/blog", router=blogRouter)
 
@@ -199,7 +199,7 @@ async def test_mount_sub_application(app, client):
 async def test_list_paths(app, client):
     @app.route("/")
     async def main(request):
-        return PlainTextResponse("main route")
+        return TextResponse("main route")
 
     @app.route("/list")
     async def list_routes(request):

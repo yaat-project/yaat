@@ -1,7 +1,7 @@
 import pytest
 
 from yaat.exceptions import HTTPException
-from yaat.responses import PlainTextResponse
+from yaat.responses import TextResponse
 
 
 @pytest.mark.asyncio

@@ -111,7 +111,7 @@ class Response:
 
         self.headers["set-cookie"] = cookie.output(header="").strip()
 
-    def delete_cookie(self, key: str, path: str = "/",domain: str = None):
+    def delete_cookie(self, key: str, path: str = "/", domain: str = None):
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
     async def __call__(self, send: Send):
@@ -130,7 +130,7 @@ class HTMLResponse(Response):
     media_type = "text/html"
 
 
-class PlainTextResponse(Response):
+class TextResponse(Response):
     media_type = "text/plain"
 
 

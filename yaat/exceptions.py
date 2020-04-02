@@ -1,6 +1,6 @@
 import http
 
-from yaat.responses import PlainTextResponse
+from yaat.responses import TextResponse
 
 
 class HTTPException(Exception):
@@ -11,8 +11,8 @@ class HTTPException(Exception):
         self.details = details
 
     @property
-    def response(self) -> PlainTextResponse:
-        return PlainTextResponse(
+    def response(self) -> TextResponse:
+        return TextResponse(
             status_code=self.status_code,
             content=self.details,
         )

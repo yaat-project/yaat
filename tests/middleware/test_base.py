@@ -1,7 +1,7 @@
 import pytest
 
 from yaat.middleware import BaseMiddleware
-from yaat.responses import PlainTextResponse, Response
+from yaat.responses import TextResponse, Response
 from yaat.requests import Request
 
 
@@ -20,7 +20,7 @@ async def test_plain_text_response(app, client):
     @app.route("/")
     async def handler(request):
         assert request.scope["server"] == "modifiedserver"
-        return PlainTextResponse("hello world")
+        return TextResponse("hello world")
 
     res = await client.get("/")
 

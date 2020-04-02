@@ -5,7 +5,7 @@ from yaat.responses import (
     FileResponse,
     HTMLResponse,
     JSONResponse,
-    PlainTextResponse,
+    TextResponse,
     RedirectResponse,
     Response,
 )
@@ -17,7 +17,7 @@ async def test_plain_text_response(app, client):
 
     @app.route("/")
     async def handler(request):
-        return PlainTextResponse(content=RESPONSE)
+        return TextResponse(content=RESPONSE)
 
     res = await client.get("/")
 
@@ -92,7 +92,7 @@ async def test_redirect_response(app, client):
 
     @app.route(REDIRECTED_URL)
     async def handler(request):
-        return PlainTextResponse(content=RESPONSE)
+        return TextResponse(content=RESPONSE)
 
     res = await client.get("/")
 
@@ -125,7 +125,7 @@ async def test_headers_replace(app, client):
     @app.route("/")
     async def handler(request):
         headers = {"header-1": "abc", "header-2": "def"}
-        response = PlainTextResponse(content="hello world", headers=headers)
+        response = TextResponse(content="hello world", headers=headers)
         response.headers["header-2"] = "xyz"
         return response
 
@@ -224,7 +224,7 @@ async def test_populate_headers(app, client):
 async def test_head_method(app, client):
     @app.route("/")
     async def handler(request):
-        return PlainTextResponse(content="hello world")
+        return TextResponse(content="hello world")
 
     res = await client.head("/")
 
