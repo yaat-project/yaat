@@ -48,7 +48,7 @@ uvicorn app:app
 - [aiofiles](https://github.com/Tinche/aiofiles) - to read files for `FileResponse` or `StaticFiles`.
 - [httpx](https://www.python-httpx.org/) - for test client
 - [Jinja2](https://jinja.palletsprojects.com/) - to use `Jinja2Templates` for template responses.
-- [parse](https://github.com/r1chardj0n3s/parse) - for parsing url parameters.
+- [parse](https://github.com/r1chardj0n3s/parse) - for parsing path parameters.
 - [python-multpart](http://andrew-d.github.io/python-multipart/) - for form parser, `request.form()`
 
 ## License
