@@ -83,7 +83,7 @@ async def index(request):
     body = await request.body()
 ```
 
-if you want it to be parsed as form data or multipart (i.e. file uploads), you can call `request.form()` instead.
+if you want it parsed as form data or multipart (i.e. file uploads), you can call `request.form()` instead.
 
 ```python
 @app.routes("/")
@@ -103,7 +103,7 @@ async def index(request):
 
 You can call `request.form()` to access form data and request files.
 
-When you call the form, you will recieve the `Form` dictionary object. You can access the form data just like a dictionary.
+When you call the form, you will receive the `Form` dictionary object. You can access the form data just like a dictionary.
 If there are duplicate keys inside the form, the values will be grouped into an array.
 
 ```javascript

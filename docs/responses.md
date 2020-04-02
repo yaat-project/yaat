@@ -38,8 +38,8 @@ You can set the cookie on the response with `set_cookie` method.
 - `value` - cookie's value.
 - `max-age` - cookie's lifetime in seconds. A negative integer or a value of 0 to discard the cookie.
 - `expires` - cookie's expiry in seconds.
-- `path` - specifics the subset of routes to apply cookie.
-- `domain` - speficies the domain to apply cookie.
+- `path` - specifies the subset of routes to apply cookie.
+- `domain` - specifies the domain to apply cookie.
 - `secure` - only send the cookie if connection is made from SSL and HTTPS protocol.
 - `httponly` - indicates that cookie cannot be accessed from Javascript.
 - `samesite` - indicates that cookie should not be sent with cross-site requests
@@ -53,8 +53,8 @@ You can set the cookie on the response with `set_cookie` method.
 `delete_cookie(key, path="/", domain=None)`
 
 - `key` - cookie's key.
-- `path` - specifics the subset of routes to apply cookie.
-- `domain` - speficies the domain to apply cookie.
+- `path` - specifies the subset of routes to apply cookie.
+- `domain` - specifies the domain to apply cookie.
 
 ### Text Response
 

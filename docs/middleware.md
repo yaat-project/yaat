@@ -1,4 +1,4 @@
-# Middlewares
+# Middleware
 
 Middleware wraps your application. In Yaat, you can write custom middleware easily by overriding
 `BaseMiddleware` class.
@@ -39,7 +39,7 @@ class BaseMiddleware:
 
 ### Registering Middleware
 
-After you implemented custom middleware, you can register to the application with `add_middleware` method.
+After you implemented custom middleware, you can register with `add_middleware` method.
 
 ```python
 class CustomMiddleware(BaseMiddleware):
@@ -48,7 +48,7 @@ class CustomMiddleware(BaseMiddleware):
 app.add_middleware(CustomMiddleware)
 ```
 
-You will need to registrer middleware in orders. From bird-eye view, registering middlewares will look like this.
+You will need to register middleware in orders. From bird-eye view, registering middleware will look like this.
 
 ```python
 Middleware2(

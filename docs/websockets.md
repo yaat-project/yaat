@@ -44,7 +44,7 @@ If you want to send raw ASGI messages you can call `send()`.
 
 ### Receiving Raw Messages
 
-If you want to recieve raw ASGI messages you can call `receive()`.
+If you want to receive raw ASGI messages you can call `receive()`.
 
 - `await websocket.receive()`
 
