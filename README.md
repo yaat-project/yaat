@@ -3,7 +3,7 @@
 
 ## Yaat
 
-Yaat is an asynchronous web framework/toolkit. Learn more about <a href="https://asgi.readthedocs.io/en/latest/" target="_blank">ASGI</a>.  
+Yaat is an asynchronous web framework/toolkit.
 
 **Features**  
 
@@ -35,7 +35,10 @@ pip3 install uvicorn
 
 ## Example
 
-**example.py**
+Writing with Yaat is as simple as...
+
+**app.py**
+
 ```python
 from yaat import Yaat
 from yaat.responses import TextResponse
@@ -43,20 +46,12 @@ from yaat.responses import TextResponse
 app = Yaat()
 
 @app.route("/")
-async def index(req):
-    response = TextResponse(content="Hello World")
-    return response
+async def index(request):
+    return TextResponse("Hello World")
 ```
 
 Then run using uvicorn:
 
 ```bash
-uvicorn example:app
+uvicorn app:app
 ```
-
-> See <a href="https://github.com/the-robot/yaat/wiki">Wiki</a> for documentation and complete examples
-
-## FYI
-
-1. Is this just another web framework?
-    - I started this to learn how a framework like <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a> actually works and I am also interested in ASGI, so I decided to build this in ASGI instead of WSGI. However, after I used <a href="https://palletsprojects.com/p/flask/" target="_blank">Flask</a> and <a href="https://www.djangoproject.com" target="_blank">Django</a> for a long time, I found things that I love and hate from each. So when I started working on this, I made it to include good features that both of those have (I.e. `individual small applications` feature from Django).
