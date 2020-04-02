@@ -39,13 +39,13 @@ pip3 install uvicorn
 **example.py**
 ```python
 from yaat import Yaat
-from yaat.responses import PlainTextResponse
+from yaat.responses import TextResponse
 
 app = Yaat()
 
 @app.route("/")
 async def index(req):
-    response = PlainTextResponse(content="Hello World")
+    response = TextResponse(content="Hello World")
     return response
 ```
 
