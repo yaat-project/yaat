@@ -4,7 +4,7 @@ import os
 from yaat.responses import HTMLResponse
 
 
-class BaseTemplates:
+class BaseTemplate:
     """Skeleon class to be inherited for custom template engine"""
 
     def get(self, *args, **kwargs) -> bytes:
@@ -14,7 +14,7 @@ class BaseTemplates:
         raise NotImplementedError
 
 
-class Jinja2Templates(BaseTemplates):
+class Jinja2Template(BaseTemplate):
     def __init__(self, directory: str):
         self.directory = directory
 

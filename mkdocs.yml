@@ -1,0 +1,28 @@
+site_name: Yaat
+site_description: Yet another ASGI toolkit.
+
+repo_name: yaat-project/yaat
+repo_url: https://github.com/yaat-project/yaat
+
+nav:
+    - Introduction: index.md
+    - Requests: requests.md
+    - Responses: responses.md
+    - Routing: routing.md
+    - WebSockets: websockets.md
+    - Static Files: staticfiles.md
+    - Templates: templates.md
+    - Background Tasks: backgroundtasks.md
+    - Middleware: middleware.md
+    - Test Client: testclient.md
+    - Yaat Examples: examples.md
+    - Release Notes: releasenotes.md
+
+theme:
+    name: 'material'
+
+markdown_extensions:
+    - codehilite
+
+extra_css:
+    - 'stylesheets/extra.css'

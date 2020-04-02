@@ -109,7 +109,7 @@ class WebSocket(HTTPConnection):
         await self.send({"type": WsMessages.SEND, "bytes": data})
 
     async def send_json(self, data: typing.Any, mode: str = "text"):
-        assert mode in ["text", "binary"]
+        assert mode in ["text", "bytes"]
         raw = json.dumps(data)
 
         if mode == "text":
@@ -134,7 +134,7 @@ class WebSocket(HTTPConnection):
         return message["bytes"]
 
     async def receive_json(self, mode: str = "text") -> typing.Any:
-        assert mode in ["text", "binary"]
+        assert mode in ["text", "bytes"]
         assert self.server_state == WebSocketStates.CONNECTED
 
         message = await self.receive()

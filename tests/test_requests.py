@@ -1,7 +1,7 @@
 import pytest
 
 from yaat import Yaat
-from yaat.responses import JSONResponse, PlainTextResponse
+from yaat.responses import JSONResponse, TextResponse
 
 
 @pytest.mark.asyncio
@@ -110,9 +110,9 @@ async def test_request_cookies(app, client):
         mycookie = request.cookies.get("mycookie")
 
         if mycookie:
-            res = PlainTextResponse(mycookie)
+            res = TextResponse(mycookie)
         else:
-            res = PlainTextResponse("Hello world!")
+            res = TextResponse("Hello world!")
             res.set_cookie("mycookie", COOKIE_VALUE)
 
         return res
