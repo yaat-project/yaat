@@ -86,6 +86,11 @@ class Books:
     async def delete(self, request):
         response = TextResponse("Delete Book")
         return response
+
+class Blog:
+    ...
+
+app.add_route(path="/blog", handler=blog)
 ```
 
 ### Sub Applications
