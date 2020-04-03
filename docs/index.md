@@ -1,3 +1,13 @@
+<h2 align="center">Yaat</h2>
+<p align="center">Yet another ASGI toolkit</p>
+<p align="center">
+    <a href="https://pypi.org/project/yaat/">
+        <img src="https://badge.fury.io/py/yaat.svg" alt="pypi package version">
+    </a>
+</p>
+
+---
+
 # Introduction
 
 Yaat is an asynchronous web toolkit. It is as simple as..
