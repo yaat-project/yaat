@@ -1,6 +1,7 @@
 venv/
 **/__pycache__/**
 **/.vscode/**
+**/yaat.egg-info/**
 MANIFEST
 **/dist/**
 **/.DS_Store
