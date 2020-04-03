@@ -28,7 +28,7 @@ async def index(request):
 - Provide decorator routes & class based views.
 - Template support with [Jinja2](https://jinja.palletsprojects.com/).
 - Cookie support.
-- WebSocket support.
+- WebSockets support.
 - Background tasks runner.
 - Test client using [httpx](https://www.python-httpx.org/).
 - Static file serving.
