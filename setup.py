@@ -1,15 +1,25 @@
-from distutils.core import setup
+from setuptools import setup
+
+VERSION = "0.1.1"
+
+def get_long_description():
+  with open("README.md", encoding="utf8") as f:
+    return f.read()
+
 setup(
   name = 'yaat',
   packages = ['yaat', 'yaat.middleware'],
-  version = '0.1.0',
+  version = VERSION,
   license='LGPL',
   description = 'Yet another ASGI toolkit',
+  long_description=get_long_description(),
+  long_description_content_type="text/markdown",
   author = 'Khant',
   author_email = 'contact@khant.dev',
   url = 'https://github.com/yaat-project/yaat',
-  download_url = 'https://github.com/yaat-project/yaat/releases/download/v0.1.0/yaat-0.1.0.tar.gz',
-  keywords = ['Asynchronous', 'Web framework'],
+  download_url = f'https://github.com/yaat-project/yaat/releases/download/v{VERSION}/yaat-{VERSION}.tar.gz',
+  keywords = ['asynchronous', 'web framework'],
+  python_requires=">=3.6",
   install_requires=[
     "aiofiles",
     "httpx",
