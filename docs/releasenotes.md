@@ -2,5 +2,5 @@
 
 ### 0.1.1
 
-- Added WebSocket functionality.
+- Added WebSockets functionality.
 - Added built-in background task runner.
