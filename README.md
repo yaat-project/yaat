@@ -1,4 +1,9 @@
 <h1 align="center">Yaat</h1>  
+
+<p align="center">
+    <img src="https://avatars0.githubusercontent.com/u/62506028?s=200&v=4">
+</p>
+
 <p align="center"><i>yet another ASGI toolkit</i></p>
 
 <p align="center">
