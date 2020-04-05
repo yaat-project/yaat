@@ -1,4 +1,7 @@
 <h2 align="center">Yaat</h2>
+<p align="center">
+    <img src="https://avatars0.githubusercontent.com/u/62506028?s=200&v=4">
+</p>
 <p align="center">Yet another ASGI toolkit</p>
 <p align="center">
     <a href="https://pypi.org/project/yaat/">
