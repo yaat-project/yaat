@@ -72,3 +72,7 @@ I know there are a lot of awesome frameworks out there. So some might ask why di
 I started this after following [Jahongir Rahmonov's blog post](https://rahmonov.me/posts/write-python-framework-part-one/) about writing a web framework. Feel free to check out his WSGI framework [Alcazar](https://github.com/rahmonov/alcazar).
 
 More features will be added in the future. You can checkout the [project board](https://github.com/yaat-project/yaat/projects/1).
+
+## Icon Credit
+
+Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
