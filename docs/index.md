@@ -51,7 +51,7 @@ For example, if you put the example code from the top in `app.py`. You can run t
 uvicorn app:app
 ```
 
-> [view example codes](/examples)
+> you can check out complete examples in `Yaat Examples` section.
 
 ## Dependencies
 

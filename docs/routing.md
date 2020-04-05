@@ -104,8 +104,7 @@ and mount those routes back to the main application.
 - `router` - Yaat `Router` object.
 - `websocket` - to indicates the routes under the Router are websocket routes.
 
-> WebSocket parameter is explained further in websocket section.  
-> read more about WebSockets [here](/websockets).
+> WebSocket parameter is explained further in `WebSockets` section.  
 
 **app.py**
 ```python
