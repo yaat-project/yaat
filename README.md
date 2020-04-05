@@ -1,4 +1,9 @@
 <h1 align="center">Yaat</h1>  
+
+<p align="center">
+    <img src="https://avatars0.githubusercontent.com/u/62506028?s=200&v=4">
+</p>
+
 <p align="center"><i>yet another ASGI toolkit</i></p>
 
 <p align="center">
@@ -71,3 +76,8 @@ I know there are a lot of awesome frameworks out there. So some might ask why di
 I started this after following [Jahongir Rahmonov's blog post](https://rahmonov.me/posts/write-python-framework-part-one/) about writing a web framework. Feel free to check out his WSGI framework [Alcazar](https://github.com/rahmonov/alcazar).
 
 More features will be added in the future. You can checkout the [project board](https://github.com/yaat-project/yaat/projects/1).
+
+
+## Icon Credit
+
+Icons made by <a href="https://www.flaticon.com/authors/dave-gandy" title="Dave Gandy">Dave Gandy</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
