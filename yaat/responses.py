@@ -171,6 +171,10 @@ class FileResponse(Response):
         self.status_code = status_code
         self.send_header_only = method is not None and method.upper() == "HEAD"
         if media_type is None:
+            print("\n\n====")
+            print(filename)
+            print(path)
+            print("====\n\n")
             media_type = guess_type(filename or path)[0] or "text/plain"
         self.headers = headers if headers is not None else {}
         self.media_type = media_type
