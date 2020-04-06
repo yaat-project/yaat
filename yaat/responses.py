@@ -174,6 +174,7 @@ class FileResponse(Response):
             print("\n\n====")
             print(filename)
             print(path)
+            print(type(path))
             print("====\n\n")
             media_type = guess_type(filename or path)[0] or "text/plain"
         self.headers = headers if headers is not None else {}
