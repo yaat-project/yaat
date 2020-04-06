@@ -88,4 +88,5 @@ def ws_background_server() -> typing.AsyncGenerator:
     )
     process.start()
     yield
-    process.kill()
+    # do not call .kill() it is only availabe on python3.7+
+    process.terminate()
