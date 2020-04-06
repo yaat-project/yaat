@@ -5,8 +5,16 @@ python:
   - "3.7"
   - "3.8"
 
+env:
+  - CODECOV_TOKEN=CODECOV_KEY
+
+
 install:
   - pip install -r requirements-dev.txt
+  - pip install coverage codecov
 
 script:
-  - pytest
+  - pytest --cov-report term --cov=tests/
+
+after_success:
+  - codecov
