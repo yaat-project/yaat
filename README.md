@@ -7,8 +7,11 @@
 <p align="center"><i>yet another ASGI toolkit</i></p>
 
 <p align="center">
+    <a href="https://travis-ci.org/github/yaat-project/yaat">
+        <img src="https://travis-ci.org/yaat-project/yaat.svg?branch=master" alt="travis status"/>
+    </a>
     <a href="https://pypi.org/project/yaat/">
-        <img src="https://badge.fury.io/py/yaat.svg" alt="pypi package version">
+        <img src="https://badge.fury.io/py/yaat.svg" alt="pypi package version"/>
     </a>
 </p>
 
