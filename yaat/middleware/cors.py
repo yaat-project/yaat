@@ -2,12 +2,13 @@ import typing
 
 from yaat.constants import HTTP_METHODS
 from yaat.datatypes import Headers
+from yaat.middleware import BaseMiddleware
 from yaat.requests import Request
 from yaat.responses import Response, TextResponse
 from yaat.types import ASGIApp
 
 
-class CorsMiddleware:
+class CorsMiddleware(BaseMiddleware):
     def __init__(
         self,
         app: ASGIApp,
