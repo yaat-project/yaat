@@ -20,7 +20,7 @@ SAFELISTED_HEADERS = {
 }
 
 
-class CorsMiddleware(BaseMiddleware):
+class CORSMiddleware(BaseMiddleware):
     def __init__(
         self,
         app: ASGIApp,

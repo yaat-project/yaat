@@ -1,7 +1,7 @@
 from copy import deepcopy
 import pytest
 
-from yaat.middleware import CorsMiddleware
+from yaat.middleware import CORSMiddleware
 from yaat.requests import Request
 from yaat.responses import TextResponse
 
@@ -9,7 +9,7 @@ from yaat.responses import TextResponse
 @pytest.mark.asyncio
 async def test_allow_all(app, client):
     app.add_middleware(
-        CorsMiddleware,
+        CORSMiddleware,
         allow_origins=["*"],
         allow_methods=["*"],
         allow_headers=["*"],
@@ -35,7 +35,7 @@ async def test_allow_all(app, client):
 @pytest.mark.asyncio
 async def test_allow_specific_origin(app, client):
     app.add_middleware(
-        CorsMiddleware,
+        CORSMiddleware,
         allow_origins=["http://testserver.com"],
         allow_headers=["X-My-Custom-Header"],
     )
@@ -70,7 +70,7 @@ async def test_allow_specific_origin(app, client):
 @pytest.mark.asyncio
 async def test_disallowed_preflight(app, client):
     app.add_middleware(
-        CorsMiddleware,
+        CORSMiddleware,
         allow_origins=["http://testserver.com"],
         allow_headers=["X-My-Custom-Header"],
     )
@@ -91,7 +91,7 @@ async def test_disallowed_preflight(app, client):
 
 @pytest.mark.asyncio
 async def test_credentialed_return_specific_origin(app, client):
-    app.add_middleware(CorsMiddleware, allow_origins=["*"])
+    app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
     @app.route("/")
     async def handler(request):
@@ -107,7 +107,7 @@ async def test_credentialed_return_specific_origin(app, client):
 
 @pytest.mark.asyncio
 async def test_vary_headers_origin_default(app, client):
-    app.add_middleware(CorsMiddleware, allow_origins=["http://testserver.com"])
+    app.add_middleware(CORSMiddleware, allow_origins=["http://testserver.com"])
 
     @app.route("/")
     async def handler(request):
@@ -121,7 +121,7 @@ async def test_vary_headers_origin_default(app, client):
 
 @pytest.mark.asyncio
 async def test_vary_headers_set(app, client):
-    app.add_middleware(CorsMiddleware, allow_origins=["http://testserver.com"])
+    app.add_middleware(CORSMiddleware, allow_origins=["http://testserver.com"])
 
     @app.route("/")
     async def handler(request):
@@ -136,7 +136,7 @@ async def test_vary_headers_set(app, client):
 @pytest.mark.asyncio
 async def test_allow_origin_regex(app, client):
     app.add_middleware(
-        CorsMiddleware,
+        CORSMiddleware,
         allow_origin_regex="http://.*.com",
         allow_headers=["X-My-Custom-Header"],
     )
