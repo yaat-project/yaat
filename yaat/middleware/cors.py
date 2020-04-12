@@ -46,7 +46,7 @@ class CorsMiddleware:
         request_method = request_headers["access-control-request-method"]
         request_headers = request_headers.get("access-control-request-headers")
 
-        # initialize preflight headers
+        # preflight headers
         headers = {
             "Access-Control-Allow-Methods": ", ".join(self.allow_methods),
             "Access-Control-Max-Age": str(self.max_age)
@@ -77,7 +77,7 @@ class CorsMiddleware:
             message = f"Disallowed cors {', '.join(failures)}"
             return TextResponse(message, status_code=400, headers=headers)
 
-        # Do not return 204, as some legacy browser does not work with 204
+        # do not return 204, as some legacy browser does not work with 204
         return Response(status_code=200, headers=headers)
 
     def simple_response(self, request_headers: Headers, response: Response) -> Response:
