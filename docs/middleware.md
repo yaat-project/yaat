@@ -97,7 +97,7 @@ Any request with HTTP `OPTIONS` and `Access-Control-Request-Method` in headers i
 For those requests, middleware will intercept and response with appropriate CORS headers. `HTTP 200` for success requests
 and `HTTP 400` for invalid requests.
 
-> `HTTP 200` is returned instead of `HTTP 204` because some legacy browsers reject CORS requests if `204` is received.  
+> `HTTP 200` returns instead of `HTTP 204` because some legacy browsers reject CORS requests if `204` is received.  
 > [read more about issue](https://stackoverflow.com/questions/46026409/what-are-proper-status-codes-for-cors-preflight-requests)
 
 #### Simple requests
