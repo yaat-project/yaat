@@ -10,8 +10,8 @@ class BaseMiddleware:
     def __init__(self, app: ASGIApp):
         self.app = app
 
-    def add(self, middleware_cls: typing.Type, **kwargs):
-        self.app = middleware_cls(self.app, **kwargs)
+    def add(self, middleware_cls: typing.Type, *args, **kwargs):
+        self.app = middleware_cls(self.app, *args, **kwargs)
 
     async def process_request(self, request: Request):
         pass

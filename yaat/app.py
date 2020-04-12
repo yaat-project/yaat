@@ -16,20 +16,9 @@ class Yaat:
     def __init__(self, middlewares: typing.Sequence[BaseMiddleware] = None):
         self.router = Router()
         self.middleware = BaseMiddleware(self)
-        self.exception_handler = None
 
-        # NOTE: middleware registration
-        self.__register_middlewares(middlewares)
-
-
-    # NOTE: properties
-    @property
-    def exception_handler(self) -> callable:
-        return self.__exception_handler
-
-    @exception_handler.setter
-    def exception_handler(self, exception: callable):
-        self.__exception_handler = exception
+        # NOTE: default middleware(s) registration
+        self.__register_default_middlewares(middlewares)
 
 
     # NOTE: Routing
@@ -89,9 +78,7 @@ class Yaat:
             else:
                 raise HTTPException(404)
         except Exception as e:
-            if self.exception_handler is not None:
-                response = self.exception_handler(request, e)
-            elif isinstance(e, HTTPException) or isinstance(e, HTTPException):
+            if isinstance(e, HTTPException) or isinstance(e, HTTPException):
                 response = e.response
             else:
                 raise e
@@ -108,10 +95,10 @@ class Yaat:
 
 
     # NOTE: Middleware
-    def add_middleware(self, middleware_cls: BaseMiddleware):
-        self.middleware.add(middleware_cls)
+    def add_middleware(self, middleware_cls: BaseMiddleware, *args, **kwargs):
+        self.middleware.add(middleware_cls, *args,**kwargs)
 
-    def __register_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
+    def __register_default_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
         # register exception handling middleware
         self.add_middleware(ExceptionMiddleware)
 
