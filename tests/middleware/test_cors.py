@@ -137,7 +137,7 @@ async def test_vary_headers_set(app, client):
 async def test_allow_origin_regex(app, client):
     app.add_middleware(
         CORSMiddleware,
-        allow_origin_regex="http://.*.com",
+        allow_origin_regex=r"http://.*\.com",
         allow_headers=["X-My-Custom-Header"],
     )
 
