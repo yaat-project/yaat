@@ -69,7 +69,7 @@ class CorsMiddleware:
         # check allow headers
         if request_headers is not None:
             for header in requested_headers.split(","):
-                if header.lower().strip() not in self.allow_all_headers:
+                if header.lower().strip() not in self.allow_headers:
                     failures.add("Headers")
                     break
 
