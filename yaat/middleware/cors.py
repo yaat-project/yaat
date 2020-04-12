@@ -1,3 +1,4 @@
+import re
 import typing
 
 from yaat.constants import HTTP_METHODS
@@ -24,6 +25,7 @@ class CorsMiddleware(BaseMiddleware):
         self,
         app: ASGIApp,
         allow_origins: typing.Sequence[str] = (),
+        allow_origin_regex: str = None,
         allow_methods: typing.Sequence[str] = ("GET",),
         allow_headers: typing.Sequence[str] = (),
         allow_credentials: bool = False,
@@ -44,11 +46,14 @@ class CorsMiddleware(BaseMiddleware):
         self.max_age = max_age
         self.allow_all_origins = "*" in allow_origins
         self.allow_all_headers = "*" in allow_headers
-
+        self.allow_origin_regex = re.compile(allow_origin_regex) if allow_origin_regex else None
         self.preflight_allow_headers = sorted(SAFELISTED_HEADERS | set(allow_headers))
 
     def is_allowed_origin(self, origin: str) -> bool:
         if self.allow_all_origins:
+            return True
+
+        if self.allow_origin_regex and self.allow_origin_regex.fullmatch(origin):
             return True
 
         return origin in self.allow_origins    
