@@ -18,8 +18,8 @@ class Yaat:
         self.middleware = BaseMiddleware(self)
         self.exception_handler = None
 
-        # NOTE: middleware registration
-        self.__register_middlewares(middlewares)
+        # NOTE: default middleware(s) registration
+        self.__register_default_middlewares(middlewares)
 
 
     # NOTE: properties
@@ -111,7 +111,7 @@ class Yaat:
     def add_middleware(self, middleware_cls: BaseMiddleware, *args, **kwargs):
         self.middleware.add(middleware_cls, *args,**kwargs)
 
-    def __register_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
+    def __register_default_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
         # register exception handling middleware
         self.add_middleware(ExceptionMiddleware)
 
