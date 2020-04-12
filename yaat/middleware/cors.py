@@ -68,7 +68,7 @@ class CorsMiddleware(BaseMiddleware):
         }
         if self.allow_credentials:
             headers["Access-Control-Allow-Credentials"] = "true"
-        failures = set()
+        failures = []
 
         # check origin
         if self.is_allowed_origin(requested_origin) and not self.allow_all_origins:
@@ -77,11 +77,11 @@ class CorsMiddleware(BaseMiddleware):
         elif self.allow_all_origins:
             headers["Access-Control-Allow-Origin"] = "*"
         else:
-            failures.add("Origin")
+            failures.append("Origin")
 
         # check HTTP method
         if requested_method not in self.allow_methods:
-            failures.add("Method")
+            failures.append("Method")
 
         # check allow headers
         if requested_headers is not None and self.allow_all_headers:
@@ -89,7 +89,7 @@ class CorsMiddleware(BaseMiddleware):
         elif requested_headers is not None:
             for header in requested_headers.split(","):
                 if header.lower().strip() not in self.allow_headers:
-                    failures.add("Headers")
+                    failures.append("Headers")
                     break
 
         if failures:
