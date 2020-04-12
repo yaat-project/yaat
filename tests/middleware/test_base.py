@@ -1,8 +1,8 @@
 import pytest
 
 from yaat.middleware import BaseMiddleware
-from yaat.responses import TextResponse, Response
 from yaat.requests import Request
+from yaat.responses import TextResponse, Response
 
 
 class CustomMiddleware(BaseMiddleware):
