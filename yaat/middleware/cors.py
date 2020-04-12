@@ -8,6 +8,17 @@ from yaat.responses import Response, TextResponse
 from yaat.types import ASGIApp
 
 
+# https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header
+SAFELISTED_HEADERS = {
+    "Cache-Control",
+    "Content-Language",
+    "Content-Type",
+    "Expires",
+    "Last-Modified",
+    "Pragma",
+}
+
+
 class CorsMiddleware(BaseMiddleware):
     def __init__(
         self,
@@ -34,6 +45,8 @@ class CorsMiddleware(BaseMiddleware):
         self.allow_all_origins = "*" in allow_origins
         self.allow_all_headers = "*" in allow_headers
 
+        self.preflight_allow_headers = sorted(SAFELISTED_HEADERS | set(allow_headers))
+
     def is_allowed_origin(self, origin: str) -> bool:
         if self.allow_all_origins:
             return True
@@ -43,19 +56,22 @@ class CorsMiddleware(BaseMiddleware):
     def preflight_response(self, request_headers: Headers) -> Response:
         # https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
 
-        request_origin = request_headers["origin"]
-        request_method = request_headers["access-control-request-method"]
-        request_headers = request_headers.get("access-control-request-headers")
+        requested_origin = request_headers["origin"]
+        requested_method = request_headers["access-control-request-method"]
+        requested_headers = request_headers.get("access-control-request-headers")
 
         # preflight headers
         headers = {
             "Access-Control-Allow-Methods": ", ".join(self.allow_methods),
-            "Access-Control-Max-Age": str(self.max_age)
+            "Access-Control-Allow-Headers": ", ".join(self.preflight_allow_headers),
+            "Access-Control-Max-Age": str(self.max_age),
         }
+        if self.allow_credentials:
+            headers["Access-Control-Allow-Credentials"] = "true"
         failures = set()
 
         # check origin
-        if self.is_allowed_origin(request_origin) and not self.allow_all_origins:
+        if self.is_allowed_origin(requested_origin) and not self.allow_all_origins:
             headers["Access-Control-Allow-Origin"] = requested_origin
             headers["Vary"] = "Origin"
         elif self.allow_all_origins:
@@ -64,11 +80,13 @@ class CorsMiddleware(BaseMiddleware):
             failures.add("Origin")
 
         # check HTTP method
-        if request_method not in self.allow_methods:
+        if requested_method not in self.allow_methods:
             failures.add("Method")
 
         # check allow headers
-        if request_headers is not None:
+        if requested_headers is not None and self.allow_all_headers:
+            headers["Access-Control-Allow-Headers"] = requested_headers
+        elif requested_headers is not None:
             for header in requested_headers.split(","):
                 if header.lower().strip() not in self.allow_headers:
                     failures.add("Headers")
