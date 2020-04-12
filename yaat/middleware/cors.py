@@ -9,14 +9,12 @@ from yaat.responses import Response, TextResponse
 from yaat.types import ASGIApp
 
 
-# https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_response_header
+# https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header
 SAFELISTED_HEADERS = {
-    "Cache-Control",
+    "Accept",
+    "Accept-Language",
     "Content-Language",
     "Content-Type",
-    "Expires",
-    "Last-Modified",
-    "Pragma",
 }
 
 
