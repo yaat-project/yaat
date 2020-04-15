@@ -1,7 +1,7 @@
 import pytest
 
 from yaat.background import BackgroundTask, BackgroundTasks
-from yaat.responses import BackgroundResponse, Response
+from yaat.responses import RunAfterResponse, Response
 
 
 @pytest.mark.asyncio
@@ -17,7 +17,7 @@ async def test_async_task(app, client):
     @app.route("/")
     async def handler(request):
         response = Response()
-        return BackgroundResponse(response, background)
+        return RunAfterResponse(response, background)
 
     res = await client.get("/")
     assert TASK_COMPLETE == True
@@ -35,7 +35,7 @@ async def test_sync_task(app, client):
     async def handler(request):
         response = Response()
         background = BackgroundTask(task)
-        return BackgroundResponse(response, background)
+        return RunAfterResponse(response, background)
 
     res = await client.get("/")
     assert TASK_COMPLETE == True
@@ -57,7 +57,7 @@ async def test_task_with_arguments(app, client):
             "Yaat",
             message="This is background task."
         )
-        return BackgroundResponse(response, background)
+        return RunAfterResponse(response, background)
 
     res = await client.get("/")
     assert MESSAGE == "Hello Yaat, This is background task."
@@ -82,7 +82,7 @@ async def test_multiple_tasks(app, client):
         background = BackgroundTasks()
         background.add(task1)
         background.add(task2)
-        return BackgroundResponse(response, background)
+        return RunAfterResponse(response, background)
 
     res = await client.get("/")
     assert TASK1_COMPLETE == True
@@ -108,7 +108,7 @@ async def test_multiple_both_async_sync_tasks(app, client):
         background = BackgroundTasks()
         background.add(task1)
         background.add(task2)
-        return BackgroundResponse(response, background)
+        return RunAfterResponse(response, background)
 
     res = await client.get("/")
     assert TASK1_COMPLETE == True
