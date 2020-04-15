@@ -283,17 +283,22 @@ class StreamResponse(Response):
         headers: dict = None,
         media_type: str = None,
     ):
+        super().__init__(status_code=status_code, headers=headers, media_type=media_type)
         # check if async generator, if not create generator
         if inspect.isasyncgen(content):
             self.body_gen = content
         else:
             self.body_gen = generate_in_threadpool(content)
-        super().__init__(status_code=status_code, headers=headers, media_type=media_type)
 
-    async def listen_disconnect(self, receive: Receive):
+        # NOTE: workaround for pytest client as it test client continue
+        #        listening for request even after streaming is completed
+        self.streaming = False
+
+    async def when_disconnect_or_finish(self, receive: Receive):
         while True:
             message = await receive()
-            if message["type"] == "http.disconnect":
+            if message["type"] == "http.disconnect" or not self.streaming:
+                self.streaming = False
                 break
 
     async def stream(self, send: Send):
@@ -315,9 +320,11 @@ class StreamResponse(Response):
             "body": b"",
             "more_body": False
         })
+        self.streaming = False
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        tasks = [self.stream(send), self.listen_disconnect(receive)]
+        self.streaming = True
+        tasks = (self.stream(send), self.when_disconnect_or_finish(receive))
         await run_until_first_complete(tasks)
 
 
