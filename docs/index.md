@@ -40,11 +40,13 @@ async def index(request):
 - Provide decorator routes & class based views.
 - Template support with [Jinja2](https://jinja.palletsprojects.com/).
 - Static file serving.
-- Cookie support.
+- Cookie support (client-side session).
 - WebSockets support.
 - Background tasks runner.
 - CORS support.
 - Test client using [httpx](https://www.python-httpx.org/).
+
+> `Yaat` supports the loose coding style. It does not force any solution, and how the project should be structured is decided by the developer.
 
 ## Requirements
 

@@ -1,5 +1,9 @@
 # Release Notes
 
+### 0.1.3
+
+- Added `StreamResponse`.
+
 ### 0.1.2
 
 - Added CORS middleware.
