@@ -2,7 +2,7 @@ import typing
 
 from yaat.requests import Request
 from yaat.responses import Response
-from yaat.types import ASGIApp, Scope, Receive, Send
+from yaat.types import ASGIApp, Scope, Send, Receive
 from yaat.websockets import WebSocket
 
 
@@ -37,4 +37,4 @@ class BaseMiddleware:
         else:
             request = Request(scope, receive)
             response = await self.handle_request(request)
-            await response(send)
+            await response(scope, receive, send)
