@@ -5,7 +5,7 @@ import typing
 from yaat.exceptions import HTTPException
 from yaat.middleware import BaseMiddleware, ExceptionMiddleware
 from yaat.requests import Request
-from yaat.responses import Response, FileResponse
+from yaat.responses import Response
 from yaat.routing import Router
 from yaat.staticfiles import StaticFiles
 from yaat.types import Scope, Receive, Send
