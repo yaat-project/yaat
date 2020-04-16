@@ -12,7 +12,7 @@ import typing
 from yaat.background import BackgroundTask
 from yaat.concurrency import generate_in_threadpool, run_until_first_complete
 from yaat.constants import ENCODING_METHOD
-from yaat.types import Scope, Receive, Send
+from yaat.typing import Scope, Receive, Send
 
 
 # Workaround for adding samesite support to python versions below 3.8

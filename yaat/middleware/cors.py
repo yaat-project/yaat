@@ -1,12 +1,12 @@
 import re
 import typing
 
+from yaat.components import Headers
 from yaat.constants import HTTP_METHODS
-from yaat.datatypes import Headers
 from yaat.middleware import BaseMiddleware
 from yaat.requests import Request
 from yaat.responses import Response, TextResponse
-from yaat.types import ASGIApp
+from yaat.typing import ASGIApp
 
 
 # https://developer.mozilla.org/en-US/docs/Glossary/CORS-safelisted_request_header

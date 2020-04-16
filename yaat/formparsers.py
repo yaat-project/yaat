@@ -5,8 +5,8 @@ import multipart
 import typing
 
 
+from yaat.components import Form, Headers, UploadFile
 from yaat.constants import ENCODING_METHOD
-from yaat.datatypes import Form, Headers, UploadFile
 
 
 class FormParser:

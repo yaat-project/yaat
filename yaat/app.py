@@ -8,7 +8,7 @@ from yaat.requests import Request
 from yaat.responses import Response
 from yaat.routing import Router
 from yaat.staticfiles import StaticFiles
-from yaat.types import Scope, Receive, Send
+from yaat.typing import Scope, Receive, Send
 from yaat.websockets import WebSocket
 
 

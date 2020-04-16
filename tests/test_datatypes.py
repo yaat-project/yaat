@@ -1,7 +1,7 @@
 import io
 import pytest
 
-from yaat.datatypes import (
+from yaat.components import (
     URL,
     Address,
     Headers,

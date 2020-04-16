@@ -2,7 +2,7 @@ import typing
 
 from yaat.requests import Request
 from yaat.responses import Response
-from yaat.types import ASGIApp, Scope, Send, Receive
+from yaat.typing import ASGIApp, Scope, Send, Receive
 from yaat.websockets import WebSocket
 
 

@@ -4,7 +4,7 @@ import typing
 
 from yaat.constants import ENCODING_METHOD
 from yaat.concurrency import run_in_threadpool
-from yaat.types import Scope
+from yaat.typing import Scope
 
 
 class DictMapper(dict):
