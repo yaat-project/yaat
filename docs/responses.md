@@ -140,19 +140,43 @@ It is used to stream a response from Yaat to the client browser. It is good for 
 
 `StreamResponse(content, status_code=200, headers=None, media_type=None)`
 
-- `content` - method that returns a generator.
+- `content` - sync/async generator method.
 - `status_code` - HTTP status code, 200 by default.
 - `headers` - response headers.
 - `media_type` - string of media type.
 
 ```python
 from yaat.response import StreamResponse
+import asyncio
 
-async def hello():
-    yield('Hello World')
+async def greet(words):
+    yield("<html><body>")
+    for word in words:
+        yield f"<h1>{word}</h1>"
+        await asyncio.sleep(0.5)
+    yield("</body></html>")
 
 @app.route("/")
 async def index(request):
-    generator = hello()
+    generator = greet(["Hello", "World"])
+    return StreamResponse(generator, media_type="text/plain")
+```
+
+You can also pass a synchrous generator like below.
+
+```python
+from yaat.response import StreamResponse
+import time
+
+def greet(words):
+    yield("<html><body>")
+    for word in words:
+        yield f"<h1>{word}</h1>"
+        time.sleep(0.5)
+    yield("</body></html>")
+
+@app.route("/")
+async def index(request):
+    generator = greet(["Hello", "World"])
     return StreamResponse(generator, media_type="text/plain")
 ```
