@@ -32,10 +32,11 @@ class CORSMiddleware(BaseMiddleware):
     ):
         # https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
 
+        super().__init__(app)
+
         if "*" in allow_methods:
             allow_methods = HTTP_METHODS
 
-        self.app = app
         self.allow_origins = allow_origins
         self.allow_methods = allow_methods
         self.allow_headers = [header.lower() for header in allow_headers]

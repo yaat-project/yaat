@@ -3,7 +3,7 @@ import inspect
 import typing
 
 from yaat.exceptions import HTTPException
-from yaat.middleware import BaseMiddleware, ExceptionMiddleware
+from yaat.middleware import BaseMiddleware, ExceptionMiddleware, LifespanMiddleware
 from yaat.requests import Request
 from yaat.responses import Response
 from yaat.routing import Router
@@ -13,12 +13,21 @@ from yaat.websockets import WebSocket
 
 
 class Yaat:
-    def __init__(self, middlewares: typing.Sequence[BaseMiddleware] = None):
+    def __init__(
+        self,
+        middlewares: typing.Sequence[BaseMiddleware] = None,
+        on_startup: typing.Sequence[callable] = None,
+        on_shutdown: typing.Sequence[callable] = None
+    ):
         self.router = Router()
-        self.middleware = BaseMiddleware(self)
+        self.middleware = LifespanMiddleware(
+            app=self,
+            on_startup=on_startup,
+            on_shutdown=on_shutdown
+        )
 
-        # NOTE: default middleware(s) registration
-        self.__register_default_middlewares(middlewares)
+        # NOTE: setup middleware(s) registration
+        self.__setup_middlewares(middlewares)
 
 
     # NOTE: Routing
@@ -98,7 +107,7 @@ class Yaat:
     def add_middleware(self, middleware_cls: BaseMiddleware, *args, **kwargs):
         self.middleware.add(middleware_cls, *args,**kwargs)
 
-    def __register_default_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
+    def __setup_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
         # register exception handling middleware
         self.add_middleware(ExceptionMiddleware)
 
