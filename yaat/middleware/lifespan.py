@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 import typing
 
 from yaat.middleware.base import BaseMiddleware
@@ -41,7 +42,7 @@ class LifespanMiddleware(BaseMiddleware):
             await self.startup()
         except Exception:
             message = traceback.print_exc()
-            await send({"type": "lifespan.startup.failed", "message": msg})
+            await send({"type": "lifespan.startup.failed", "message": message})
             raise
     
         await send({"type": "lifespan.startup.complete"})
