@@ -32,9 +32,11 @@ Yaat is an asynchronous web framework/toolkit.
 - Provide decorator routes & class based views.
 - Template support with [Jinja2](https://jinja.palletsprojects.com/).
 - Static file serving.
+- HTTP streaming response.
 - Cookie support.
 - WebSocket support.
 - Background tasks runner.
+- Server startup and shutdown events.
 - CORS support.
 - Test client using [httpx](https://www.python-httpx.org/).
 

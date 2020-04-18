@@ -13,6 +13,7 @@ nav:
     - Static Files: staticfiles.md
     - Templates: templates.md
     - Background Tasks: backgroundtasks.md
+    - Events: events.md
     - Middleware: middleware.md
     - Test Client: testclient.md
     - Yaat Examples: examples.md
