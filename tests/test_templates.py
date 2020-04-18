@@ -7,7 +7,9 @@ from yaat.templating import Jinja2Template
 
 @pytest.mark.asyncio
 async def test_templates(app, client, tmpdir):
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".html", delete=False)
+    temp = tempfile.NamedTemporaryFile(
+        dir=tmpdir, suffix=".html", delete=False
+    )
     temp.write(b"<html>Hello World</html>")
     temp.close()
 

@@ -3,7 +3,11 @@ import inspect
 import typing
 
 from yaat.exceptions import HTTPException
-from yaat.middleware import BaseMiddleware, ExceptionMiddleware, LifespanMiddleware
+from yaat.middleware import (
+    BaseMiddleware,
+    ExceptionMiddleware,
+    LifespanMiddleware,
+)
 from yaat.parsers import UrlParamParser
 from yaat.requests import Request
 from yaat.responses import Response
@@ -49,15 +53,21 @@ class Yaat:
     def add_websocket_route(self, path: str, handler: callable):
         self.router.add_websocket_route(path=path, handler=handler)
 
-    def mount(self, router: Router, prefix: str = None, websocket: bool = False):
+    def mount(
+        self, router: Router, prefix: str = None, websocket: bool = False
+    ):
         # check if its static route
         static = isinstance(router, StaticFiles)
 
         if prefix and static:
             # NOTE: because 'prefix' is already defined in static route
-            raise ValueError("'prefix' must be None when mounting static routes.")
+            raise ValueError(
+                "'prefix' must be None when mounting static routes."
+            )
         if websocket and static:
-            raise ValueError("'websocket' must be None when mounting static routes.")
+            raise ValueError(
+                "'websocket' must be None when mounting static routes."
+            )
 
         self.router.mount(
             router=router, prefix=prefix, static=static, websocket=websocket,
@@ -80,7 +90,9 @@ class Yaat:
                     raise HTTPException(405)
 
                 # convert url param datatypes to annotation types
-                param_parser = UrlParamParser(handler, kwargs, inspect.isclass(route.handler))
+                param_parser = UrlParamParser(
+                    handler, kwargs, inspect.isclass(route.handler)
+                )
                 kwargs = param_parser.get()
 
                 response = await handler(request, **kwargs)
@@ -105,7 +117,9 @@ class Yaat:
     def add_middleware(self, middleware_cls: BaseMiddleware, *args, **kwargs):
         self.middleware.add(middleware_cls, *args, **kwargs)
 
-    def __setup_middlewares(self, middlewares: typing.Sequence[BaseMiddleware] = None):
+    def __setup_middlewares(
+        self, middlewares: typing.Sequence[BaseMiddleware] = None
+    ):
         # register exception handling middleware
         self.add_middleware(ExceptionMiddleware)
 
@@ -116,7 +130,9 @@ class Yaat:
             self.add_middleware(middleware)
 
     # NOTE: Test Client
-    def test_client(self, base_url: str = "http://testserver") -> httpx.AsyncClient:
+    def test_client(
+        self, base_url: str = "http://testserver"
+    ) -> httpx.AsyncClient:
         if not hasattr(self, "_test_client"):
             self._test_client = httpx.AsyncClient(app=self, base_url=base_url)
 

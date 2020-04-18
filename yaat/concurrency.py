@@ -51,7 +51,9 @@ def _next(iterator: typing.Iterator) -> typing.Any:
         raise _StopGenerator
 
 
-async def generate_in_threadpool(iterator: typing.Iterator) -> typing.AsyncGenerator:
+async def generate_in_threadpool(
+    iterator: typing.Iterator,
+) -> typing.AsyncGenerator:
     while True:
         try:
             yield await run_in_threadpool(_next, iterator)
@@ -59,7 +61,9 @@ async def generate_in_threadpool(iterator: typing.Iterator) -> typing.AsyncGener
             break
 
 
-async def run_until_first_complete(tasks: typing.Tuple[typing.Callable]) -> None:
+async def run_until_first_complete(
+    tasks: typing.Tuple[typing.Callable],
+) -> None:
     # create tasks
     # https://docs.python.org/3/library/asyncio-task.html#asyncio-example-wait-coroutine
     try:
@@ -72,7 +76,9 @@ async def run_until_first_complete(tasks: typing.Tuple[typing.Callable]) -> None
 
     # run until at least one of the task is complete
     # https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
-    done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+    done, pending = await asyncio.wait(
+        tasks, return_when=asyncio.FIRST_COMPLETED
+    )
 
     # cancel pending tasks
     for task in pending:

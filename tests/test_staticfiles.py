@@ -71,7 +71,7 @@ async def test_configured_with_file(app, client, tmpdir):
     temp.close()
 
     with pytest.raises(RuntimeError) as exc_info:
-        statics = StaticFiles(path="/static", directory=temp.name)
+        StaticFiles(path="/static", directory=temp.name)
 
     assert "is not a directory" in str(exc_info.value)
 
@@ -167,7 +167,9 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
 @pytest.mark.asyncio
 async def test_static_html(app, client, tmpdir):
     # create html file with name
-    named_html = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".html", delete=False)
+    named_html = tempfile.NamedTemporaryFile(
+        dir=tmpdir, suffix=".html", delete=False
+    )
     named_html.write(b"<h1>Hello World</h1>")
     named_html.close()
 

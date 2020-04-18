@@ -12,19 +12,17 @@ class HTTPException(Exception):
 
     @property
     def response(self) -> TextResponse:
-        return TextResponse(status_code=self.status_code, content=self.details,)
+        return TextResponse(
+            status_code=self.status_code, content=self.details,
+        )
 
     def __repr__(self) -> str:
         class_name = self.__class__.__name__
-        return (
-            f"{class_name}(status_code={self.status_code!r}, detail={self.details!r})"
-        )
+        return f"{class_name}(status_code={self.status_code!r}, detail={self.details!r})"
 
     def __str__(self) -> str:
         class_name = self.__class__.__name__
-        return (
-            f"{class_name}(status_code={self.status_code!r}, detail={self.details!r})"
-        )
+        return f"{class_name}(status_code={self.status_code!r}, detail={self.details!r})"
 
 
 class WebSocketException(RuntimeError):
