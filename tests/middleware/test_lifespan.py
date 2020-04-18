@@ -71,7 +71,7 @@ async def test_raise_on_startup():
     ran_startup = False
     startup_failed = False
 
-    async def startup():
+    def startup():
         nonlocal ran_startup
         ran_startup = True
         raise Exception
@@ -104,11 +104,11 @@ async def test_raise_on_shutdown():
     ran_shutdown = False
     shutdown_failed = False
 
-    async def startup():
+    def startup():
         nonlocal ran_startup
         ran_startup = True
 
-    async def shutdown():
+    def shutdown():
         nonlocal ran_shutdown
         ran_shutdown = True
         raise
