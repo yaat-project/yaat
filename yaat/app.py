@@ -4,6 +4,7 @@ import typing
 
 from yaat.exceptions import HTTPException
 from yaat.middleware import BaseMiddleware, ExceptionMiddleware, LifespanMiddleware
+from yaat.parsers import UrlParamParser
 from yaat.requests import Request
 from yaat.responses import Response
 from yaat.routing import Router
@@ -82,6 +83,10 @@ class Yaat:
                         raise HTTPException(405)
                 if not route.is_valid_method(request.method):
                     raise HTTPException(405)
+
+                # convert url param datatypes to annotation types
+                param_parser = UrlParamParser(handler, kwargs, inspect.isclass(route.handler))
+                kwargs = param_parser.get()
 
                 response = await handler(request, **kwargs)
             else:

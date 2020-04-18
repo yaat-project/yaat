@@ -1,9 +1,9 @@
 from multipart.multipart import parse_options_header
 from urllib.parse import parse_qsl
 from enum import Enum
+import inspect
 import multipart
 import typing
-
 
 from yaat.components import Form, Headers, UploadFile
 from yaat.constants import ENCODING_METHOD
@@ -141,3 +141,57 @@ class MultiPartParser:
 
         parser.finalize()
         return Form(items)
+
+
+class UrlParamParser:
+    """
+    To convert URL parameter datatypes to what annotation defines
+    """
+
+    def __init__(self, handler: typing.Callable, kwargs: dict, is_class: bool):
+        specs = inspect.getfullargspec(handler)
+        # if class, ignore first 2 params (self, request) else 1 (request)
+        args_index = 2 if is_class else 1
+
+        self.convertors = {
+            "int": self.to_interger,
+            "float": self.to_float,
+            "str": self.to_string,
+        }
+        self.args = specs.args[args_index:]
+        self.annotations = specs.annotations
+        self.kwargs = kwargs
+
+        self.parse()
+
+    def get(self):
+        return self.kwargs
+
+    def parse(self):
+        convertors = self.convertors
+        kwargs = self.kwargs
+
+        # convert to the datatype annoation defined
+        for param, dtype in self.annotations.items():
+            if param in kwargs.keys():
+                value = kwargs[param]
+                convertor = self.convertors.get(dtype.__name__, self.to_string)
+                kwargs[param] = convertor(value)
+
+        self.kwargs = kwargs
+
+
+    def to_interger(self, value: str) -> int:
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return value
+
+    def to_float(self, value: str) -> int:
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return value
+
+    def to_string(self, value: typing.Any) -> str:
+        return str(value)
