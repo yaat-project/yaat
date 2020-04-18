@@ -36,7 +36,11 @@ class Jinja2Template(BaseTemplate):
         if context is None:
             context = {}
 
-        return self.directory.get_template(template_name).render(**context).encode()
+        return (
+            self.directory.get_template(template_name)
+            .render(**context)
+            .encode()
+        )
 
     def TemplateResponse(
         self,

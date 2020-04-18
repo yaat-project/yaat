@@ -32,7 +32,9 @@ class MultiPartParser:
         HEADERS_FINISHED = 7
         END = 8
 
-    def __init__(self, headers: Headers, stream: typing.AsyncGenerator[bytes, None]):
+    def __init__(
+        self, headers: Headers, stream: typing.AsyncGenerator[bytes, None]
+    ):
         self.headers = headers
         self.stream = stream
         self.messages = []
@@ -47,7 +49,9 @@ class MultiPartParser:
         events = self.MultiPartMessage
 
         # Parse the Content-Type header to get the multipart boundary.
-        content_type, params = parse_options_header(self.headers.get("content-type"))
+        content_type, params = parse_options_header(
+            self.headers.get("content-type")
+        )
         charset = params.get(b"charset", "utf-8")
         if type(charset) == bytes:
             charset = charset.decode(ENCODING_METHOD)
@@ -55,18 +59,24 @@ class MultiPartParser:
 
         # Callbacks dictionary.
         callbacks = {
-            "on_part_begin": lambda: self.messages.append((events.PART_BEGIN, b"")),
+            "on_part_begin": lambda: self.messages.append(
+                (events.PART_BEGIN, b"")
+            ),
             "on_part_data": lambda data, start, end: self.messages.append(
                 (events.PART_DATA, data[start:end])
             ),
-            "on_part_end": lambda: self.messages.append((events.PART_END, b"")),
+            "on_part_end": lambda: self.messages.append(
+                (events.PART_END, b"")
+            ),
             "on_header_field": lambda data, start, end: self.messages.append(
                 (events.HEADER_FIELD, data[start:end])
             ),
             "on_header_value": lambda data, start, end: self.messages.append(
                 (events.HEADER_VALUE, data[start:end])
             ),
-            "on_header_end": lambda: self.messages.append((events.HEADER_END, b"")),
+            "on_header_end": lambda: self.messages.append(
+                (events.HEADER_END, b"")
+            ),
             "on_headers_finished": lambda: self.messages.append(
                 (events.HEADERS_FINISHED, b"")
             ),
@@ -118,8 +128,12 @@ class MultiPartParser:
                     header_value = b""
 
                 elif message_type == events.HEADERS_FINISHED:
-                    disposition, options = parse_options_header(content_disposition)
-                    field_name = self.__user_safe_decode(options[b"name"], charset)
+                    disposition, options = parse_options_header(
+                        content_disposition
+                    )
+                    field_name = self.__user_safe_decode(
+                        options[b"name"], charset
+                    )
 
                     if b"filename" in options:
                         filename = self.__user_safe_decode(
@@ -141,7 +155,10 @@ class MultiPartParser:
                 elif message_type == events.PART_END:
                     if file is None:
                         items.append(
-                            (field_name, self.__user_safe_decode(data, charset))
+                            (
+                                field_name,
+                                self.__user_safe_decode(data, charset),
+                            )
                         )
                     else:
                         await file.seek(0)
@@ -159,7 +176,12 @@ class UrlParamParser:
     To convert URL parameter datatypes to what annotation defines
     """
 
-    def __init__(self, handler: typing.Callable, kwargs: dict, is_class: bool):
+    def __init__(
+        self,
+        handler: typing.Callable,
+        kwargs: typing.Dict[str, str],
+        is_class: bool,
+    ):
         specs = inspect.getfullargspec(handler)
         # if class, ignore first 2 params (self, request) else 1 (request)
         args_index = 2 if is_class else 1
@@ -175,11 +197,10 @@ class UrlParamParser:
 
         self.parse()
 
-    def get(self):
+    def get(self) -> typing.Dict[str, typing.Any]:
         return self.kwargs
 
     def parse(self):
-        convertors = self.convertors
         kwargs = self.kwargs
 
         # convert to the datatype annoation defined

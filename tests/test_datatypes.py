@@ -12,7 +12,9 @@ from yaat.components import (
 
 @pytest.mark.asyncio
 async def test_url():
-    url = URL(url="https://example.com:8080/path/to/somewhere?xyz=123#fragment1")
+    url = URL(
+        url="https://example.com:8080/path/to/somewhere?xyz=123#fragment1"
+    )
 
     assert url.scheme == "https"
     assert url.host == "example.com"
@@ -107,7 +109,9 @@ async def test_url_blank_params():
 @pytest.mark.asyncio
 async def test_form(app, client):
     upload = io.BytesIO(b"test")
-    form = Form([("abc", "123"), ("abc", "456"), ("def", "789"), ("xyz", upload)])
+    form = Form(
+        [("abc", "123"), ("abc", "456"), ("def", "789"), ("xyz", upload)]
+    )
 
     assert "abc" in form
     assert "xyz" in form

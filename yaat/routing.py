@@ -75,11 +75,17 @@ class Router:
         return wrapper
 
     def add_route(
-        self, path: str, handler: callable, methods: list = None, static: bool = False
+        self,
+        path: str,
+        handler: callable,
+        methods: list = None,
+        static: bool = False,
     ):
         assert path not in self.paths, f"Route {path}, already exists"
         self.routes.append(
-            Route(path=path, handler=handler, methods=methods, is_static=static)
+            Route(
+                path=path, handler=handler, methods=methods, is_static=static
+            )
         )
 
     def websocket_route(self, path: str) -> callable:
@@ -91,7 +97,9 @@ class Router:
 
     def add_websocket_route(self, path: str, handler: callable):
         assert path not in self.paths, f"Route {path}, already exists"
-        self.routes.append(Route(path=path, handler=handler, is_websocket=True))
+        self.routes.append(
+            Route(path=path, handler=handler, is_websocket=True)
+        )
 
     def mount(
         self,
@@ -105,7 +113,9 @@ class Router:
 
         # register sub routes
         for route in routes:
-            path = self.__add_prefix(prefix, route.path) if prefix else route.path
+            path = (
+                self.__add_prefix(prefix, route.path) if prefix else route.path
+            )
 
             if websocket:
                 self.add_websocket_route(path=path, handler=route.handler)
@@ -133,4 +143,6 @@ class Router:
         if not prefix.startswith("/"):
             prefix = "/" + prefix
 
-        return f"{prefix}{path}" if path.startswith("/") else f"{prefix}/{path}"
+        return (
+            f"{prefix}{path}" if path.startswith("/") else f"{prefix}/{path}"
+        )

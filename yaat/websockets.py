@@ -92,7 +92,9 @@ class WebSocket(HTTPConnection):
     async def accept(self, subprotocol: str = None):
         if self.client_state == WebSocketStates.CONNECTING:
             await self.receive()
-        await self.send({"type": WsMessages.ACCEPT, "subprotocol": subprotocol})
+        await self.send(
+            {"type": WsMessages.ACCEPT, "subprotocol": subprotocol}
+        )
 
     async def close(self, code: int = WsCloseEvent.NORMAL_CLOSURE):
         # Websocket status codes
@@ -136,7 +138,11 @@ class WebSocket(HTTPConnection):
 
         message = await self.receive()
         self.__raise_if_disconnected(message)
-        text = message["text"] if mode == "text" else message["bytes"].decode("utf-8")
+        text = (
+            message["text"]
+            if mode == "text"
+            else message["bytes"].decode("utf-8")
+        )
         return json.loads(text)
 
     # Exception handlers

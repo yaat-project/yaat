@@ -17,7 +17,7 @@ async def test_sync_lifespan():
         ran_shutdown = True
 
     app = Yaat(on_startup=[startup], on_shutdown=[shutdown])
-    client = app.test_client()
+    app.test_client()
 
     # mock async scope, receive, send
     asgi_scope = {"type": "lifespan"}
@@ -51,7 +51,7 @@ async def test_async_lifespan():
         ran_shutdown = True
 
     app = Yaat(on_startup=[startup], on_shutdown=[shutdown])
-    client = app.test_client()
+    app.test_client()
 
     # mock async scope, receive, send
     asgi_scope = {"type": "lifespan"}
@@ -82,7 +82,7 @@ async def test_raise_on_startup():
         raise Exception
 
     app = Yaat(on_startup=[startup])
-    client = app.test_client()
+    app.test_client()
 
     # mock async scope, receive, send
     asgi_scope = {"type": "lifespan"}
@@ -119,7 +119,7 @@ async def test_raise_on_shutdown():
         raise
 
     app = Yaat(on_startup=[startup], on_shutdown=[shutdown])
-    client = app.test_client()
+    app.test_client()
 
     # mock async scope, receive, send
     asgi_scope = {"type": "lifespan"}

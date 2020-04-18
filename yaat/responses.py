@@ -44,8 +44,10 @@ class Response:
             return content
         return content.encode(self.charset)
 
-    def get_raw_headers(self, headers: typing.Mapping[str, str] = None) -> list:
-        if headers == None:
+    def get_raw_headers(
+        self, headers: typing.Mapping[str, str] = None
+    ) -> list:
+        if headers is None:
             headers = self.headers
 
         if headers is None:
@@ -72,7 +74,9 @@ class Response:
         if content_type is not None and populate_content_type:
             if content_type.startswith("text/"):
                 content_type += "; charset=" + self.charset
-            raw_headers.append((b"content-type", content_type.encode(ENCODING_METHOD)))
+            raw_headers.append(
+                (b"content-type", content_type.encode(ENCODING_METHOD))
+            )
 
         return raw_headers
 
@@ -115,7 +119,9 @@ class Response:
         self.headers["set-cookie"] = cookie.output(header="").strip()
 
     def delete_cookie(self, key: str, path: str = "/", domain: str = None):
-        self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
+        self.set_cookie(
+            key=key, path=path, domain=domain, expires=0, max_age=0
+        )
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
         await send(
@@ -189,7 +195,9 @@ class FileResponse(Response):
                     content_disposition_filename
                 )
             else:
-                content_disposition = 'attachment; filename="{}"'.format(self.filename)
+                content_disposition = 'attachment; filename="{}"'.format(
+                    self.filename
+                )
             self.headers["content-disposition"] = content_disposition
 
         if stat_result is not None:
@@ -219,7 +227,7 @@ class FileResponse(Response):
                 }
             )
             await send(
-                {"type": "http.response.body", "body": b"file not found",}
+                {"type": "http.response.body", "body": b"file not found"}
             )
             return
 
@@ -318,7 +326,9 @@ class StreamResponse(Response):
                 }
             )
 
-        await send({"type": "http.response.body", "body": b"", "more_body": False})
+        await send(
+            {"type": "http.response.body", "body": b"", "more_body": False}
+        )
         self.streaming = False
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):

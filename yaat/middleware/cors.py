@@ -48,13 +48,17 @@ class CORSMiddleware(BaseMiddleware):
         self.allow_origin_regex = (
             re.compile(allow_origin_regex) if allow_origin_regex else None
         )
-        self.preflight_allow_headers = sorted(SAFELISTED_HEADERS | set(allow_headers))
+        self.preflight_allow_headers = sorted(
+            SAFELISTED_HEADERS | set(allow_headers)
+        )
 
     def is_allowed_origin(self, origin: str) -> bool:
         if self.allow_all_origins:
             return True
 
-        if self.allow_origin_regex and self.allow_origin_regex.fullmatch(origin):
+        if self.allow_origin_regex and self.allow_origin_regex.fullmatch(
+            origin
+        ):
             return True
 
         return origin in self.allow_origins
@@ -64,12 +68,16 @@ class CORSMiddleware(BaseMiddleware):
 
         requested_origin = request_headers["origin"]
         requested_method = request_headers["access-control-request-method"]
-        requested_headers = request_headers.get("access-control-request-headers")
+        requested_headers = request_headers.get(
+            "access-control-request-headers"
+        )
 
         # preflight headers
         headers = {
             "Access-Control-Allow-Methods": ", ".join(self.allow_methods),
-            "Access-Control-Allow-Headers": ", ".join(self.preflight_allow_headers),
+            "Access-Control-Allow-Headers": ", ".join(
+                self.preflight_allow_headers
+            ),
             "Access-Control-Max-Age": str(self.max_age),
         }
         if self.allow_credentials:
@@ -77,7 +85,10 @@ class CORSMiddleware(BaseMiddleware):
         failures = []
 
         # check origin
-        if self.is_allowed_origin(requested_origin) and not self.allow_all_origins:
+        if (
+            self.is_allowed_origin(requested_origin)
+            and not self.allow_all_origins
+        ):
             headers["Access-Control-Allow-Origin"] = requested_origin
             headers["Vary"] = "Origin"
         elif self.allow_all_origins:
@@ -105,7 +116,9 @@ class CORSMiddleware(BaseMiddleware):
         # do not return 204, as some legacy browser does not work with 204
         return Response(status_code=200, headers=headers)
 
-    def simple_response(self, request_headers: Headers, response: Response) -> Response:
+    def simple_response(
+        self, request_headers: Headers, response: Response
+    ) -> Response:
         origin = request_headers["origin"]
         has_cookie = "cookie" in request_headers
 

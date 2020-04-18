@@ -6,7 +6,10 @@ from yaat.concurrency import run_in_threadpool
 
 class BackgroundTask:
     def __init__(
-        self, function: typing.Callable, *args: typing.Any, **kwargs: typing.Any
+        self,
+        function: typing.Callable,
+        *args: typing.Any,
+        **kwargs: typing.Any
     ):
         self.function = function
         self.args = args
@@ -28,7 +31,12 @@ class BackgroundTasks:
     def __init__(self):
         self.tasks = []
 
-    def add(self, function: typing.Callable, *args: typing.Any, **kwargs: typing.Any):
+    def add(
+        self,
+        function: typing.Callable,
+        *args: typing.Any,
+        **kwargs: typing.Any
+    ):
         self.tasks.append(BackgroundTask(function, *args, **kwargs))
 
     async def __call__(self):

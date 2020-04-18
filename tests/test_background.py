@@ -19,8 +19,8 @@ async def test_async_task(app, client):
         response = Response()
         return RunAfterResponse(response, background)
 
-    res = await client.get("/")
-    assert TASK_COMPLETE == True
+    await client.get("/")
+    assert TASK_COMPLETE
 
 
 @pytest.mark.asyncio
@@ -37,8 +37,8 @@ async def test_sync_task(app, client):
         background = BackgroundTask(task)
         return RunAfterResponse(response, background)
 
-    res = await client.get("/")
-    assert TASK_COMPLETE == True
+    await client.get("/")
+    assert TASK_COMPLETE
 
 
 @pytest.mark.asyncio
@@ -52,10 +52,12 @@ async def test_task_with_arguments(app, client):
     @app.route("/")
     async def handler(request):
         response = Response()
-        background = BackgroundTask(task, "Yaat", message="This is background task.")
+        background = BackgroundTask(
+            task, "Yaat", message="This is background task."
+        )
         return RunAfterResponse(response, background)
 
-    res = await client.get("/")
+    await client.get("/")
     assert MESSAGE == "Hello Yaat, This is background task."
 
 
@@ -80,9 +82,9 @@ async def test_multiple_tasks(app, client):
         background.add(task2)
         return RunAfterResponse(response, background)
 
-    res = await client.get("/")
-    assert TASK1_COMPLETE == True
-    assert TASK2_COMPLETE == True
+    await client.get("/")
+    assert TASK1_COMPLETE
+    assert TASK2_COMPLETE
 
 
 @pytest.mark.asyncio
@@ -106,6 +108,6 @@ async def test_multiple_both_async_sync_tasks(app, client):
         background.add(task2)
         return RunAfterResponse(response, background)
 
-    res = await client.get("/")
-    assert TASK1_COMPLETE == True
-    assert TASK2_COMPLETE == True
+    await client.get("/")
+    assert TASK1_COMPLETE
+    assert TASK2_COMPLETE

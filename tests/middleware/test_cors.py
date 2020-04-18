@@ -57,16 +57,20 @@ async def test_allow_specific_origin(app, client):
         },
     )
     assert res.status_code == 200
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
-    assert "X-My-Custom-Header" in res.headers["access-control-allow-headers"].split(
-        ", "
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
     )
+    assert "X-My-Custom-Header" in res.headers[
+        "access-control-allow-headers"
+    ].split(", ")
 
     # simple request
     res = await client.get("/", headers={"Origin": "http://testserver.com"})
     assert res.status_code == 200
     assert res.text == "hello world"
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
+    )
 
     # non-cors request
     res = await client.get("/")
@@ -109,10 +113,16 @@ async def test_credentialed_return_specific_origin(app, client):
         return TextResponse("hello world")
 
     res = await client.get(
-        "/", headers={"Origin": "http://testserver.com", "Cookie": "cookie=monster"}
+        "/",
+        headers={
+            "Origin": "http://testserver.com",
+            "Cookie": "cookie=monster",
+        },
     )
     assert res.status_code == 200
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
+    )
 
 
 @pytest.mark.asyncio
@@ -125,7 +135,9 @@ async def test_vary_headers_origin_default(app, client):
 
     res = await client.get("/", headers={"Origin": "http://testserver.com"})
     assert res.status_code == 200
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
+    )
     assert res.headers["vary"] == "Origin"
 
 
@@ -139,7 +151,9 @@ async def test_vary_headers_set(app, client):
 
     res = await client.get("/", headers={"Origin": "http://testserver.com"})
     assert res.status_code == 200
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
+    )
     assert res.headers["vary"] == "User-Agent, Origin"
 
 
@@ -165,10 +179,12 @@ async def test_allow_origin_regex(app, client):
         },
     )
     assert res.status_code == 200
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
-    assert "X-My-Custom-Header" in res.headers["access-control-allow-headers"].split(
-        ", "
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
     )
+    assert "X-My-Custom-Header" in res.headers[
+        "access-control-allow-headers"
+    ].split(", ")
 
     # disallowed preflight request
     res = await client.options(
@@ -187,7 +203,9 @@ async def test_allow_origin_regex(app, client):
     res = await client.get("/", headers={"Origin": "http://testserver.com"})
     assert res.status_code == 200
     assert res.text == "hello world"
-    assert res.headers["access-control-allow-origin"] == "http://testserver.com"
+    assert (
+        res.headers["access-control-allow-origin"] == "http://testserver.com"
+    )
 
     # disallowed simple request
     res = await client.get("/", headers={"Origin": "http://testserver.org"})

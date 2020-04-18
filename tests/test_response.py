@@ -234,8 +234,6 @@ async def test_head_method(app, client):
 
 @pytest.mark.asyncio
 async def test_stream_response(app, client):
-    filled_by_bg_task = ""
-
     @app.route("/")
     async def handler(request):
         async def get_numbers(min, max):
