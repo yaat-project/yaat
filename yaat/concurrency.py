@@ -60,7 +60,14 @@ async def generate_in_threadpool(iterator: typing.Iterator) -> typing.AsyncGener
 async def run_until_first_complete(tasks: typing.Tuple[typing.Callable]) -> None:
     # create tasks
     # https://docs.python.org/3/library/asyncio-task.html#asyncio-example-wait-coroutine
-    tasks = tuple(asyncio.create_task(task) for task in tasks)
+    try:
+        tasks = tuple(asyncio.create_task(task) for task in tasks)
+    except AttributeError:
+        # create_task is added in python3.7 and in python3.6 it is only available
+        # as a method on event loop
+        loop = asyncio.get_event_loop()
+        tasks = tuple(loop.create_task(task) for task in tasks)
+
 
     # run until at least one of the task is complete
     # https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
