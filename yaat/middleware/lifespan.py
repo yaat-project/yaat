@@ -44,7 +44,7 @@ class LifespanMiddleware(BaseMiddleware):
             message = traceback.print_exc()
             await send({"type": "lifespan.startup.failed", "message": message})
             raise
-    
+
         await send({"type": "lifespan.startup.complete"})
 
         message = await receive()
