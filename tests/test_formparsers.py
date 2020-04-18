@@ -8,6 +8,7 @@ class ForceMultipartRequest(dict):
     def __bol__(self):
         return True
 
+
 FORCE_MULTIPART_REQ = ForceMultipartRequest()
 
 
@@ -40,7 +41,7 @@ async def test_data(app, client):
 async def test_upload_files(app, client, tmpdir):
     CONTENT = b"<file_content>"
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.txt', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".txt", delete=False)
     temp.write(CONTENT)
     temp.close()
     filename = temp.name.split("/")[-1]
@@ -53,8 +54,8 @@ async def test_upload_files(app, client, tmpdir):
         response_data = {
             "filename": upload.name,
             "content": (await upload.read()).decode("utf-8"),
-            "content_type": upload.content_type
-        }        
+            "content_type": upload.content_type,
+        }
 
         return JSONResponse(response_data)
 
@@ -69,12 +70,12 @@ async def test_upload_files(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_multiple_upload_files(app, client, tmpdir):
-    temp1 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.txt', delete=False)
+    temp1 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".txt", delete=False)
     temp1.write(b"<file_content>")
     temp1.close()
     file1 = temp1.name.split("/")[-1]
 
-    temp2 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp2 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp2.write(b"<image>")
     temp2.close()
     file2 = temp2.name.split("/")[-1]
@@ -89,14 +90,14 @@ async def test_multiple_upload_files(app, client, tmpdir):
             "upload1": {
                 "filename": upload1.name,
                 "content": (await upload1.read()).decode("utf-8"),
-                "content_type": upload1.content_type
+                "content_type": upload1.content_type,
             },
             "upload2": {
                 "filename": upload2.name,
                 "content": (await upload2.read()).decode("utf-8"),
-                "content_type": upload2.content_type
-            }
-        }        
+                "content_type": upload2.content_type,
+            },
+        }
 
         return JSONResponse(response_data)
 
@@ -106,24 +107,24 @@ async def test_multiple_upload_files(app, client, tmpdir):
             "upload1": {
                 "filename": file1,
                 "content": "<file_content>",
-                "content_type": "text/plain"
+                "content_type": "text/plain",
             },
             "upload2": {
                 "filename": file2,
                 "content": "<image>",
-                "content_type": "image/png"
-            }
+                "content_type": "image/png",
+            },
         }
 
 
 @pytest.mark.asyncio
 async def test_multi_items(app, client, tmpdir):
-    temp1 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.txt', delete=False)
+    temp1 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".txt", delete=False)
     temp1.write(b"<file_content>")
     temp1.close()
     file1 = temp1.name.split("/")[-1]
 
-    temp2 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp2 = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp2.write(b"<image>")
     temp2.close()
     file2 = temp2.name.split("/")[-1]
@@ -141,35 +142,33 @@ async def test_multi_items(app, client, tmpdir):
             "upload1": {
                 "filename": upload1.name,
                 "content": (await upload1.read()).decode("utf-8"),
-                "content_type": upload1.content_type
+                "content_type": upload1.content_type,
             },
             "upload2": {
                 "filename": upload2.name,
                 "content": (await upload2.read()).decode("utf-8"),
-                "content_type": upload2.content_type
-            }
-        }        
+                "content_type": upload2.content_type,
+            },
+        }
 
         return JSONResponse(response_data)
 
     with open(temp1.name, "rb") as f1, open(temp2.name, "rb") as f2:
         res = await client.post(
-            "/",
-            data={"abc": "123"},
-            files={"test1": f1, "test2": f2}
+            "/", data={"abc": "123"}, files={"test1": f1, "test2": f2}
         )
         assert res.json() == {
             "data": "123",
             "upload1": {
                 "filename": file1,
                 "content": "<file_content>",
-                "content_type": "text/plain"
+                "content_type": "text/plain",
             },
             "upload2": {
                 "filename": file2,
                 "content": "<image>",
-                "content_type": "image/png"
-            }
+                "content_type": "image/png",
+            },
         }
 
 
@@ -189,7 +188,7 @@ async def test_multipart_request_mixed_files_and_data(app, client, tmpdir):
             "upload": {
                 "filename": upload1.name,
                 "content": (await upload1.read()).decode("utf-8"),
-                "content_type": upload1.content_type
+                "content_type": upload1.content_type,
             },
         }
         return JSONResponse(response_data)
@@ -212,9 +211,7 @@ async def test_multipart_request_mixed_files_and_data(app, client, tmpdir):
             b"<file_content>\r\n"
             b"--XXXXXXXXXX--\r\n"
         ),
-        headers={
-            "Content-Type": "multipart/form-data; boundary=XXXXXXXXXX"
-        },
+        headers={"Content-Type": "multipart/form-data; boundary=XXXXXXXXXX"},
     )
 
     assert res.json() == {
@@ -223,7 +220,7 @@ async def test_multipart_request_mixed_files_and_data(app, client, tmpdir):
         "upload": {
             "filename": "file.txt",
             "content": "<file_content>",
-            "content_type": "text/plain"
+            "content_type": "text/plain",
         },
     }
 
@@ -238,7 +235,7 @@ async def test_multipart_with_chartset_for_filename(app, client):
         response_data = {
             "filename": upload.name,
             "content": (await upload.read()).decode("utf-8"),
-            "content_type": upload.content_type
+            "content_type": upload.content_type,
         }
         return JSONResponse(response_data)
 
@@ -260,7 +257,7 @@ async def test_multipart_with_chartset_for_filename(app, client):
     assert res.json() == {
         "filename": "文書.txt",
         "content": "<file_content>",
-        "content_type": "text/plain"
+        "content_type": "text/plain",
     }
 
 
@@ -274,7 +271,7 @@ async def test_multipart_without_charset_for_filename(app, client):
         response_data = {
             "filename": upload.name,
             "content": (await upload.read()).decode("utf-8"),
-            "content_type": upload.content_type
+            "content_type": upload.content_type,
         }
         return JSONResponse(response_data)
 
@@ -288,15 +285,13 @@ async def test_multipart_without_charset_for_filename(app, client):
             b"<file_content>\r\n"
             b"--XXXXXXXXXX--\r\n"
         ),
-        headers={
-            "Content-Type": "multipart/form-data; boundary=XXXXXXXXXX"
-        },
+        headers={"Content-Type": "multipart/form-data; boundary=XXXXXXXXXX"},
     )
 
     assert res.json() == {
         "filename": "文書.txt",
         "content": "<file_content>",
-        "content_type": "text/plain"
+        "content_type": "text/plain",
     }
 
 
@@ -332,10 +327,7 @@ async def test_urlencoding(app, client, tmpdir):
         form = await request.form()
         return JSONResponse(dict(form))
 
-    res = await client.post("/", data={
-        "abc": "hello mars!",
-        "hello world": "hi!",
-    })
+    res = await client.post("/", data={"abc": "hello mars!", "hello world": "hi!",})
     assert res.json() == {
         "abc": "hello mars!",
         "hello world": "hi!",
@@ -361,10 +353,7 @@ async def test_urlencoded_multi_field_reads_body(app, client, tmpdir):
         form = await request.form()
         return JSONResponse(dict(form))
 
-    res = await client.post("/", data={
-        "abc": "hello mars!",
-        "hello world": "hi!",
-    })
+    res = await client.post("/", data={"abc": "hello mars!", "hello world": "hi!",})
     assert res.json() == {
         "abc": "hello mars!",
         "hello world": "hi!",
@@ -379,10 +368,11 @@ async def test_multipart_multi_field_reads_body(app, client, tmpdir):
         form = await request.form()
         return JSONResponse(dict(form))
 
-    res = await client.post("/", data={
-        "abc": "hello mars!",
-        "hello world": "hi!",
-    }, files=FORCE_MULTIPART_REQ)
+    res = await client.post(
+        "/",
+        data={"abc": "hello mars!", "hello world": "hi!",},
+        files=FORCE_MULTIPART_REQ,
+    )
     assert res.json() == {
         "abc": "hello mars!",
         "hello world": "hi!",

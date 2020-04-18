@@ -13,7 +13,9 @@ except ImportError:
 _T = typing.TypeVar("_T")
 
 
-async def run_in_threadpool(function: typing.Callable[..., _T], *args: typing.Any, **kwargs: typing.Any) -> _T:
+async def run_in_threadpool(
+    function: typing.Callable[..., _T], *args: typing.Any, **kwargs: typing.Any
+) -> _T:
     """
     run function in another thread inside event loops
     it will not block the whole treads in case when

@@ -14,7 +14,7 @@ class ExceptionMiddleware(BaseMiddleware):
         except Exception as err:
             # print traceback and send 500 Internal Server Error
             traceback.print_exc()
-            response = HTTPException(500).response        
+            response = HTTPException(500).response
 
         return response
 

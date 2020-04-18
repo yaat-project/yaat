@@ -88,7 +88,6 @@ class WebSocket(HTTPConnection):
         else:
             raise WebSocketException("Cannot 'send' when disconnected")
 
-
     # Accept/Close connections
     async def accept(self, subprotocol: str = None):
         if self.client_state == WebSocketStates.CONNECTING:
@@ -99,7 +98,6 @@ class WebSocket(HTTPConnection):
         # Websocket status codes
         # https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent#Status_codes
         await self.send({"type": WsMessages.CLOSE, "code": code})
-
 
     # Sending methods
     async def send_text(self, data: str):
@@ -118,7 +116,6 @@ class WebSocket(HTTPConnection):
             message = {"type": WsMessages.SEND, "bytes": raw.encode("utf-8")}
 
         await self.send(message)
-
 
     # Receiving methods
     async def receive_text(self) -> str:
@@ -141,7 +138,6 @@ class WebSocket(HTTPConnection):
         self.__raise_if_disconnected(message)
         text = message["text"] if mode == "text" else message["bytes"].decode("utf-8")
         return json.loads(text)
-
 
     # Exception handlers
     def __raise_if_disconnected(self, message: Message):

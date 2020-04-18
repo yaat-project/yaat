@@ -56,7 +56,7 @@ class StaticFilesHandler:
         request_path = request.path
         # NOTE: remove route prefix and get file path
         if request_path.startswith(self.path) and self.path != "/":
-            filepath = request_path[len(self.path):]
+            filepath = request_path[len(self.path) :]
         else:
             filepath = request_path
         # if starts with / remove
@@ -85,10 +85,7 @@ class StaticFilesHandler:
             # if file response
             else:
                 if is_directory or not is_file_exists:
-                    raise HTTPException(
-                        status_code=404,
-                        details="File does not exists"
-                    )
+                    raise HTTPException(status_code=404, details="File does not exists")
 
                 stat_result = await aio_stat(full_path)
                 response = FileResponse(path=full_path, stat_result=stat_result)
@@ -110,7 +107,7 @@ class StaticFiles:
         self.router.add_route(
             path=self.path,
             handler=StaticFilesHandler(self.path, directory, html),
-            methods=["GET", "HEAD"]
+            methods=["GET", "HEAD"],
         )
 
     @property

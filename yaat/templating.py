@@ -30,9 +30,7 @@ class Jinja2Template(BaseTemplate):
         if not os.path.exists(abspath):
             raise FileNotFoundError(f"Directory {abspath} does not exists.")
 
-        self.__directory = Environment(
-            loader=FileSystemLoader(abspath)
-        )
+        self.__directory = Environment(loader=FileSystemLoader(abspath))
 
     def get(self, template_name: str, context: dict = None) -> bytes:
         if context is None:
@@ -49,7 +47,5 @@ class Jinja2Template(BaseTemplate):
     ) -> HTMLResponse:
         template_data = self.get(template_name, context)
         return HTMLResponse(
-            status_code=status_code,
-            headers=headers,
-            content=template_data
+            status_code=status_code, headers=headers, content=template_data
         )

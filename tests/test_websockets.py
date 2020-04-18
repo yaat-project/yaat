@@ -9,7 +9,7 @@ async def test_websocket_url(ws_uri):
     ws.connect(f"{ws_uri}/hello")
     res = ws.recv()
     assert res == "Hello"
- 
+
 
 @pytest.mark.asyncio
 async def test_websocket_text(ws_uri):

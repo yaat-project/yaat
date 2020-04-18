@@ -61,7 +61,7 @@ class DictMapper(dict):
 
     def values(self):
         return self.__dict__.values()
-    
+
 
 class URL:
     def __init__(self, url: str = "", scope: Scope = None):
@@ -69,7 +69,7 @@ class URL:
             assert not url, 'Cannot set both "url" and "scope".'
 
             self.scheme = scope.get("scheme", "http")
-            self.server = scope.get("server", None)  
+            self.server = scope.get("server", None)
             self.path = scope.get("root_path", "") + scope["path"]
             self.query = scope.get("query_string", b"")
             self.host_header = scope["headers"]
@@ -103,7 +103,7 @@ class URL:
 
     @server.setter
     def server(self, server: typing.Tuple[str, int]):
-        self.__server = server # ip and port
+        self.__server = server  # ip and port
 
     @property
     def netloc(self) -> str:
@@ -225,7 +225,10 @@ class Address:
 
 class Headers(DictMapper):
     def __init__(self, raw_headers: typing.List[typing.Tuple[bytes, bytes]]):
-        self.__dict__ = {key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD) for key, value in raw_headers}
+        self.__dict__ = {
+            key.decode(ENCODING_METHOD): value.decode(ENCODING_METHOD)
+            for key, value in raw_headers
+        }
 
 
 class QueryParams(DictMapper):
@@ -263,12 +266,18 @@ class QueryParams(DictMapper):
             # if list, iterate and add back
             elif type(value) == list:
                 for each in value:
-                    query_string = f"{key}={each}" if not query_string else\
-                        f"{query_string}&{key}={each}"
+                    query_string = (
+                        f"{key}={each}"
+                        if not query_string
+                        else f"{query_string}&{key}={each}"
+                    )
             # just add
             else:
-                query_string = f"{key}={value}" if not query_string else\
-                    f"{query_string}&{key}={value}"
+                query_string = (
+                    f"{key}={value}"
+                    if not query_string
+                    else f"{query_string}&{key}={value}"
+                )
 
         return query_string
 
@@ -286,7 +295,7 @@ class Form(DictMapper):
                 self.__dict__[key] = value
                 continue
 
-             # if key exists, store multiple values in list
+            # if key exists, store multiple values in list
             values = self.__dict__[key]
             # convert to list if not a list already
             if type(values) != list:

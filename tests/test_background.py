@@ -52,11 +52,7 @@ async def test_task_with_arguments(app, client):
     @app.route("/")
     async def handler(request):
         response = Response()
-        background = BackgroundTask(
-            task,
-            "Yaat",
-            message="This is background task."
-        )
+        background = BackgroundTask(task, "Yaat", message="This is background task.")
         return RunAfterResponse(response, background)
 
     res = await client.get("/")

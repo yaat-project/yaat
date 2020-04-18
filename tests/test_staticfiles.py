@@ -10,7 +10,7 @@ from yaat.staticfiles import StaticFiles
 async def test_staticfiles(app, client, tmpdir):
     CONTENT = b"xxxx"
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(CONTENT)
     temp.close()
 
@@ -28,7 +28,7 @@ async def test_staticfiles(app, client, tmpdir):
 async def test_post_method(app, client, tmpdir):
     CONTENT = b"xxxx"
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(CONTENT)
     temp.close()
 
@@ -66,7 +66,7 @@ async def test_missing_directory(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_configured_with_file(app, client, tmpdir):
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(b"xxxx")
     temp.close()
 
@@ -80,7 +80,7 @@ async def test_configured_with_file(app, client, tmpdir):
 async def test_head_method(app, client, tmpdir):
     CONTENT = b"xxxx"
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(CONTENT)
     temp.close()
 
@@ -101,7 +101,7 @@ async def test_head_method(app, client, tmpdir):
 async def test_304_with_etag_match(app, client, tmpdir):
     CONTENT = b"xxxx"
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(CONTENT)
     temp.close()
 
@@ -116,7 +116,9 @@ async def test_304_with_etag_match(app, client, tmpdir):
 
     assert first_res.status_code == 200
 
-    second_res = await client.get(f"/static/{imagename}", headers={"if-none-match": first_etag})
+    second_res = await client.get(
+        f"/static/{imagename}", headers={"if-none-match": first_etag}
+    )
 
     assert second_res.status_code == 304
     assert second_res.content == b""
@@ -129,7 +131,7 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
         time.strptime("2020-02-02 01:00:00", "%Y-%m-%d %H:%M:%S")
     )
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(CONTENT)
     temp.close()
 
@@ -144,18 +146,20 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
 
     # file last modified date < last request
     # means no modification, should get HTTP 304 with empty body
-    first_res = await client.get(f"/static/{imagename}", headers={
-        "if-modified-since": "Mon, 03 Feb 2020 12:00:00 GMT"
-    })
+    first_res = await client.get(
+        f"/static/{imagename}",
+        headers={"if-modified-since": "Mon, 03 Feb 2020 12:00:00 GMT"},
+    )
     assert first_res.status_code == 304
     assert first_res.content == b""
 
     # file last modified date > last request
     # means there are changes, and file need to be sent back
     # should get HTTP 200 with content in body
-    second_res = await client.get(f"/static/{imagename}", headers={
-        "if-modified-since": "Sat, 01 Feb 2020 04:00:00 GMT"
-    })
+    second_res = await client.get(
+        f"/static/{imagename}",
+        headers={"if-modified-since": "Sat, 01 Feb 2020 04:00:00 GMT"},
+    )
     assert second_res.status_code == 200
     assert second_res.content == CONTENT
 
@@ -163,7 +167,7 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
 @pytest.mark.asyncio
 async def test_static_html(app, client, tmpdir):
     # create html file with name
-    named_html = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.html', delete=False)
+    named_html = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".html", delete=False)
     named_html.write(b"<h1>Hello World</h1>")
     named_html.close()
 
@@ -177,7 +181,6 @@ async def test_static_html(app, client, tmpdir):
 
     statics = StaticFiles(path="/", directory=directory, html=True)
     app.mount(statics)
-
 
     first_res = await client.get(f"/{named_html_file}")
     assert first_res.status_code == 200
