@@ -68,7 +68,6 @@ async def run_until_first_complete(tasks: typing.Tuple[typing.Callable]) -> None
         loop = asyncio.get_event_loop()
         tasks = tuple(loop.create_task(task) for task in tasks)
 
-
     # run until at least one of the task is complete
     # https://docs.python.org/3/library/asyncio-task.html#waiting-primitives
     done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
