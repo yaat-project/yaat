@@ -4,13 +4,15 @@ from urllib.parse import quote, quote_plus
 import aiofiles
 import hashlib
 import http.cookies
+import inspect
 import json
 import os
 import typing
 
 from yaat.background import BackgroundTask
+from yaat.concurrency import generate_in_threadpool, run_until_first_complete
 from yaat.constants import ENCODING_METHOD
-from yaat.types import Scope, Receive, Send
+from yaat.typing import Scope, Receive, Send
 
 
 # Workaround for adding samesite support to python versions below 3.8
@@ -114,7 +116,7 @@ class Response:
     def delete_cookie(self, key: str, path: str = "/", domain: str = None):
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
-    async def __call__(self, send: Send):
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
         await send({
             "type": "http.response.start",
             "status": self.status_code,
@@ -148,7 +150,10 @@ class JSONResponse(Response):
 
 
 class RedirectResponse(Response):
-    def __init__(self, url: str, status_code: int = 307, headers: dict={}):
+    def __init__(self, url: str, status_code: int = 307, headers: dict = None):
+        if not headers:
+            headers = {}
+
         headers["location"] = quote_plus(str(url), safe=":/%#?&=@[]!$&'()*+,;")
         super().__init__(content=b"", status_code=status_code, headers=headers)
 
@@ -202,7 +207,7 @@ class FileResponse(Response):
         self.headers["etag"] = etag
 
 
-    async def __call__(self, send: Send):
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
         # Send 404 if file does not exists
         if not os.path.exists(self.path):
             # clear custom headers
@@ -270,13 +275,66 @@ class NotModifiedResponse(Response):
         super().__init__(status_code=304, headers=headers)
 
 
-class BackgroundResponse:
+class StreamResponse(Response):
+    def __init__(
+        self,
+        content: typing.Any,
+        status_code: int = 200,
+        headers: dict = None,
+        media_type: str = None,
+    ):
+        super().__init__(status_code=status_code, headers=headers, media_type=media_type)
+        # check if async generator, if not create generator
+        if inspect.isasyncgen(content):
+            self.body_gen = content
+        else:
+            self.body_gen = generate_in_threadpool(content)
+
+        # NOTE: workaround for pytest client as it test client continue
+        #        listening for request even after streaming is completed
+        self.streaming = False
+
+    async def when_disconnect_or_finish(self, receive: Receive):
+        while True:
+            message = await receive()
+            if message["type"] == "http.disconnect" or not self.streaming:
+                self.streaming = False
+                break
+
+    async def stream(self, send: Send):
+        await send({
+            "type": "http.response.start",
+            "status": self.status_code,
+            "headers": self.get_raw_headers(),
+        })
+
+        async for chunk in self.body_gen:
+            await send({
+                "type": "http.response.body",
+                "body": chunk if isinstance(chunk, bytes) else chunk.encode(self.charset),
+                "more_body": True
+            })
+
+        await send({
+            "type": "http.response.body",
+            "body": b"",
+            "more_body": False
+        })
+        self.streaming = False
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        self.streaming = True
+        tasks = (self.stream(send), self.when_disconnect_or_finish(receive))
+        await run_until_first_complete(tasks)
+
+
+class RunAfterResponse:
     """ Use to return response and run background task(s) after """
 
     def __init__(self, response: Response, background: BackgroundTask):
         self.response = response
         self.background = background
 
-    async def __call__(self, send: Send):
-        await self.response(send)
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        await self.response(scope, receive, send)
         await self.background()

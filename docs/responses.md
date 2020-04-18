@@ -130,3 +130,53 @@ from yaat.responses import FileResponse
 async def index(request):
     return FileResponse("static/logo.png")
 ```
+
+### Stream Response
+
+It is used to stream a response from Yaat to the client browser. It is good for cases like generating the response that takes too long to process or uses a lot of memory. For example, generating a large CSV reports.
+
+> If you are serving a generated file/data that takes too long to respond and will be requested over and over, you may also want to consider running it in the background and save it on server.  
+> After successfully generated the data, you can serve the file as `StaticFile`.
+
+`StreamResponse(content, status_code=200, headers=None, media_type=None)`
+
+- `content` - sync/async generator method.
+- `status_code` - HTTP status code, 200 by default.
+- `headers` - response headers.
+- `media_type` - string of media type.
+
+```python
+from yaat.response import StreamResponse
+import asyncio
+
+async def greet(words):
+    yield("<html><body>")
+    for word in words:
+        yield f"<h1>{word}</h1>"
+        await asyncio.sleep(0.5)
+    yield("</body></html>")
+
+@app.route("/")
+async def index(request):
+    generator = greet(["Hello", "World"])
+    return StreamResponse(generator, media_type="text/plain")
+```
+
+You can also pass a synchrous generator like below.
+
+```python
+from yaat.response import StreamResponse
+import time
+
+def greet(words):
+    yield("<html><body>")
+    for word in words:
+        yield f"<h1>{word}</h1>"
+        time.sleep(0.5)
+    yield("</body></html>")
+
+@app.route("/")
+async def index(request):
+    generator = greet(["Hello", "World"])
+    return StreamResponse(generator, media_type="text/plain")
+```

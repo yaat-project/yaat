@@ -9,8 +9,6 @@ from yaat.websockets import WebSocket, WebSocketDisconnect
 
 class ExceptionMiddleware(BaseMiddleware):
     async def handle_request(self, request: Request) -> Response:
-        await self.process_request(request)
-
         try:
             response = await self.app.handle_request(request)
         except Exception as err:
@@ -18,7 +16,6 @@ class ExceptionMiddleware(BaseMiddleware):
             traceback.print_exc()
             response = HTTPException(500).response        
 
-        await self.process_response(response)
         return response
 
     async def handle_websocket(self, websocket: WebSocket):

@@ -8,6 +8,7 @@ from yaat.responses import (
     TextResponse,
     RedirectResponse,
     Response,
+    StreamResponse,
 )
 
 
@@ -229,3 +230,24 @@ async def test_head_method(app, client):
     res = await client.head("/")
 
     assert res.text == ""
+
+
+@pytest.mark.asyncio
+async def test_stream_response(app, client):
+    filled_by_bg_task = ""
+
+    @app.route("/")
+    async def handler(request):
+        async def get_numbers(min, max):
+            for i in range(min, max + 1):
+                yield str(i)
+                if i != max:
+                    yield " + "
+
+        generator = get_numbers(1, 3)
+        response = StreamResponse(generator, media_type="text/plain")
+        return response
+
+    res = await client.get("/")
+
+    assert res.text == "1 + 2 + 3"

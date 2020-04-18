@@ -1,3 +1,4 @@
+# https://asgi.readthedocs.io/en/latest/specs/www.html#wsgi-encoding-differences
 ENCODING_METHOD = "latin-1"
 
 HTTP_METHODS = [
@@ -25,7 +26,6 @@ class WebSocketMessages:
 
 class WebSocketCloseEvent:
     # https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent
-
     NORMAL_CLOSURE = 1000
     GOING_AWAY = 1001
     PROTOCOL_ERROR = 1002

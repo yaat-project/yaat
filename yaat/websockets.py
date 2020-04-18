@@ -8,7 +8,7 @@ from yaat.constants import (
 )
 from yaat.exceptions import WebSocketException
 from yaat.requests import HTTPConnection
-from yaat.types import Message, Scope, Receive, Send
+from yaat.typing import Message, Scope, Receive, Send
 
 
 # CONSTANTS
