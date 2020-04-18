@@ -1,5 +1,9 @@
 # Release Notes
 
+### 0.1.4
+
+- Fixed `asyncio` tasks not working on python3.6.
+
 ### 0.1.3
 
 - Added `StreamResponse` for HTTP response streaming.
