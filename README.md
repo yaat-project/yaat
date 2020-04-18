@@ -50,8 +50,6 @@ Python 3.6+
 pip3 install yaat
 ```
 
-> or just clone this and use directly to get the latest development version.
-
 You'll also want to install an ASGI server, such as uvicorn.
 
 ```bash
