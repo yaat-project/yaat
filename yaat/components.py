@@ -32,9 +32,6 @@ class DictMapper(dict):
     def __setitem__(self, key: str, item: typing.Any):
         self.__dict__[key] = item
 
-    def __unicode__(self):
-        return unicode(repr(self.__dict__))
-
     def clear(self):
         return self.__dict__.clear()
 
@@ -175,7 +172,9 @@ class URL:
             url = self.path
         else:
             host, port = self.server
-            default_port = {"http": 80, "https": 443, "ws": 80, "wss": 443}[self.scheme]
+            default_port = {"http": 80, "https": 443, "ws": 80, "wss": 443}[
+                self.scheme
+            ]
             if port == default_port:
                 url = f"{self.scheme}://{host}{self.path}"
             else:
@@ -244,7 +243,7 @@ class QueryParams(DictMapper):
             key = qs[0]
             value = qs[1]
 
-            if not key in self.__dict__:
+            if key not in self.__dict__:
                 self.__dict__[key] = value
                 continue
 
@@ -262,7 +261,9 @@ class QueryParams(DictMapper):
         for key, value in self.items():
             # if no value, just add back key
             if not value:
-                query_string = f"{key}" if not query_string else f"{query_string}&{key}"
+                query_string = (
+                    f"{key}" if not query_string else f"{query_string}&{key}"
+                )
             # if list, iterate and add back
             elif type(value) == list:
                 for each in value:
@@ -291,7 +292,7 @@ class Form(DictMapper):
             key = item[0]
             value = item[1]
 
-            if not key in self.__dict__:
+            if key not in self.__dict__:
                 self.__dict__[key] = value
                 continue
 
@@ -307,7 +308,9 @@ class Form(DictMapper):
 class UploadFile:
     SPOOL_MAX_SIZE = 1024 * 1024
 
-    def __init__(self, name: str, file: typing.IO = None, content_type: str = ""):
+    def __init__(
+        self, name: str, file: typing.IO = None, content_type: str = ""
+    ):
         self.name = name
         self.content_type = content_type
         if file is None:

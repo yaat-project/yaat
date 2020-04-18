@@ -11,7 +11,7 @@ class ExceptionMiddleware(BaseMiddleware):
     async def handle_request(self, request: Request) -> Response:
         try:
             response = await self.app.handle_request(request)
-        except Exception as err:
+        except Exception:
             # print traceback and send 500 Internal Server Error
             traceback.print_exc()
             response = HTTPException(500).response
@@ -29,5 +29,5 @@ class ExceptionMiddleware(BaseMiddleware):
             traceback.print_exc()
             raise ws_err
 
-        except Exception as err:
+        except Exception:
             traceback.print_exc()
