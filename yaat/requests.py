@@ -82,9 +82,7 @@ class HTTPConnection:
 
 class Request(HTTPConnection):
     def __init__(
-        self,
-        scope: Scope,
-        receive: Receive = empty_receive,
+        self, scope: Scope, receive: Receive = empty_receive,
     ):
         super().__init__(scope)
         self.receive = receive
@@ -106,10 +104,10 @@ class Request(HTTPConnection):
 
         while True:
             message = await self.receive()
-            body = message.get('body', b'')
+            body = message.get("body", b"")
             if body:
                 yield body
-            if not message.get('more_body', False):
+            if not message.get("more_body", False):
                 break
 
         yield b""
@@ -128,13 +126,15 @@ class Request(HTTPConnection):
             body = await self.body()
             self._json = {}
 
-            if not body == b'':
+            if not body == b"":
                 self._json = json.loads(body)
         return self._json
 
     async def form(self) -> dict:
         if not hasattr(self, "_form"):
-            content_type, options = parse_options_header(self.headers.get("content-type"))
+            content_type, options = parse_options_header(
+                self.headers.get("content-type")
+            )
 
             if content_type == b"multipart/form-data":
                 multipart_parser = MultiPartParser(self.headers, self.stream())

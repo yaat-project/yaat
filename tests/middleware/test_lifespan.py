@@ -28,13 +28,14 @@ async def test_sync_lifespan():
         else:
             return {"type": "lifespan.shutdown"}
 
-    async def asgi_send(*args , **kwargs):
+    async def asgi_send(*args, **kwargs):
         pass
 
     await app(asgi_scope, asgi_receive, asgi_send)
 
     assert ran_startup
     assert ran_shutdown
+
 
 @pytest.mark.asyncio
 async def test_async_lifespan():
@@ -56,9 +57,13 @@ async def test_async_lifespan():
     asgi_scope = {"type": "lifespan"}
 
     async def asgi_receive(*args, **kwargs):
-        return {"type": "lifespan.shutdown"} if ran_startup else {"type": "lifespan.startup"}
+        return (
+            {"type": "lifespan.shutdown"}
+            if ran_startup
+            else {"type": "lifespan.startup"}
+        )
 
-    async def asgi_send(*args , **kwargs):
+    async def asgi_send(*args, **kwargs):
         pass
 
     await app(asgi_scope, asgi_receive, asgi_send)
@@ -85,7 +90,7 @@ async def test_raise_on_startup():
     async def asgi_receive(*args, **kwargs):
         return {"type": "lifespan.startup"}
 
-    async def asgi_send(*args , **kwargs):
+    async def asgi_send(*args, **kwargs):
         nonlocal startup_failed
         startup_failed = True
 
@@ -120,9 +125,13 @@ async def test_raise_on_shutdown():
     asgi_scope = {"type": "lifespan"}
 
     async def asgi_receive(*args, **kwargs):
-        return {"type": "lifespan.shutdown"} if ran_startup else {"type": "lifespan.startup"}
+        return (
+            {"type": "lifespan.shutdown"}
+            if ran_startup
+            else {"type": "lifespan.startup"}
+        )
 
-    async def asgi_send(*args , **kwargs):
+    async def asgi_send(*args, **kwargs):
         pass
 
     try:

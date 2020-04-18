@@ -15,7 +15,7 @@ async def test_request_url(app, client):
     res_data = res.json()
 
     assert res_data["method"] == "GET"
-    assert res_data["url"] == 'http://testserver/'
+    assert res_data["url"] == "http://testserver/"
 
 
 @pytest.mark.asyncio
@@ -38,7 +38,7 @@ async def test_request_header(app, client):
         headers = dict(request.headers)
         return JSONResponse(headers=headers)
 
-    res = await client.get("/", headers={'host': 'example.com'})
+    res = await client.get("/", headers={"host": "example.com"})
 
     assert res.headers["host"] == "example.com"
 
@@ -48,15 +48,12 @@ async def test_request_client(app, client):
     @app.route("/")
     async def handler(request):
         client = request.client
-        return JSONResponse({
-            "host": client.host,
-            "port": client.port
-        })
+        return JSONResponse({"host": client.host, "port": client.port})
 
     res = await client.get("/")
     res_data = res.json()
 
-    assert res_data["host"] == '127.0.0.1'
+    assert res_data["host"] == "127.0.0.1"
     assert res_data["port"] == 123
 
 
@@ -75,7 +72,7 @@ async def test_request_body(app, client):
 @pytest.mark.asyncio
 async def test_request_json(app, client):
     DATA = {"hello": "world", "hello_chinese": "世界"}
-    
+
     @app.route("/")
     async def handler(request):
         json = await request.json()
@@ -89,7 +86,7 @@ async def test_request_json(app, client):
 @pytest.mark.asyncio
 async def test_request_form_urlencode(app, client):
     DATA = {"hello": "world", "hello_chinese": "世界"}
-    
+
     @app.route("/")
     async def handler(request):
         form = await request.form()

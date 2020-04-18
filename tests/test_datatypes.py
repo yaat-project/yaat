@@ -30,7 +30,7 @@ async def test_url_from_scope():
             "server": ("example.com", "8080"),
             "path": "/path/to/somewhere",
             "query_string": b"xyz=123",
-            "headers": []
+            "headers": [],
         }
     )
 
@@ -53,11 +53,13 @@ async def test_address():
 
 @pytest.mark.asyncio
 async def test_headers(app, client):
-    header = Headers([
-        (b"content-type", b"application/json"),
-        (b"api-token", b"secret"),
-        (b"location", b"localhost"),
-    ])
+    header = Headers(
+        [
+            (b"content-type", b"application/json"),
+            (b"api-token", b"secret"),
+            (b"location", b"localhost"),
+        ]
+    )
 
     assert "content-type" in header
     assert "api-token" in header
@@ -70,7 +72,7 @@ async def test_headers(app, client):
     assert dict(header) == {
         "content-type": "application/json",
         "api-token": "secret",
-        "location": "localhost"
+        "location": "localhost",
     }
 
 
@@ -105,12 +107,7 @@ async def test_url_blank_params():
 @pytest.mark.asyncio
 async def test_form(app, client):
     upload = io.BytesIO(b"test")
-    form = Form([
-        ("abc", "123"),
-        ("abc", "456"),
-        ("def", "789"),
-        ("xyz", upload)
-    ])
+    form = Form([("abc", "123"), ("abc", "456"), ("def", "789"), ("xyz", upload)])
 
     assert "abc" in form
     assert "xyz" in form
@@ -119,8 +116,4 @@ async def test_form(app, client):
     assert form.get("abc") == ["123", "456"]
     assert form.get("def") == "789"
     assert form["xyz"] == upload
-    assert dict(form) == {
-        "abc": ["123", "456"],
-        "def": "789",
-        "xyz": upload
-    }
+    assert dict(form) == {"abc": ["123", "456"], "def": "789", "xyz": upload}

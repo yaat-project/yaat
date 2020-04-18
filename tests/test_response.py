@@ -106,7 +106,7 @@ async def test_redirect_response(app, client):
 async def test_file_response(app, client, tmpdir):
     CONTENT = b"xxxx"
 
-    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix='.png', delete=False)
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(CONTENT)
     temp.close()
 

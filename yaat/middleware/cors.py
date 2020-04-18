@@ -45,7 +45,9 @@ class CORSMiddleware(BaseMiddleware):
         self.max_age = max_age
         self.allow_all_origins = "*" in allow_origins
         self.allow_all_headers = "*" in allow_headers
-        self.allow_origin_regex = re.compile(allow_origin_regex) if allow_origin_regex else None
+        self.allow_origin_regex = (
+            re.compile(allow_origin_regex) if allow_origin_regex else None
+        )
         self.preflight_allow_headers = sorted(SAFELISTED_HEADERS | set(allow_headers))
 
     def is_allowed_origin(self, origin: str) -> bool:
@@ -55,7 +57,7 @@ class CORSMiddleware(BaseMiddleware):
         if self.allow_origin_regex and self.allow_origin_regex.fullmatch(origin):
             return True
 
-        return origin in self.allow_origins    
+        return origin in self.allow_origins
 
     def preflight_response(self, request_headers: Headers) -> Response:
         # https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
@@ -113,7 +115,9 @@ class CORSMiddleware(BaseMiddleware):
 
         # check expose header
         if self.expose_headers:
-            response.headers["Access-Control-Expose-Headers"] = ", ".join(self.expose_headers)
+            response.headers["Access-Control-Expose-Headers"] = ", ".join(
+                self.expose_headers
+            )
 
         # check origin
         # if cookie presents, server must specify the origin
@@ -146,7 +150,10 @@ class CORSMiddleware(BaseMiddleware):
             return await self.app.handle_request(request)
 
         # preflight request
-        if request.method == "OPTIONS" and "access-control-request-method" in request.headers:
+        if (
+            request.method == "OPTIONS"
+            and "access-control-request-method" in request.headers
+        ):
             return self.preflight_response(request.headers)
 
         response = await self.app.handle_request(request)

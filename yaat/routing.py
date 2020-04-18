@@ -71,9 +71,12 @@ class Router:
         def wrapper(handler):
             self.add_route(path=path, handler=handler, methods=methods)
             return handler
+
         return wrapper
 
-    def add_route(self, path: str, handler: callable, methods: list = None, static: bool = False):
+    def add_route(
+        self, path: str, handler: callable, methods: list = None, static: bool = False
+    ):
         assert path not in self.paths, f"Route {path}, already exists"
         self.routes.append(
             Route(path=path, handler=handler, methods=methods, is_static=static)
@@ -83,20 +86,19 @@ class Router:
         def wrapper(handler):
             self.add_websocket_route(path=path)
             return handler
+
         return wrapper
 
     def add_websocket_route(self, path: str, handler: callable):
         assert path not in self.paths, f"Route {path}, already exists"
-        self.routes.append(
-            Route(path=path, handler=handler, is_websocket=True)
-        )
+        self.routes.append(Route(path=path, handler=handler, is_websocket=True))
 
     def mount(
         self,
         router: callable,
         prefix: str = None,
         static: bool = False,
-        websocket: bool = False
+        websocket: bool = False,
     ):
         """Mount another router"""
         routes = router.routes
@@ -124,7 +126,7 @@ class Router:
             parse_result = parse(route.path, request_path)
             if parse_result is not None:
                 return route, parse_result.named
-    
+
         return None, None
 
     def __add_prefix(self, prefix: str, path: str) -> str:

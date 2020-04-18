@@ -22,7 +22,7 @@ http.cookies.Morsel._reserved["samesite"] = "SameSite"
 
 class Response:
     media_type = None
-    charset = 'utf-8'
+    charset = "utf-8"
 
     def __init__(
         self,
@@ -36,7 +36,6 @@ class Response:
             self.media_type = media_type
         self.headers = headers if headers is not None else {}
         self.body = self.render_content(content)
-
 
     def render_content(self, content: typing.Any) -> bytes:
         if content is None:
@@ -61,12 +60,14 @@ class Response:
             keys = [h[0] for h in raw_headers]
             populate_content_length = b"content-length" not in keys
             populate_content_type = b"content-type" not in keys
- 
+
         body = getattr(self, "body", b"")
         if body and populate_content_length:
             content_length = str(len(body))
-            raw_headers.append((b"content-length", content_length.encode(ENCODING_METHOD)))
- 
+            raw_headers.append(
+                (b"content-length", content_length.encode(ENCODING_METHOD))
+            )
+
         content_type = self.media_type
         if content_type is not None and populate_content_type:
             if content_type.startswith("text/"):
@@ -117,15 +118,14 @@ class Response:
         self.set_cookie(key=key, path=path, domain=domain, expires=0, max_age=0)
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        await send({
-            "type": "http.response.start",
-            "status": self.status_code,
-            "headers": self.get_raw_headers(),
-        })
-        await send({
-            "type": "http.response.body",
-            "body": self.body
-        })
+        await send(
+            {
+                "type": "http.response.start",
+                "status": self.status_code,
+                "headers": self.get_raw_headers(),
+            }
+        )
+        await send({"type": "http.response.body", "body": self.body})
 
 
 class HTMLResponse(Response):
@@ -195,7 +195,6 @@ class FileResponse(Response):
         if stat_result is not None:
             self.set_stat_headers(stat_result)
 
-
     def set_stat_headers(self, stat_result: os.stat_result):
         content_length = str(stat_result.st_size)
         last_modified = formatdate(stat_result.st_mtime, usegmt=True)
@@ -206,7 +205,6 @@ class FileResponse(Response):
         self.headers["last-modified"] = last_modified
         self.headers["etag"] = etag
 
-
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
         # Send 404 if file does not exists
         if not os.path.exists(self.path):
@@ -215,16 +213,13 @@ class FileResponse(Response):
                 {
                     "type": "http.response.start",
                     "status": 404,
-                    "headers": self.get_raw_headers(headers={
-                        "content-type": "text/plain"
-                    }),
+                    "headers": self.get_raw_headers(
+                        headers={"content-type": "text/plain"}
+                    ),
                 }
             )
             await send(
-                {
-                    "type": "http.response.body",
-                    "body": b"file not found",
-                }
+                {"type": "http.response.body", "body": b"file not found",}
             )
             return
 
@@ -237,7 +232,7 @@ class FileResponse(Response):
         )
         if self.send_header_only:
             await send({"type": "http.response.body"})
-        else:    
+        else:
             async with aiofiles.open(self.path, mode="rb") as file:
                 more_body = True
                 while more_body:
@@ -283,7 +278,9 @@ class StreamResponse(Response):
         headers: dict = None,
         media_type: str = None,
     ):
-        super().__init__(status_code=status_code, headers=headers, media_type=media_type)
+        super().__init__(
+            status_code=status_code, headers=headers, media_type=media_type
+        )
         # check if async generator, if not create generator
         if inspect.isasyncgen(content):
             self.body_gen = content
@@ -302,24 +299,26 @@ class StreamResponse(Response):
                 break
 
     async def stream(self, send: Send):
-        await send({
-            "type": "http.response.start",
-            "status": self.status_code,
-            "headers": self.get_raw_headers(),
-        })
+        await send(
+            {
+                "type": "http.response.start",
+                "status": self.status_code,
+                "headers": self.get_raw_headers(),
+            }
+        )
 
         async for chunk in self.body_gen:
-            await send({
-                "type": "http.response.body",
-                "body": chunk if isinstance(chunk, bytes) else chunk.encode(self.charset),
-                "more_body": True
-            })
+            await send(
+                {
+                    "type": "http.response.body",
+                    "body": chunk
+                    if isinstance(chunk, bytes)
+                    else chunk.encode(self.charset),
+                    "more_body": True,
+                }
+            )
 
-        await send({
-            "type": "http.response.body",
-            "body": b"",
-            "more_body": False
-        })
+        await send({"type": "http.response.body", "body": b"", "more_body": False})
         self.streaming = False
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):

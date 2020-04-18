@@ -22,11 +22,14 @@ async def test_allow_all(app, client):
         return TextResponse("hello world")
 
     # preflight request
-    res = await client.options("/", headers={
-        "Origin": "http://testserver.com",
-        "Access-Control-Request-Method": "GET",
-        "Access-Control-Request-Headers": "X-Example-Header",
-    })
+    res = await client.options(
+        "/",
+        headers={
+            "Origin": "http://testserver.com",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "X-Example-Header",
+        },
+    )
     assert res.status_code == 200
     assert res.headers["access-control-allow-origin"] == "*"
     assert res.headers["access-control-allow-headers"] == "X-Example-Header"
@@ -45,17 +48,22 @@ async def test_allow_specific_origin(app, client):
         return TextResponse("hello world")
 
     # preflight request
-    res = await client.options("/", headers={
-        "Origin": "http://testserver.com",
-        "Access-Control-Request-Method": "GET",
-        "Access-Control-Request-Headers": "X-My-Custom-Header",
-    })
+    res = await client.options(
+        "/",
+        headers={
+            "Origin": "http://testserver.com",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "X-My-Custom-Header",
+        },
+    )
     assert res.status_code == 200
     assert res.headers["access-control-allow-origin"] == "http://testserver.com"
-    assert "X-My-Custom-Header" in res.headers["access-control-allow-headers"].split(", ")
+    assert "X-My-Custom-Header" in res.headers["access-control-allow-headers"].split(
+        ", "
+    )
 
     # simple request
-    res = await client.get("/", headers= {"Origin": "http://testserver.com"})
+    res = await client.get("/", headers={"Origin": "http://testserver.com"})
     assert res.status_code == 200
     assert res.text == "hello world"
     assert res.headers["access-control-allow-origin"] == "http://testserver.com"
@@ -80,11 +88,14 @@ async def test_disallowed_preflight(app, client):
         return TextResponse("hello world")
 
     # preflight request
-    res = await client.options("/", headers={
-        "Origin": "http://invalid-server.org",
-        "Access-Control-Request-Method": "POST",
-        "Access-Control-Request-Headers": "X-Header",
-    })
+    res = await client.options(
+        "/",
+        headers={
+            "Origin": "http://invalid-server.org",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "X-Header",
+        },
+    )
     assert res.status_code == 400
     assert res.text == "Disallowed cors Origin, Method, Headers"
 
@@ -97,10 +108,9 @@ async def test_credentialed_return_specific_origin(app, client):
     async def handler(request):
         return TextResponse("hello world")
 
-    res = await client.get("/", headers={
-        "Origin": "http://testserver.com",
-        "Cookie": "cookie=monster"
-    })
+    res = await client.get(
+        "/", headers={"Origin": "http://testserver.com", "Cookie": "cookie=monster"}
+    )
     assert res.status_code == 200
     assert res.headers["access-control-allow-origin"] == "http://testserver.com"
 
@@ -146,21 +156,29 @@ async def test_allow_origin_regex(app, client):
         return TextResponse("hello world")
 
     # preflight request
-    res = await client.options("/", headers={
-        "Origin": "http://testserver.com",
-        "Access-Control-Request-Method": "GET",
-        "Access-Control-Request-Headers": "X-My-Custom-Header",
-    })
+    res = await client.options(
+        "/",
+        headers={
+            "Origin": "http://testserver.com",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "X-My-Custom-Header",
+        },
+    )
     assert res.status_code == 200
     assert res.headers["access-control-allow-origin"] == "http://testserver.com"
-    assert "X-My-Custom-Header" in res.headers["access-control-allow-headers"].split(", ")
+    assert "X-My-Custom-Header" in res.headers["access-control-allow-headers"].split(
+        ", "
+    )
 
     # disallowed preflight request
-    res = await client.options("/", headers={
-        "Origin": "http://testserver.org",
-        "Access-Control-Request-Method": "GET",
-        "Access-Control-Request-Headers": "X-My-Custom-Header",
-    })
+    res = await client.options(
+        "/",
+        headers={
+            "Origin": "http://testserver.org",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "X-My-Custom-Header",
+        },
+    )
     assert res.status_code == 400
     assert res.text == "Disallowed cors Origin"
     assert "access-control-allow-origin" not in res.headers

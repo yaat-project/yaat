@@ -10,15 +10,16 @@ class LifespanMiddleware(BaseMiddleware):
     """
     Middleware to handle ASGI startup and shutdown lifespan events.
     """
+
     def __init__(
         self,
         app: ASGIApp,
         on_startup: typing.Sequence[callable] = None,
-        on_shutdown: typing.Sequence[callable] = None
+        on_shutdown: typing.Sequence[callable] = None,
     ):
         super().__init__(app)
         self.on_startup = on_startup if on_startup else []
-        self.on_shutdown= on_shutdown if on_shutdown else []
+        self.on_shutdown = on_shutdown if on_shutdown else []
 
     async def startup(self):
         for method in self.on_startup:
@@ -56,7 +57,7 @@ class LifespanMiddleware(BaseMiddleware):
             traceback.print_exc()
 
         await self.shutdown()
-        await send({"type": "lifespan.shutdown.complete"})        
+        await send({"type": "lifespan.shutdown.complete"})
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
         assert scope["type"] in ("http", "websocket", "lifespan")

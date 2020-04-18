@@ -16,7 +16,7 @@ class FormParser:
     async def parse(self) -> Form:
         body_data = await self.body()
         body_data = body_data.decode(ENCODING_METHOD)
-        form_data = [] if body_data == '' else parse_qsl(body_data)
+        form_data = [] if body_data == "" else parse_qsl(body_data)
         form_data = [(item[0], item[1]) for item in form_data]
         return Form(form_data)
 
@@ -31,7 +31,6 @@ class MultiPartParser:
         HEADER_END = 6
         HEADERS_FINISHED = 7
         END = 8
-
 
     def __init__(self, headers: Headers, stream: typing.AsyncGenerator[bytes, None]):
         self.headers = headers
@@ -57,12 +56,20 @@ class MultiPartParser:
         # Callbacks dictionary.
         callbacks = {
             "on_part_begin": lambda: self.messages.append((events.PART_BEGIN, b"")),
-            "on_part_data": lambda data, start, end: self.messages.append((events.PART_DATA, data[start:end])),
+            "on_part_data": lambda data, start, end: self.messages.append(
+                (events.PART_DATA, data[start:end])
+            ),
             "on_part_end": lambda: self.messages.append((events.PART_END, b"")),
-            "on_header_field": lambda data, start, end: self.messages.append((events.HEADER_FIELD, data[start:end])),
-            "on_header_value": lambda data, start, end: self.messages.append((events.HEADER_VALUE, data[start:end])),
+            "on_header_field": lambda data, start, end: self.messages.append(
+                (events.HEADER_FIELD, data[start:end])
+            ),
+            "on_header_value": lambda data, start, end: self.messages.append(
+                (events.HEADER_VALUE, data[start:end])
+            ),
             "on_header_end": lambda: self.messages.append((events.HEADER_END, b"")),
-            "on_headers_finished": lambda: self.messages.append((events.HEADERS_FINISHED, b"")),
+            "on_headers_finished": lambda: self.messages.append(
+                (events.HEADERS_FINISHED, b"")
+            ),
             "on_end": lambda: self.messages.append((events.END, b"")),
         }
 
@@ -115,7 +122,9 @@ class MultiPartParser:
                     field_name = self.__user_safe_decode(options[b"name"], charset)
 
                     if b"filename" in options:
-                        filename = self.__user_safe_decode(options[b"filename"], charset)
+                        filename = self.__user_safe_decode(
+                            options[b"filename"], charset
+                        )
                         file = UploadFile(
                             name=filename,
                             content_type=content_type.decode(ENCODING_METHOD),
@@ -131,7 +140,9 @@ class MultiPartParser:
 
                 elif message_type == events.PART_END:
                     if file is None:
-                        items.append((field_name, self.__user_safe_decode(data, charset)))
+                        items.append(
+                            (field_name, self.__user_safe_decode(data, charset))
+                        )
                     else:
                         await file.seek(0)
                         items.append((field_name, file))
