@@ -180,7 +180,6 @@ class UrlParamParser:
 
         self.kwargs = kwargs
 
-
     def to_interger(self, value: str) -> int:
         try:
             return int(value)
