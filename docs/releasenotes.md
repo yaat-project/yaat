@@ -1,5 +1,10 @@
 # Release Notes
 
+### 0.1.5
+
+- Added path parameters datatype conversion.
+- Configured `flake8` and `black` with pre-commit hook for code formatting.
+
 ### 0.1.4
 
 - Fixed `asyncio` tasks not working on python3.6.

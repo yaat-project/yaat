@@ -5,7 +5,7 @@ import typing
 
 from yaat.components import Address, Form, Headers, QueryParams, URL
 from yaat.constants import ENCODING_METHOD
-from yaat.formparsers import FormParser, MultiPartParser
+from yaat.parsers import FormParser, MultiPartParser
 from yaat.typing import Scope, Receive, Send, Message
 
 
