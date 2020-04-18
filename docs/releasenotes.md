@@ -2,7 +2,8 @@
 
 ### 0.1.3
 
-- Added `StreamResponse`.
+- Added `StreamResponse` for HTTP response streaming.
+- Added server startup and shutdown events.
 
 ### 0.1.2
 
