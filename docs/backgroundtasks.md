@@ -2,7 +2,7 @@
 
 Yaat has built-in background task runner using `BackgroundTask`.
 
-If you want to run a task in background after responding to the client, you will have wrap your `Response`
+If you want to run a task in the background after responding to the client, you will have to wrap your `Response`
 and `BackgroundTask` in `RunAfterResponse` and return.
 
 ### Background Task

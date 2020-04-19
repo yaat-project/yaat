@@ -1,6 +1,6 @@
 # Static Files
 
-Yaat provides `StaticFiles` to serve files from given directory.
+Yaat provides `StaticFiles` to serve files from the given directory.
 
 ### StaticFiles
 
@@ -23,7 +23,7 @@ app.mount(statics)
 ### Serving HTML Pages
 
 You can serve in HTML by passing `html` as `True`. When you serve the static file in HTML mode,
-it will automatically loads `index.html` for directory if exists.
+it will automatically loads `index.html` for a directory if it exists.
 
 ```python
 statics = StaticFiles(path="/", directory="./static", html=True)

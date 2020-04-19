@@ -25,7 +25,7 @@
 
 # Introduction
 
-Yaat is an asynchronous web toolkit. It is as simple as..
+Yaat is an asynchronous web toolkit. It is as simple as...
 
 ```python
 from yaat import Yaat
@@ -40,7 +40,7 @@ async def index(request):
 
 ## Features
 
-- Provide decorator routes & class based views.
+- Provide decorator routes & class-based views.
 - Template support with [Jinja2](https://jinja.palletsprojects.com/).
 - Static file serving.
 - HTTP streaming response.
@@ -63,7 +63,7 @@ Python 3.6+
 pip3 install yaat
 ```
 
-In order to run the application, you will need an ASGI server. Such as [uvicorn](https://www.uvicorn.org/), [hypercorn](https://pgjones.gitlab.io/hypercorn) or [daphne](https://github.com/django/daphne/).
+To run the application, you will need an ASGI server. Such as [uvicorn](https://www.uvicorn.org/), [hypercorn](https://pgjones.gitlab.io/hypercorn) or [daphne](https://github.com/django/daphne/).
 
 For example, if you put the example code from the top in `app.py`. You can run the application by
 
@@ -87,8 +87,8 @@ Yaat is licensed under [GNU Lesser General Public License](https://github.com/ya
 
 ## Inspiration
 
-I know there are a lot of awesome frameworks out there. So some might ask why did I write my own. Actually I created this to learn how the web framework actually works.
+I know there are a lot of awesome frameworks out there. So some might ask why did I write my own. Actually, I created this to learn how the web framework works.
 
 I started this after following [Jahongir Rahmonov's blog post](https://rahmonov.me/posts/write-python-framework-part-one/) about writing a web framework. Feel free to check out his WSGI framework [Alcazar](https://github.com/rahmonov/alcazar).
 
-More features will be added in the future. You can checkout the [project board](https://github.com/yaat-project/yaat/projects/1).
+More features will be added in the future. You can check out the [project board](https://github.com/yaat-project/yaat/projects/1).

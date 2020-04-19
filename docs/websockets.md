@@ -1,12 +1,12 @@
 # WebSockets
 
-Yaat also supports sending and receiving data on a websocket.
+Yaat also supports sending and receiving data on a WebSocket.
 
 ### WebSocket
 
 `WebSocket(scope, receive, send)`
 
-It provides an interface to talk with ASGI server. It has similar properties like `Request`.
+It provides an interface to talk with the ASGI server. It has similar properties as `Request`.
 
 - `url` - string-like object with all components parsed out from the URL.
 - `headers` - returns `Headers` dictionary. You can access the individual value just like accessing a dictionary.
@@ -14,7 +14,7 @@ It provides an interface to talk with ASGI server. It has similar properties lik
 
 ### Accept Connection
 
-You can accept the websocket connection by calling `accept()`.
+You can accept the WebSocket connection by calling `accept()`.
 
 `await websocket.accept(subprotocol=None)`
 
@@ -88,8 +88,8 @@ class WebSocketCloseEvent:
 
 ### WebSocket Route
 
-Yaat also comes with separate decorator to indicates WebSocket endpoints.
-When the request comes in, the router will pass `WebSocket` class to the endpoint.
+Yaat also comes with a separate decorator to indicates WebSocket endpoints.
+When the request comes in, the router will pass the `WebSocket` class to the endpoint.
 
 ```python
 @app.websocket_route("/ws")
@@ -104,7 +104,7 @@ You can also register WebSocket endpoints via `add_websocket_route`.
 `add_websocket_route(path, handler)`
 
 - `path` - url of the endpoint.
-- `handler` - websocket endpoint method.
+- `handler` - WebSocket endpoint method.
 
 ```python
 async def ws_handler(websocket):
@@ -117,7 +117,7 @@ app.add_websocket_route(ws_handler)
 
 ### Mounting WebSocket Routes
 
-If you have to mount WebSocket application, you can just indicates `websocket=True` to `mount()`.
+If you have to mount the WebSocket application, you can just indicate `websocket=True` to `mount()`.
 
 ```python
 app.mount(prefix="ws", router=WebSocketRouter, websocket=True)

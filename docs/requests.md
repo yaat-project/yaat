@@ -1,6 +1,6 @@
 # Requests
 
-When an endpoint receives a HTTP request, the router will pass a `Request` object.
+When an endpoint receives an HTTP request, the router will pass a `Request` object.
 
 ```python
 from yaat import Yaat
@@ -33,7 +33,7 @@ apiToken = headers["api-token"]
 
 #### URL
 
-`request.url` returns string-like object with all components parsed out from the URL.
+`request.url` returns a string-like object with all components parsed out from the URL.
 
 - `request.url.path`
 - `request.url.scheme`
@@ -83,7 +83,7 @@ async def index(request):
     body = await request.body()
 ```
 
-if you want it parsed as form data or multipart (i.e. file uploads), you can call `request.form()` instead.
+if you want it parsed as form-data or multipart (i.e. file uploads), you can call `request.form()` instead.
 
 ```python
 @app.routes("/")
@@ -133,7 +133,7 @@ While there is a file inside the form, the file will be translated into Yaat's `
     - `await upload.seek(0)` will be the beginning of the file.
 - `await close()` - to close the file.
 
-For example if pdf document is uploaded from the client, you can access as below.
+For example, if pdf document is uploaded from the client, you can access it as below.
 
 ```python
 form = await request.form()

@@ -3,7 +3,7 @@
 ### 0.1.5
 
 - Added path parameters datatype conversion.
-- Configured `flake8` and `black` with pre-commit hook for code formatting.
+- Configured `flake8` and `black` with a pre-commit hook for code formatting.
 
 ### 0.1.4
 
