@@ -4,7 +4,7 @@ You can register multiple handlers to events you want to run some code during th
 
 ### Registering Handlers
 
-Handlers can either be syncronous functions or async coroutines. For example, connecting to database should be done on `on_startup` event.
+Handlers can either be synchronous functions or async coroutines. For example, connecting to the database should be done on the `on_startup` event.
 
 ```python
 from yaat import Yaat
@@ -21,7 +21,7 @@ app = Yaat(
 )
 ```
 
-> In uvicorn, pass the argument `lifespan` to set the lifespan protocol.
+> In Uvicorn, pass the argument `lifespan` to set the lifespan protocol.
 
 ```sh
 uvicorn app:app --lifespan on

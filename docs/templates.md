@@ -31,9 +31,9 @@ Then create a directory `templates` and write `index.html` inside.
 
 ### Custom Template Engine
 
-You can also implement/configure your own templating engine.
+You can also implement/configure your templating engine.
 
-First you will need to import `BaseTemplate` to override.
+First, you will need to import `BaseTemplate` to override.
 
 ```python
 from yaat.responses import HTMLResponse
