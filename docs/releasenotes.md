@@ -4,6 +4,7 @@
 
 - Added path parameters datatype conversion.
 - Configured `flake8` and `black` with a pre-commit hook for code formatting.
+- Added path-parm type conversion based on the route type-hints.
 
 ### 0.1.4
 
