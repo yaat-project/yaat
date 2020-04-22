@@ -90,15 +90,27 @@ class Router:
             Route(route_type=RouteTypes.WEBSOCKET, path=path, handler=handler)
         )
 
-    def mount(self, router: callable, prefix: str = None):
+    def mount(
+        self, router: callable, prefix: str = None, is_static: bool = False
+    ):
         """Mount another router"""
+        # if static, add path to routes inside router
+        if is_static:
+            router.path = prefix if prefix else "/"
+
         routes = router.routes
 
         # register sub routes
         for route in routes:
             path = (
-                self.__add_prefix(prefix, route.path) if prefix else route.path
+                self.__add_prefix(prefix, route.path)
+                if prefix and not is_static
+                else route.path
             )
+
+            print("\n\n")
+            print(path)
+            print("\n\n")
 
             if route.type == RouteTypes.WEBSOCKET:
                 self.add_websocket_route(path=path, handler=route.handler)

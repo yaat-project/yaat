@@ -12,6 +12,7 @@ from yaat.parsers import UrlParamParser
 from yaat.requests import Request
 from yaat.responses import Response
 from yaat.routing import Router, RouteTypes
+from yaat.staticfiles import StaticFiles
 from yaat.typing import Scope, Receive, Send
 from yaat.websockets import WebSocket
 
@@ -53,7 +54,11 @@ class Yaat:
         self.router.add_websocket_route(path=path, handler=handler)
 
     def mount(self, router: Router, prefix: str = None):
-        self.router.mount(router=router, prefix=prefix)
+        self.router.mount(
+            router=router,
+            prefix=prefix,
+            is_static=isinstance(router, StaticFiles),
+        )
 
     # NOTE: Handle HTTP Request
     async def handle_request(self, request: Request) -> Response:

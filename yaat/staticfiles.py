@@ -10,12 +10,18 @@ from yaat.routing import Router, Route
 
 
 class StaticFilesHandler:
-    def __init__(
-        self, path: str = "/", directory: str = "", html: bool = False
-    ):
-        self.path = path
+    def __init__(self, directory: str = "", html: bool = False):
+        self.path = None
         self.directory = directory
         self.html = html
+
+    @property
+    def path(self) -> str:
+        return self.__path
+
+    @path.setter
+    def path(self, path: str):
+        self.__path = path
 
     @property
     def directory(self) -> str:
@@ -59,6 +65,8 @@ class StaticFilesHandler:
         return False
 
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
+        assert self.path, "Url path for static files cannot be null."
+
         request_path = request.path
         # NOTE: remove route prefix and get file path
         if request_path.startswith(self.path) and self.path != "/":
@@ -115,12 +123,12 @@ class StaticFilesHandler:
 
 
 class StaticFiles:
-    def __init__(self, path: str, directory: str, html: bool = False):
-        self.path = path
+    def __init__(self, directory: str, html: bool = False):
+        self.path = None
         self.router = Router()
         self.router.add_route(
             path=self.path,
-            handler=StaticFilesHandler(self.path, directory, html),
+            handler=StaticFilesHandler(directory, html),
             methods=["GET", "HEAD"],
             static=True,
         )
@@ -131,11 +139,22 @@ class StaticFiles:
 
     @path.setter
     def path(self, path: str):
+        # at instant init, path is null
+        # it will be set when mounted to the application
+        if path is None:
+            self.__path = path
+            return
+
         # clean static directory path
         if path.endswith("/"):
             path = path[:-1]
         if not path.startswith("/"):
             path = f"/{path}"
+
+        # update path inside routes
+        for route in self.router.routes:
+            route.path = path  # routing.Route
+            route.handler.path = path  # StaticFileHandler
 
         self.__path = path
 

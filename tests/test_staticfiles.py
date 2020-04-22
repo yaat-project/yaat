@@ -17,8 +17,8 @@ async def test_staticfiles(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
     imagename = temp.name.split("/")[-1]
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     res = await client.get(f"/static/{imagename}")
     assert res.content == CONTENT
@@ -35,8 +35,8 @@ async def test_post_method(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
     imagename = temp.name.split("/")[-1]
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     res = await client.post(f"/static/{imagename}")
     assert res.status_code == 405
@@ -46,8 +46,8 @@ async def test_post_method(app, client, tmpdir):
 async def test_missing_file(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     res = await client.get(f"/static/404.png")
     assert res.status_code == 404
@@ -57,8 +57,8 @@ async def test_missing_file(app, client, tmpdir):
 async def test_missing_directory(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     res = await client.get(f"/static/sub/404.png")
     assert res.status_code == 404
@@ -71,7 +71,7 @@ async def test_configured_with_file(app, client, tmpdir):
     temp.close()
 
     with pytest.raises(RuntimeError) as exc_info:
-        StaticFiles(path="/static", directory=temp.name)
+        StaticFiles(directory=temp.name)
 
     assert "is not a directory" in str(exc_info.value)
 
@@ -87,8 +87,8 @@ async def test_head_method(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
     imagename = temp.name.split("/")[-1]
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     res = await client.head(f"/static/{imagename}")
 
@@ -108,8 +108,8 @@ async def test_304_with_etag_match(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
     imagename = temp.name.split("/")[-1]
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     first_res = await client.get(f"/static/{imagename}")
     first_etag = first_res.headers["etag"]
@@ -141,8 +141,8 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
     # change the time of created temporary file
     os.utime(temp.name, (FILE_LAST_MODIFIED_TIME, FILE_LAST_MODIFIED_TIME))
 
-    statics = StaticFiles(path="/static", directory=directory)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory)
+    app.mount(statics, "/static")
 
     # file last modified date < last request
     # means no modification, should get HTTP 304 with empty body
@@ -181,8 +181,8 @@ async def test_static_html(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
     named_html_file = named_html.name.split("/")[-1]
 
-    statics = StaticFiles(path="/", directory=directory, html=True)
-    app.mount(statics)
+    statics = StaticFiles(directory=directory, html=True)
+    app.mount(statics, "/")
 
     first_res = await client.get(f"/{named_html_file}")
     assert first_res.status_code == 200
