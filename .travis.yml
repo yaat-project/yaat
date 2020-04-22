@@ -8,7 +8,7 @@ python:
 branches:
   only:
     - master
-    - release
+    - stable
 
 install:
   - pip install -r requirements-dev.txt
