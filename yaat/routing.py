@@ -64,10 +64,10 @@ class Router:
         path: str,
         handler: callable,
         methods: list = None,
-        static: bool = False,
+        is_static: bool = False,
     ):
         assert path not in self.paths, f"Route {path}, already exists"
-        route_type = RouteTypes.STATIC if static else RouteTypes.HTTP
+        route_type = RouteTypes.STATIC if is_static else RouteTypes.HTTP
         self.routes.append(
             Route(
                 route_type=route_type,
@@ -90,37 +90,38 @@ class Router:
             Route(route_type=RouteTypes.WEBSOCKET, path=path, handler=handler)
         )
 
-    def mount(
-        self, router: callable, prefix: str = None, is_static: bool = False
-    ):
+    def mount(self, router: callable, prefix: str = None):
         """Mount another router"""
-        # if static, add path to routes inside router
-        if is_static:
-            router.path = prefix if prefix else "/"
-
         routes = router.routes
 
         # register sub routes
         for route in routes:
-            path = (
-                self.__add_prefix(prefix, route.path)
-                if prefix and not is_static
-                else route.path
-            )
+            if route.type != RouteTypes.STATIC:
+                path = (
+                    self.__add_prefix(prefix, route.path)
+                    if prefix
+                    else route.path
+                )
 
-            print("\n\n")
-            print(path)
-            print("\n\n")
-
-            if route.type == RouteTypes.WEBSOCKET:
-                self.add_websocket_route(path=path, handler=route.handler)
+                if route.type == RouteTypes.WEBSOCKET:
+                    self.add_websocket_route(path=path, handler=route.handler)
+                else:
+                    self.add_route(
+                        path=path, handler=route.handler, methods=route.methods
+                    )
             else:
-                is_static = route.type == RouteTypes.STATIC
+                # StaticFile is not mounted yet to any router
+                path = prefix if prefix else "/"
+                if route.path is not None:
+                    path = self.__add_prefix(path, route.path)
+
+                # update StaticFileHandler path
+                router.path = path
                 self.add_route(
                     path=path,
                     handler=route.handler,
                     methods=route.methods,
-                    static=is_static,
+                    is_static=True,
                 )
 
     def get_route(self, request_path: str) -> (Route, typing.Any):

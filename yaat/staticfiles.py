@@ -130,7 +130,7 @@ class StaticFiles:
             path=self.path,
             handler=StaticFilesHandler(directory, html),
             methods=["GET", "HEAD"],
-            static=True,
+            is_static=True,
         )
 
     @property
