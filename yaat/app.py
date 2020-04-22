@@ -11,8 +11,7 @@ from yaat.middleware import (
 from yaat.parsers import UrlParamParser
 from yaat.requests import Request
 from yaat.responses import Response
-from yaat.routing import Router
-from yaat.staticfiles import StaticFiles
+from yaat.routing import Router, RouteTypes
 from yaat.typing import Scope, Receive, Send
 from yaat.websockets import WebSocket
 
@@ -53,25 +52,8 @@ class Yaat:
     def add_websocket_route(self, path: str, handler: callable):
         self.router.add_websocket_route(path=path, handler=handler)
 
-    def mount(
-        self, router: Router, prefix: str = None, websocket: bool = False
-    ):
-        # check if its static route
-        static = isinstance(router, StaticFiles)
-
-        if prefix and static:
-            # NOTE: because 'prefix' is already defined in static route
-            raise ValueError(
-                "'prefix' must be None when mounting static routes."
-            )
-        if websocket and static:
-            raise ValueError(
-                "'websocket' must be None when mounting static routes."
-            )
-
-        self.router.mount(
-            router=router, prefix=prefix, static=static, websocket=websocket,
-        )
+    def mount(self, router: Router, prefix: str = None):
+        self.router.mount(router=router, prefix=prefix)
 
     # NOTE: Handle HTTP Request
     async def handle_request(self, request: Request) -> Response:
@@ -79,7 +61,11 @@ class Yaat:
 
         try:
             # check if route exists and it is not websocket route
-            if route and route.handler is not None and not route.is_websocket:
+            if (
+                route
+                and route.handler is not None
+                and route.type != RouteTypes.WEBSOCKET
+            ):
                 handler = route.handler
 
                 if inspect.isclass(handler):

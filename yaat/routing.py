@@ -1,39 +1,32 @@
+from enum import Enum
 from parse import parse
 import typing
 
 from yaat.constants import HTTP_METHODS
 
 
+class RouteTypes(Enum):
+    HTTP = 1  # http route
+    STATIC = 2  # static handler route
+    WEBSOCKET = 3  # websocket route
+
+
 class Route:
     def __init__(
         self,
+        route_type: RouteTypes,
         path: str,
         handler: callable,
         methods: list = None,
-        is_static: bool = False,
-        is_websocket: bool = False,
     ):
+        self.route_type = route_type
         self.path = path
         self.handler = handler
         self.methods = methods if methods else HTTP_METHODS
-        self.is_static = is_static  # check if  static route
-        self.is_websocket = is_websocket  # check if websocket route
 
     @property
-    def path(self) -> str:
-        return self.__path
-
-    @path.setter
-    def path(self, path: str):
-        self.__path = path
-
-    @property
-    def handler(self) -> callable:
-        return self.__handler
-
-    @handler.setter
-    def handler(self, handler: callable):
-        self.__handler = handler
+    def type(self) -> RouteTypes:
+        return self.route_type
 
     @property
     def methods(self) -> list:
@@ -51,14 +44,6 @@ class Route:
 class Router:
     def __init__(self):
         self.routes = []
-
-    @property
-    def routes(self) -> typing.List[Route]:
-        return self.__routes
-
-    @routes.setter
-    def routes(self, routes: typing.List[Route]):
-        self.__routes = routes
 
     @property
     def paths(self) -> typing.List[str]:
@@ -82,9 +67,13 @@ class Router:
         static: bool = False,
     ):
         assert path not in self.paths, f"Route {path}, already exists"
+        route_type = RouteTypes.STATIC if static else RouteTypes.HTTP
         self.routes.append(
             Route(
-                path=path, handler=handler, methods=methods, is_static=static
+                route_type=route_type,
+                path=path,
+                handler=handler,
+                methods=methods,
             )
         )
 
@@ -98,16 +87,10 @@ class Router:
     def add_websocket_route(self, path: str, handler: callable):
         assert path not in self.paths, f"Route {path}, already exists"
         self.routes.append(
-            Route(path=path, handler=handler, is_websocket=True)
+            Route(route_type=RouteTypes.WEBSOCKET, path=path, handler=handler)
         )
 
-    def mount(
-        self,
-        router: callable,
-        prefix: str = None,
-        static: bool = False,
-        websocket: bool = False,
-    ):
+    def mount(self, router: callable, prefix: str = None):
         """Mount another router"""
         routes = router.routes
 
@@ -117,20 +100,23 @@ class Router:
                 self.__add_prefix(prefix, route.path) if prefix else route.path
             )
 
-            if websocket:
+            if route.type == RouteTypes.WEBSOCKET:
                 self.add_websocket_route(path=path, handler=route.handler)
             else:
+                is_static = route.type == RouteTypes.STATIC
                 self.add_route(
                     path=path,
                     handler=route.handler,
                     methods=route.methods,
-                    static=static,
+                    static=is_static,
                 )
 
     def get_route(self, request_path: str) -> (Route, typing.Any):
         for route in self.routes:
             # for static routing, use different methods for route comparison
-            if route.is_static and request_path.startswith(route.path):
+            if route.type == RouteTypes.STATIC and request_path.startswith(
+                route.path
+            ):
                 return route, {}
 
             parse_result = parse(route.path, request_path)
