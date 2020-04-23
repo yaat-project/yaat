@@ -12,6 +12,7 @@ from yaat.parsers import UrlParamParser
 from yaat.requests import Request
 from yaat.responses import Response
 from yaat.routing import Router, RouteTypes
+from yaat.staticfiles import StaticFilesHandler
 from yaat.typing import Scope, Receive, Send
 from yaat.websockets import WebSocket
 
@@ -81,7 +82,12 @@ class Yaat:
                 )
                 kwargs = param_parser.get()
 
-                response = await handler(request, **kwargs)
+                if isinstance(handler, StaticFilesHandler):
+                    # pass route path to static files handler
+                    kwargs["router_path"] = route.path
+                    response = await handler(request, **kwargs)
+                else:
+                    response = await handler(request, **kwargs)
             else:
                 raise HTTPException(404)
         except Exception as e:

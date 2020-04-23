@@ -16,14 +16,6 @@ class StaticFilesHandler:
         self.html = html
 
     @property
-    def path(self) -> str:
-        return self.__path
-
-    @path.setter
-    def path(self, path: str):
-        self.__path = path
-
-    @property
     def directory(self) -> str:
         return self.__directory
 
@@ -65,12 +57,12 @@ class StaticFilesHandler:
         return False
 
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
-        assert self.path, "Url path for static files cannot be null."
+        route_path = kwargs["router_path"]
 
         request_path = request.path
         # NOTE: remove route prefix and get file path
-        if request_path.startswith(self.path) and self.path != "/":
-            filepath = request_path[len(self.path) :]
+        if request_path.startswith(route_path) and route_path != "/":
+            filepath = request_path[len(route_path) :]
         else:
             filepath = request_path
         # if starts with / remove
@@ -153,8 +145,7 @@ class StaticFiles:
 
         # update path inside routes
         for route in self.router.routes:
-            route.path = path  # routing.Route
-            route.handler.path = path  # StaticFileHandler
+            route.path = path
 
         self.__path = path
 

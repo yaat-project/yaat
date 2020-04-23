@@ -3,6 +3,7 @@ import pytest
 import tempfile
 import time
 
+from yaat.routing import Router
 from yaat.staticfiles import StaticFiles
 
 
@@ -194,3 +195,23 @@ async def test_static_html(app, client, tmpdir):
 
     third_res = await client.get(f"/notfound.html")
     assert third_res.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_static_from_sub_router(app, client, tmpdir):
+    router = Router()
+    CONTENT = b"xxxx"
+
+    temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
+    temp.write(CONTENT)
+    temp.close()
+
+    directory = f"/{str(tmpdir)}"
+    imagename = temp.name.split("/")[-1]
+
+    statics = StaticFiles(directory=directory)
+    router.mount(statics, "/")
+    app.mount(statics, "/static")
+
+    res = await client.get(f"/static/{imagename}")
+    assert res.content == CONTENT
