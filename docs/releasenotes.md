@@ -1,5 +1,9 @@
 # Release Notes
 
+### 0.1.6
+
+- Fixed `StaticFiles` getting 404 when mounted to sub router instead of main Yaat application.
+
 ### 0.1.5
 
 - Added path parameters datatype conversion.
