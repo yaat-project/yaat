@@ -12,10 +12,15 @@ branches:
 
 install:
   - pip install -r requirements-dev.txt
-  - pip install pytest-cov codecov
+  - pip install codecov twine
 
-script:
-  - pytest --cov-report term --cov
+script: scripts/test.sh
 
 after_success:
   - codecov
+
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    branch: stable

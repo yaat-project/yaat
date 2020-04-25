@@ -21,6 +21,7 @@ nav:
 
 theme:
     name: 'material'
+    logo: 'images/logo.png'
 
 markdown_extensions:
     - codehilite
