@@ -22,12 +22,7 @@ after_success:
 jobs:
   include:
     - stage: deploy
-        python: "3.8"
-        install: pip install twine
-
-        deploy:
-          provider: script
-          script:
-            - if [[ $TRAVIS_EVENT_TYPE == "push" && $TRAVIS_BRANCH == "stable" ]] ; then ./scripts/deploy.sh ; fi
-          on:
-            branch: stable
+      python: 3.8
+      install: pip install twine
+      script:
+        - if [[ "$TRAVIS_BRANCH" == "stable" && "$TRAVIS_PULL_REQUEST" = "false" ]];then chmod +x scripts/deploy.sh; ./scripts/deploy.sh; fi
