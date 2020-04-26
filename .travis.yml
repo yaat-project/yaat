@@ -12,15 +12,22 @@ branches:
 
 install:
   - pip install -r requirements-dev.txt
-  - pip install codecov twine
+  - pip install codecov
 
 script: scripts/test.sh
 
 after_success:
   - codecov
 
-deploy:
-  provider: script
-  script: scripts/deploy.sh
-  on:
-    branch: stable
+jobs:
+  include:
+    - stage: deploy
+        python: "3.8"
+        install: pip install twine
+
+        deploy:
+          provider: script
+          script:
+            - if [[ $TRAVIS_EVENT_TYPE == "push" && $TRAVIS_BRANCH == "stable" ]] ; then ./scripts/deploy.sh ; fi
+          on:
+            branch: stable
