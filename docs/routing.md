@@ -111,8 +111,6 @@ and mount those routes back to the main application.
 - `prefix` - url prefix to be added to all routes under the router.
 - `router` - Yaat `Router` object.
 
-> WebSocket parameter is explained further in `WebSockets` section.  
-
 **app.py**
 ```python
 from yaat import Yaat
