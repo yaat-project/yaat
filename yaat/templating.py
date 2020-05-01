@@ -1,5 +1,6 @@
 from jinja2 import Environment, FileSystemLoader
 import os
+import typing
 
 from yaat.responses import HTMLResponse
 
@@ -32,7 +33,7 @@ class Jinja2Template(BaseTemplate):
 
         self.__directory = Environment(loader=FileSystemLoader(abspath))
 
-    def get(self, template_name: str, context: dict = None) -> bytes:
+    def get(self, template_name: str, context: typing.Dict = None) -> bytes:
         if context is None:
             context = {}
 
@@ -45,9 +46,9 @@ class Jinja2Template(BaseTemplate):
     def TemplateResponse(
         self,
         template_name: str,
-        context: dict = None,
+        context: typing.Dict[str, typing.Any] = None,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict[str, str] = None,
     ) -> HTMLResponse:
         template_data = self.get(template_name, context)
         return HTMLResponse(

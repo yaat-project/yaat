@@ -21,8 +21,8 @@ class Yaat:
     def __init__(
         self,
         middlewares: typing.Sequence[BaseMiddleware] = None,
-        on_startup: typing.Sequence[callable] = None,
-        on_shutdown: typing.Sequence[callable] = None,
+        on_startup: typing.Sequence[typing.Callable] = None,
+        on_shutdown: typing.Sequence[typing.Callable] = None,
     ):
         self.router = Router()
         self.middleware = LifespanMiddleware(
@@ -33,24 +33,31 @@ class Yaat:
         self.__setup_middlewares(middlewares)
 
     # NOTE: Routing
-    def route(self, path: str, methods: list = None) -> callable:
+    def route(
+        self, path: str, methods: typing.List[str] = None
+    ) -> typing.Callable:
         def wrapper(handler):
             self.add_route(path, handler, methods)
             return handler
 
         return wrapper
 
-    def add_route(self, path: str, handler: callable, methods: list = None):
+    def add_route(
+        self,
+        path: str,
+        handler: typing.Callable,
+        methods: typing.List[str] = None,
+    ):
         self.router.add_route(path=path, handler=handler, methods=methods)
 
-    def websocket_route(self, path: str) -> callable:
+    def websocket_route(self, path: str) -> typing.Callable:
         def wrapper(handler):
             self.add_websocket_route(path, handler)
             return handler
 
         return wrapper
 
-    def add_websocket_route(self, path: str, handler: callable):
+    def add_websocket_route(self, path: str, handler: typing.Callable):
         self.router.add_websocket_route(path=path, handler=handler)
 
     def mount(self, router: Router, prefix: str = None):
@@ -131,4 +138,5 @@ class Yaat:
         return self._test_client
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        scope["app"] = self
         await self.middleware(scope, receive, send)

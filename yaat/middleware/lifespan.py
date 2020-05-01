@@ -14,8 +14,8 @@ class LifespanMiddleware(BaseMiddleware):
     def __init__(
         self,
         app: ASGIApp,
-        on_startup: typing.Sequence[callable] = None,
-        on_shutdown: typing.Sequence[callable] = None,
+        on_startup: typing.Sequence[typing.Callable] = None,
+        on_shutdown: typing.Sequence[typing.Callable] = None,
     ):
         super().__init__(app)
         self.on_startup = on_startup if on_startup else []

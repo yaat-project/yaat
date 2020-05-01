@@ -8,7 +8,7 @@ from yaat.typing import Scope
 
 
 class DictMapper(dict):
-    def __cmp__(self, dict_: dict):
+    def __cmp__(self, dict_: typing.Dict):
         return self.__cmp__(self.__dict__, dict_)
 
     def __contains__(self, item: typing.Any) -> bool:
@@ -145,7 +145,7 @@ class URL:
         return self.__host_header
 
     @host_header.setter
-    def host_header(self, headers: list):
+    def host_header(self, headers: typing.Dict[str, str]):
         host_header = None
         for key, value in headers:
             if key == b"host":
