@@ -16,7 +16,7 @@ class Route:
         self,
         route_type: RouteTypes,
         path: str,
-        handler: callable,
+        handler: typing.Callable,
         methods: list = None,
     ):
         self.route_type = route_type
@@ -52,7 +52,7 @@ class Router:
             paths.add(route.path)
         return list(paths)
 
-    def route(self, path: str, methods: list = None) -> callable:
+    def route(self, path: str, methods: list = None) -> typing.Callable:
         def wrapper(handler):
             self.add_route(path=path, handler=handler, methods=methods)
             return handler
@@ -62,7 +62,7 @@ class Router:
     def add_route(
         self,
         path: str,
-        handler: callable,
+        handler: typing.Callable,
         methods: list = None,
         is_static: bool = False,
     ):
@@ -77,20 +77,20 @@ class Router:
             )
         )
 
-    def websocket_route(self, path: str) -> callable:
+    def websocket_route(self, path: str) -> typing.Callable:
         def wrapper(handler):
             self.add_websocket_route(path=path)
             return handler
 
         return wrapper
 
-    def add_websocket_route(self, path: str, handler: callable):
+    def add_websocket_route(self, path: str, handler: typing.Callable):
         assert path not in self.paths, f"Route {path}, already exists"
         self.routes.append(
             Route(route_type=RouteTypes.WEBSOCKET, path=path, handler=handler)
         )
 
-    def mount(self, router: callable, prefix: str = None):
+    def mount(self, router: typing.Callable, prefix: str = None):
         """Mount another router"""
         routes = router.routes
 
