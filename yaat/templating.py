@@ -46,9 +46,9 @@ class Jinja2Template(BaseTemplate):
     def TemplateResponse(
         self,
         template_name: str,
-        context: typing.Dict = None,
+        context: typing.Dict[str, typing.Any] = None,
         status_code: int = 200,
-        headers: typing.Dict = None,
+        headers: typing.Dict[str, str] = None,
     ) -> HTMLResponse:
         template_data = self.get(template_name, context)
         return HTMLResponse(

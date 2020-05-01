@@ -130,7 +130,7 @@ class Request(HTTPConnection):
                 self._json = json.loads(body)
         return self._json
 
-    async def form(self) -> typing.Dict:
+    async def form(self) -> typing.Dict[str, typing.Any]:
         if not hasattr(self, "_form"):
             content_type, options = parse_options_header(
                 self.headers.get("content-type")
