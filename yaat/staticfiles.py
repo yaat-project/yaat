@@ -28,7 +28,7 @@ class StaticFilesHandler:
         self.__directory = directory
 
     def is_not_modified(
-        self, request_headers: dict, response_headers: dict
+        self, request_headers: typing.Dict, response_headers: typing.Dict
     ) -> bool:
         """
         Check if file is modified, if not return "Not Modified" response instead.

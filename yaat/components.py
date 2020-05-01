@@ -8,7 +8,7 @@ from yaat.typing import Scope
 
 
 class DictMapper(dict):
-    def __cmp__(self, dict_: dict):
+    def __cmp__(self, dict_: typing.Dict):
         return self.__cmp__(self.__dict__, dict_)
 
     def __contains__(self, item: typing.Any) -> bool:

@@ -28,7 +28,7 @@ class Response:
         self,
         content: typing.Any = None,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict = None,
         media_type: str = None,
     ):
         self.status_code = status_code
@@ -156,7 +156,9 @@ class JSONResponse(Response):
 
 
 class RedirectResponse(Response):
-    def __init__(self, url: str, status_code: int = 307, headers: dict = None):
+    def __init__(
+        self, url: str, status_code: int = 307, headers: typing.Dict = None
+    ):
         if not headers:
             headers = {}
 
@@ -172,7 +174,7 @@ class FileResponse(Response):
         path: str,
         filename: str = None,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict = None,
         media_type: str = None,
         stat_result: os.stat_result = None,
         method: str = None,
@@ -269,7 +271,7 @@ class NotModifiedResponse(Response):
         "vary",
     )
 
-    def __init__(self, headers: dict):
+    def __init__(self, headers: typing.Dict):
         headers = {
             name: value
             for name, value in headers.items()
@@ -283,7 +285,7 @@ class StreamResponse(Response):
         self,
         content: typing.Any,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict = None,
         media_type: str = None,
     ):
         super().__init__(
