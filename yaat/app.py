@@ -33,7 +33,9 @@ class Yaat:
         self.__setup_middlewares(middlewares)
 
     # NOTE: Routing
-    def route(self, path: str, methods: list = None) -> typing.Callable:
+    def route(
+        self, path: str, methods: typing.List[str] = None
+    ) -> typing.Callable:
         def wrapper(handler):
             self.add_route(path, handler, methods)
             return handler
@@ -41,7 +43,10 @@ class Yaat:
         return wrapper
 
     def add_route(
-        self, path: str, handler: typing.Callable, methods: list = None
+        self,
+        path: str,
+        handler: typing.Callable,
+        methods: typing.List[str] = None,
     ):
         self.router.add_route(path=path, handler=handler, methods=methods)
 

@@ -17,7 +17,7 @@ class Route:
         route_type: RouteTypes,
         path: str,
         handler: typing.Callable,
-        methods: list = None,
+        methods: typing.List[str] = None,
     ):
         self.route_type = route_type
         self.path = path
@@ -29,11 +29,11 @@ class Route:
         return self.route_type
 
     @property
-    def methods(self) -> list:
+    def methods(self) -> typing.List[str]:
         return self.__methods
 
     @methods.setter
-    def methods(self, methods: list):
+    def methods(self, methods: typing.List[str]):
         # make sure all HTTP methods are upper
         self.__methods = [method.upper() for method in methods]
 
@@ -52,7 +52,9 @@ class Router:
             paths.add(route.path)
         return list(paths)
 
-    def route(self, path: str, methods: list = None) -> typing.Callable:
+    def route(
+        self, path: str, methods: typing.List[str] = None
+    ) -> typing.Callable:
         def wrapper(handler):
             self.add_route(path=path, handler=handler, methods=methods)
             return handler
@@ -63,7 +65,7 @@ class Router:
         self,
         path: str,
         handler: typing.Callable,
-        methods: list = None,
+        methods: typing.List[str] = None,
         is_static: bool = False,
     ):
         assert path not in self.paths, f"Route {path}, already exists"

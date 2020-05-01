@@ -45,8 +45,8 @@ class Response:
         return content.encode(self.charset)
 
     def get_raw_headers(
-        self, headers: typing.Mapping[str, str] = None
-    ) -> list:
+        self, headers: typing.Dict[str, str] = None
+    ) -> typing.List[str]:
         if headers is None:
             headers = self.headers
 

@@ -145,7 +145,7 @@ class URL:
         return self.__host_header
 
     @host_header.setter
-    def host_header(self, headers: list):
+    def host_header(self, headers: typing.Dict[str, str]):
         host_header = None
         for key, value in headers:
             if key == b"host":
