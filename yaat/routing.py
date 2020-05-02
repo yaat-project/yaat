@@ -121,7 +121,7 @@ class Router:
             #   - Sub Application
             #   - Static Files Handler
             else:
-                url_struct = self.__url_to_path_struct(request_path)
+                url_struct = self._url_to_struct(request_path)
 
                 # if only first item, instead / to first index
                 first_url_struct = url_struct[0]
@@ -145,7 +145,7 @@ class Router:
 
                 # in case, router is mounted on "/" (for len to 1)
                 if first_url_struct == path or len(url_struct) == 1:
-                    url = self.__path_struct_to_url(url_struct[1:])
+                    url = self._struct_to_url(url_struct[1:])
                     return self.get_route(
                         request_path=url,
                         prev_path=prev_path,
@@ -154,20 +154,12 @@ class Router:
 
         return None, None
 
-    def __add_prefix(self, prefix: str, path: str) -> str:
-        if not prefix.startswith("/"):
-            prefix = "/" + prefix
-
-        return (
-            f"{prefix}{path}" if path.startswith("/") else f"{prefix}/{path}"
-        )
-
-    def __url_to_path_struct(self, path: str) -> typing.List[str]:
+    def _url_to_struct(self, path: str) -> typing.List[str]:
         if path == "/":
             return ["/"]
         return [p for p in path.split("/") if p != ""]
 
-    def __path_struct_to_url(self, struct: typing.List[str]) -> str:
+    def _struct_to_url(self, struct: typing.List[str]) -> str:
         url = "/".join(struct)
         if not url.startswith("/"):
             return f"/{url}"
