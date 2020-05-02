@@ -121,46 +121,42 @@ class Router:
             #   - Sub Application
             #   - Static Files Handler
             else:
-                url_struct = self._url_to_struct(request_path)
+                directories = self._path_to_directories(request_path)
+                first_directory = directories[0]
 
-                # if only first item, instead / to first index
-                first_url_struct = url_struct[0]
+                # if != 1,means has multiple sub directory other than /
+                # and if first directory not equal to router's path means
+                # the requested url is not for the current router
+                if len(directories) != 1 and first_directory != path:
+                    continue
 
-                # remove "/" from start
-                if first_url_struct.startswith("/"):
-                    first_url_struct = first_url_struct[1:]
-                if path.startswith("/"):
-                    path = path[1:]
-
-                # reconstruct prev path
-                if prev_path:
-                    prev_path = f"{prev_path}{url_struct[0]}"
-                elif len(url_struct) == 1:
+                # reconstruct previous path for next router
+                if prev_path and first_directory != "/":
+                    prev_path = f"{prev_path}{first_directory}"
+                elif not prev_path and len(directories) == 1:
+                    # first sub directory, so previous should be root /
                     prev_path = "/"
                 else:
-                    prev_path = url_struct[0]
-                # add / if not at the start
-                if not prev_path.startswith("/"):
-                    prev_path = f"/{prev_path}"
+                    prev_path = first_directory
 
-                # in case, router is mounted on "/" (for len to 1)
-                if first_url_struct == path or len(url_struct) == 1:
-                    url = self._struct_to_url(url_struct[1:])
-                    return self.get_route(
-                        request_path=url,
-                        prev_path=prev_path,
-                        routes=router.routes,
-                    )
+                # request path for next router would be all sub directories
+                # below the current one
+                request_path = self._directories_to_path(directories[1:])
+                return self.get_route(
+                    request_path=request_path,
+                    prev_path=prev_path,
+                    routes=router.routes,
+                )
 
         return None, None
 
-    def _url_to_struct(self, path: str) -> typing.List[str]:
+    def _path_to_directories(self, path: str) -> typing.List[str]:
         if path == "/":
             return ["/"]
-        return [p for p in path.split("/") if p != ""]
+        return [f"/{p}" for p in path.split("/") if p != ""]
 
-    def _struct_to_url(self, struct: typing.List[str]) -> str:
-        url = "/".join(struct)
+    def _directories_to_path(self, directories: typing.List[str]) -> str:
+        url = "/".join(directories)
         if not url.startswith("/"):
             return f"/{url}"
         return url
