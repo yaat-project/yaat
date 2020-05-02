@@ -94,6 +94,7 @@ class Router:
 
     def get_route(
         self,
+        *,
         request_path: str,
         prev_path: str = None,
         routes: OrderedDict = None,
