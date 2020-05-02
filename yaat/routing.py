@@ -98,7 +98,7 @@ class Router:
         request_path: str,
         prev_path: str = None,
         routes: OrderedDict = None,
-    ) -> (Route, typing.Any):
+    ) -> (Route, typing.Dict[str, typing.Any]):
         # if not given, use self
         if not routes:
             routes = self.routes
