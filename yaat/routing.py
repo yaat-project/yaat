@@ -115,7 +115,10 @@ class Router:
                 if parse_result is not None:
                     return route, parse_result.named
 
-            # else, sub application and the router itself
+            # else, router itself
+            # Type of router
+            #   - Sub Application
+            #   - Static Files Handler
             else:
                 url_struct = self.__url_to_path_struct(request_path)
 
