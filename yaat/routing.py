@@ -138,6 +138,7 @@ class Router:
                     return route, {"router_path": prev_path}
 
                 parse_result = parse(route.path, request_path)
+                print(request_path)
                 if parse_result is not None:
                     return route, parse_result.named
 
@@ -195,7 +196,7 @@ class Router:
         return [f"/{p}" for p in path.split("/") if p != ""]
 
     def _directories_to_path(self, directories: typing.List[str]) -> str:
-        url = "/".join(directories)
+        url = "".join(directories)
         if not url.startswith("/"):
             return f"/{url}"
         return url
