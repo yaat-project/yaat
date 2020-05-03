@@ -45,13 +45,32 @@ class Route:
 class Router:
     def __init__(self):
         self.routes = OrderedDict()
+        self.__paths = []
 
     @property
-    def paths(self) -> typing.List[str]:
-        paths = set()
-        for _, route in self.routes.items():
-            paths.add(route.path)
-        return list(paths)
+    def paths(self):
+        self.__paths = []  # reset before loading paths
+        return self._get_paths()
+
+    def _get_paths(
+        self, routes: OrderedDict = None, prev_path: str = None
+    ) -> typing.List[str]:
+        """
+        Method to traverse through routes and sub router inside its to get all handler paths.
+        """
+        if not routes:
+            routes = self.routes
+
+        for path, router in routes.items():
+            if isinstance(router, Route):
+                fullpath = (
+                    f"{prev_path}{router.path}" if prev_path else router.path
+                )
+                self.__paths.append(fullpath)
+            else:
+                self._get_paths(router.routes, path)
+
+        return self.__paths
 
     def route(
         self, path: str, methods: typing.List[str] = None
@@ -71,6 +90,7 @@ class Router:
     ):
         assert path not in self.paths, f"Route {path}, already exists"
         route_type = RouteTypes.STATIC if is_static else RouteTypes.HTTP
+        path = self._clean_path(path)
         self.routes[path] = Route(
             route_type=route_type, path=path, handler=handler, methods=methods,
         )
@@ -84,12 +104,17 @@ class Router:
 
     def add_websocket_route(self, path: str, handler: typing.Callable):
         assert path not in self.paths, f"Route {path}, already exists"
+        path = self._clean_path(path)
         self.routes[path] = Route(
             route_type=RouteTypes.WEBSOCKET, path=path, handler=handler
         )
 
     def mount(self, router: typing.Callable, prefix: str):
         """Mount another router"""
+        assert (
+            prefix not in self.routes.keys()
+        ), f"Route with {prefix}, already exists"
+        prefix = self._clean_path(prefix)
         self.routes[prefix] = router
 
     def get_route(
@@ -141,14 +166,28 @@ class Router:
 
                 # request path for next router would be all sub directories
                 # below the current one
-                request_path = self._directories_to_path(directories[1:])
-                return self.get_route(
-                    request_path=request_path,
+                next_request_path = self._directories_to_path(directories[1:])
+
+                # search in sub router, if route is found return
+                # else continue
+                route, kwargs = self.get_route(
+                    request_path=next_request_path,
                     prev_path=prev_path,
                     routes=router.routes,
                 )
+                if route:
+                    return route, kwargs
 
         return None, None
+
+    def _clean_path(self, path: str) -> str:
+        if path == "/":
+            return path
+        if not path.startswith("/"):
+            path = f"/{path}"
+        if path.endswith("/"):
+            path = path[:-1]
+        return path
 
     def _path_to_directories(self, path: str) -> typing.List[str]:
         if path == "/":
