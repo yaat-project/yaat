@@ -138,7 +138,6 @@ class Router:
                     return route, {"router_path": prev_path}
 
                 parse_result = parse(route.path, request_path)
-                print(request_path)
                 if parse_result is not None:
                     return route, parse_result.named
 
