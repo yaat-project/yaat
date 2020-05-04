@@ -28,7 +28,9 @@ class StaticFilesHandler:
         self.__directory = directory
 
     def is_not_modified(
-        self, request_headers: dict, response_headers: dict
+        self,
+        request_headers: typing.Dict[str, str],
+        response_headers: typing.Dict[str, str],
     ) -> bool:
         """
         Check if file is modified, if not return "Not Modified" response instead.
@@ -57,6 +59,7 @@ class StaticFilesHandler:
         return False
 
     async def __call__(self, request: Request, *args, **kwargs) -> Response:
+        # router_path comes from routing.Router
         route_path = kwargs["router_path"]
 
         request_path = request.path
@@ -116,10 +119,9 @@ class StaticFilesHandler:
 
 class StaticFiles:
     def __init__(self, directory: str, html: bool = False):
-        self.path = None
         self.router = Router()
         self.router.add_route(
-            path=self.path,
+            path="/",
             handler=StaticFilesHandler(directory, html),
             methods=["GET", "HEAD"],
             is_static=True,

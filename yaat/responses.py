@@ -28,7 +28,7 @@ class Response:
         self,
         content: typing.Any = None,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict[str, str] = None,
         media_type: str = None,
     ):
         self.status_code = status_code
@@ -45,8 +45,8 @@ class Response:
         return content.encode(self.charset)
 
     def get_raw_headers(
-        self, headers: typing.Mapping[str, str] = None
-    ) -> list:
+        self, headers: typing.Dict[str, str] = None
+    ) -> typing.List[str]:
         if headers is None:
             headers = self.headers
 
@@ -156,7 +156,12 @@ class JSONResponse(Response):
 
 
 class RedirectResponse(Response):
-    def __init__(self, url: str, status_code: int = 307, headers: dict = None):
+    def __init__(
+        self,
+        url: str,
+        status_code: int = 307,
+        headers: typing.Dict[str, str] = None,
+    ):
         if not headers:
             headers = {}
 
@@ -172,7 +177,7 @@ class FileResponse(Response):
         path: str,
         filename: str = None,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict[str, str] = None,
         media_type: str = None,
         stat_result: os.stat_result = None,
         method: str = None,
@@ -269,7 +274,7 @@ class NotModifiedResponse(Response):
         "vary",
     )
 
-    def __init__(self, headers: dict):
+    def __init__(self, headers: typing.Dict[str, str]):
         headers = {
             name: value
             for name, value in headers.items()
@@ -283,7 +288,7 @@ class StreamResponse(Response):
         self,
         content: typing.Any,
         status_code: int = 200,
-        headers: dict = None,
+        headers: typing.Dict[str, str] = None,
         media_type: str = None,
     ):
         super().__init__(
