@@ -1,5 +1,9 @@
 # Release Notes
 
+### 0.1.7
+
+- Rewrite new routing strategy. Read more [here](https://github.com/yaat-project/yaat/pull/23).
+
 ### 0.1.6
 
 - Fixed `StaticFiles` getting 404 when mounted to sub router instead of main Yaat application.
