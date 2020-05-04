@@ -147,7 +147,6 @@ class Router:
             #   - Static Files Handler
             else:
                 directories = self._path_to_directories(request_path)
-                print(directories)
                 first_directory = directories[0]
 
                 # if != 1,means has multiple sub directory other than /
