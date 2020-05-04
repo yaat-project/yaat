@@ -192,7 +192,12 @@ class Router:
     def _path_to_directories(self, path: str) -> typing.List[str]:
         if path == "/":
             return ["/"]
-        return [f"/{p}" for p in path.split("/") if p != ""]
+
+        raw_dirs = path.split("/")
+        if raw_dirs and raw_dirs[0] == "":
+            raw_dirs = raw_dirs[1:]
+
+        return [f"/{p}" for p in raw_dirs]
 
     def _directories_to_path(self, directories: typing.List[str]) -> str:
         url = "".join(directories)
