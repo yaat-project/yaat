@@ -12,7 +12,6 @@ from yaat.parsers import UrlParamParser
 from yaat.requests import Request
 from yaat.responses import Response
 from yaat.routing import Router, RouteTypes
-from yaat.staticfiles import StaticFilesHandler
 from yaat.typing import Scope, Receive, Send
 from yaat.websockets import WebSocket
 
@@ -60,7 +59,7 @@ class Yaat:
     def add_websocket_route(self, path: str, handler: typing.Callable):
         self.router.add_websocket_route(path=path, handler=handler)
 
-    def mount(self, router: Router, prefix: str = None):
+    def mount(self, router: Router, prefix: str):
         self.router.mount(router=router, prefix=prefix)
 
     # NOTE: Handle HTTP Request
@@ -88,13 +87,7 @@ class Yaat:
                     handler, kwargs, inspect.isclass(route.handler)
                 )
                 kwargs = param_parser.get()
-
-                if isinstance(handler, StaticFilesHandler):
-                    # pass route path to static files handler
-                    kwargs["router_path"] = route.path
-                    response = await handler(request, **kwargs)
-                else:
-                    response = await handler(request, **kwargs)
+                response = await handler(request, **kwargs)
             else:
                 raise HTTPException(404)
         except Exception as e:
