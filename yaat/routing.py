@@ -147,6 +147,7 @@ class Router:
             #   - Static Files Handler
             else:
                 directories = self._path_to_directories(request_path)
+                print(directories)
                 first_directory = directories[0]
 
                 # if != 1,means has multiple sub directory other than /
@@ -192,12 +193,7 @@ class Router:
     def _path_to_directories(self, path: str) -> typing.List[str]:
         if path == "/":
             return ["/"]
-
-        raw_dirs = path.split("/")
-        if raw_dirs and raw_dirs[0] == "":
-            raw_dirs = raw_dirs[1:]
-
-        return [f"/{p}" for p in raw_dirs]
+        return [f"/{p}" for p in path.split("/") if p != ""]
 
     def _directories_to_path(self, directories: typing.List[str]) -> str:
         url = "".join(directories)
