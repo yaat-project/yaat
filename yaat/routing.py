@@ -165,19 +165,27 @@ class Router:
 
                 # reconstruct previous path for next router
                 if prev_path and first_directory != "/":
-                    prev_path = f"{prev_path}{first_directory}"
+                    # if current path is not root, then next previous path
+                    # is current router prex path + current path
+                    next_prev_path = f"{prev_path}{first_directory}"
+                elif prev_path and first_directory == "/":
+                    # because we are not going to add slash to the end,
+                    # so just same previous path for next router
+                    next_prev_path = prev_path
                 else:
-                    prev_path = first_directory
+                    # no previous path, means use current path for next
+                    # router
+                    next_prev_path = first_directory
 
                 # request path for next router would be all sub directories
-                # below the current one
+                # after the current one
                 next_request_path = self._directories_to_path(directories[1:])
 
                 # search in sub router, if route is found return
                 # else continue
                 route, kwargs = self.get_route(
                     request_path=next_request_path,
-                    prev_path=prev_path,
+                    prev_path=next_prev_path,
                     routes=router.routes,
                 )
                 if route:
