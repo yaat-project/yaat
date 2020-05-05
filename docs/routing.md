@@ -23,6 +23,7 @@ async def detail(request, post_id: int):
 ```
 
 Yaat will automatically convert the value it captured in the path when type hinting is defined in parameters. Three convertors are available
+
 - `str` - return a string, and it is also the default when type hinting is not defined.
 - `int` - returns an integer.
 - `float` - returns a float.
