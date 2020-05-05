@@ -1,5 +1,9 @@
 # Release Notes
 
+### 0.1.8
+
+- Bugfix on router. Read more about issue [here](https://github.com/yaat-project/yaat/pull/25).
+
 ### 0.1.7
 
 - Rewrite new routing strategy. Read more [here](https://github.com/yaat-project/yaat/pull/23).
