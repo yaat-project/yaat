@@ -124,6 +124,9 @@ class Router:
         prev_path: str = None,
         routes: OrderedDict = None,
     ) -> (Route, typing.Dict[str, typing.Any]):
+        # NOTE: to prevent circular import
+        from yaat.staticfiles import StaticFiles
+
         # if not given, use self
         if not routes:
             routes = self.routes
@@ -149,30 +152,40 @@ class Router:
                 directories = self._path_to_directories(request_path)
                 first_directory = directories[0]
 
-                # if != 1,means has multiple sub directory other than /
-                # and if first directory not equal to router's path means
+                # if router is Static Files, and router path is root, means
+                # first directory should be "/" as anything after is filename (with dirs)
+                # for static files handler
+                if path == "/" and isinstance(router, StaticFiles):
+                    first_directory = "/"
+
+                # if first directory not equal to router's path means
                 # the requested url is not for the current router
-                if len(directories) != 1 and first_directory != path:
+                if first_directory != path:
                     continue
 
                 # reconstruct previous path for next router
                 if prev_path and first_directory != "/":
-                    prev_path = f"{prev_path}{first_directory}"
-                elif not prev_path and len(directories) == 1:
-                    # first sub directory, so previous should be root /
-                    prev_path = "/"
+                    # if current path is not root, then next previous path
+                    # is current router prex path + current path
+                    next_prev_path = f"{prev_path}{first_directory}"
+                elif prev_path and first_directory == "/":
+                    # because we are not going to add slash to the end,
+                    # so just same previous path for next router
+                    next_prev_path = prev_path
                 else:
-                    prev_path = first_directory
+                    # no previous path, means use current path for next
+                    # router
+                    next_prev_path = first_directory
 
                 # request path for next router would be all sub directories
-                # below the current one
+                # after the current one
                 next_request_path = self._directories_to_path(directories[1:])
 
                 # search in sub router, if route is found return
                 # else continue
                 route, kwargs = self.get_route(
                     request_path=next_request_path,
-                    prev_path=prev_path,
+                    prev_path=next_prev_path,
                     routes=router.routes,
                 )
                 if route:
