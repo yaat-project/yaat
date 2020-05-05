@@ -124,6 +124,9 @@ class Router:
         prev_path: str = None,
         routes: OrderedDict = None,
     ) -> (Route, typing.Dict[str, typing.Any]):
+        # NOTE: to prevent circular import
+        from yaat.staticfiles import StaticFiles
+
         # if not given, use self
         if not routes:
             routes = self.routes
@@ -149,18 +152,20 @@ class Router:
                 directories = self._path_to_directories(request_path)
                 first_directory = directories[0]
 
-                # if != 1,means has multiple sub directory other than /
-                # and if first directory not equal to router's path means
+                # if router is Static Files, and router path is root, means
+                # first directory should be "/" as anything after is filename (with dirs)
+                # for static files handler
+                if path == "/" and isinstance(router, StaticFiles):
+                    first_directory = "/"
+
+                # if first directory not equal to router's path means
                 # the requested url is not for the current router
-                if len(directories) != 1 and first_directory != path:
+                if first_directory != path:
                     continue
 
                 # reconstruct previous path for next router
                 if prev_path and first_directory != "/":
                     prev_path = f"{prev_path}{first_directory}"
-                elif not prev_path and len(directories) == 1:
-                    # first sub directory, so previous should be root /
-                    prev_path = "/"
                 else:
                     prev_path = first_directory
 
