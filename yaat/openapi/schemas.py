@@ -120,7 +120,7 @@ class OpenAPIResponse(Response):
         return yaml.dump(content, default_flow_style=False).encode("utf-8")
 
 
-class OpenAPI:
+class OpenAPISchema:
     def __init__(self, title: str, version: str):
         base_schema = {
             "openapi": "3.0.0",
