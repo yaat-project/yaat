@@ -1,7 +1,7 @@
 import pytest
 
-from yaat.background import BackgroundTask, BackgroundTasks
-from yaat.responses import RunAfterResponse, Response
+from yaat.background import BackgroundTask, BackgroundTasks, RunAfterResponse
+from yaat.responses import Response
 
 
 @pytest.mark.asyncio

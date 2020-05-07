@@ -9,7 +9,6 @@ import json
 import os
 import typing
 
-from yaat.background import BackgroundTask
 from yaat.concurrency import generate_in_threadpool, run_until_first_complete
 from yaat.constants import ENCODING_METHOD
 from yaat.typing import Scope, Receive, Send
@@ -340,15 +339,3 @@ class StreamResponse(Response):
         self.streaming = True
         tasks = (self.stream(send), self.when_disconnect_or_finish(receive))
         await run_until_first_complete(tasks)
-
-
-class RunAfterResponse:
-    """ Use to return response and run background task(s) after """
-
-    def __init__(self, response: Response, background: BackgroundTask):
-        self.response = response
-        self.background = background
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send):
-        await self.response(scope, receive, send)
-        await self.background()

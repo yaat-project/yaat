@@ -2,6 +2,8 @@ import asyncio
 import typing
 
 from yaat.concurrency import run_in_threadpool
+from yaat.responses import Response
+from yaat.typing import Scope, Receive, Send
 
 
 class BackgroundTask:
@@ -42,3 +44,15 @@ class BackgroundTasks:
     async def __call__(self):
         for task in self.tasks:
             await task()
+
+
+class RunAfterResponse:
+    """ Use to return response and run background task(s) after """
+
+    def __init__(self, response: Response, background: BackgroundTask):
+        self.response = response
+        self.background = background
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send):
+        await self.response(scope, receive, send)
+        await self.background()
