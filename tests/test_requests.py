@@ -59,7 +59,7 @@ async def test_request_client(app, client):
 
 @pytest.mark.asyncio
 async def test_request_body(app, client):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         body = await request.body()
         return JSONResponse({"body": body.decode()})
@@ -73,7 +73,7 @@ async def test_request_body(app, client):
 async def test_request_json(app, client):
     DATA = {"hello": "world", "hello_chinese": "世界"}
 
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         json = await request.json()
         return JSONResponse(json)
@@ -87,7 +87,7 @@ async def test_request_json(app, client):
 async def test_request_form_urlencode(app, client):
     DATA = {"hello": "world", "hello_chinese": "世界"}
 
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         form = dict(form)

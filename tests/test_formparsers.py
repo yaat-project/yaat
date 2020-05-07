@@ -14,7 +14,7 @@ FORCE_MULTIPART_REQ = ForceMultipartRequest()
 
 @pytest.mark.asyncio
 async def test_read_body(app, client):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         await request.body()
         form = await request.form()
@@ -27,7 +27,7 @@ async def test_read_body(app, client):
 
 @pytest.mark.asyncio
 async def test_data(app, client):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         response_data = dict(form)
@@ -48,7 +48,7 @@ async def test_upload_files(app, client, tmpdir):
     temp.close()
     filename = temp.name.split("/")[-1]
 
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         upload = form.get("test")
@@ -86,7 +86,7 @@ async def test_multiple_upload_files(app, client, tmpdir):
     temp2.close()
     file2 = temp2.name.split("/")[-1]
 
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         upload1 = form.get("test1")
@@ -139,7 +139,7 @@ async def test_multi_items(app, client, tmpdir):
     temp2.close()
     file2 = temp2.name.split("/")[-1]
 
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
 
@@ -184,7 +184,7 @@ async def test_multi_items(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_multipart_request_mixed_files_and_data(app, client, tmpdir):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
 
@@ -237,7 +237,7 @@ async def test_multipart_request_mixed_files_and_data(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_multipart_with_chartset_for_filename(app, client):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         upload = form.get("file")
@@ -273,7 +273,7 @@ async def test_multipart_with_chartset_for_filename(app, client):
 
 @pytest.mark.asyncio
 async def test_multipart_without_charset_for_filename(app, client):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         upload = form.get("file")
@@ -307,7 +307,7 @@ async def test_multipart_without_charset_for_filename(app, client):
 
 @pytest.mark.asyncio
 async def test_multipart_with_encoded_value(app, client):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         value = form.get("value")
@@ -332,7 +332,7 @@ async def test_multipart_with_encoded_value(app, client):
 
 @pytest.mark.asyncio
 async def test_urlencoding(app, client, tmpdir):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         return JSONResponse(dict(form))
@@ -348,7 +348,7 @@ async def test_urlencoding(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_no_request_data(app, client, tmpdir):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         form = await request.form()
         return JSONResponse(dict(form))
@@ -359,7 +359,7 @@ async def test_no_request_data(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_urlencoded_multi_field_reads_body(app, client, tmpdir):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         await request.body()
         form = await request.form()
@@ -376,7 +376,7 @@ async def test_urlencoded_multi_field_reads_body(app, client, tmpdir):
 
 @pytest.mark.asyncio
 async def test_multipart_multi_field_reads_body(app, client, tmpdir):
-    @app.route("/")
+    @app.route("/", methods=["POST"])
     async def handler(request):
         await request.body()
         form = await request.form()
