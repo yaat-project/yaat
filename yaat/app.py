@@ -33,10 +33,18 @@ class Yaat:
 
     # NOTE: Routing
     def route(
-        self, path: str, methods: typing.List[str] = None
+        self,
+        path: str,
+        methods: typing.List[str] = None,
+        has_schema: bool = False,
     ) -> typing.Callable:
         def wrapper(handler):
-            self.add_route(path, handler, methods)
+            self.add_route(
+                path=path,
+                handler=handler,
+                methods=methods,
+                has_schema=has_schema,
+            )
             return handler
 
         return wrapper
@@ -46,8 +54,11 @@ class Yaat:
         path: str,
         handler: typing.Callable,
         methods: typing.List[str] = None,
+        has_schema: bool = False,
     ):
-        self.router.add_route(path=path, handler=handler, methods=methods)
+        self.router.add_route(
+            path=path, handler=handler, methods=methods, has_schema=has_schema
+        )
 
     def websocket_route(self, path: str) -> typing.Callable:
         def wrapper(handler):
