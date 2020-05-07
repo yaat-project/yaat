@@ -4,6 +4,7 @@ import typing
 import yaml
 
 from yaat.requests import Request
+from yaat.responses import Response, JSONResponse
 from yaat.routing import Route, Router, RouteTypes
 
 
@@ -108,3 +109,30 @@ class SchemaGenerator:
                 info += self._get_info(route.routes, path)
 
         return info
+
+
+class OpenAPIResponse(Response):
+    media_type = "application/vnd.oai.openapi"
+
+    def render_content(self, content: typing.Any) -> bytes:
+        assert isinstance(content, dict), "The schema must be a dictionary."
+        return yaml.dump(content, default_flow_style=False).encode("utf-8")
+
+
+class OpenAPI:
+    def __init__(self, title: str, version: str):
+        base_schema = {
+            "openapi": "3.0.0",
+            "info": {"title": title, "version": version},
+        }
+        self.schema = SchemaGenerator(base_schema)
+
+    def JSONResponse(self, request: Request) -> JSONResponse:
+        routes = request.app.router.routes
+        schema = self.schema.get_schema(routes)
+        return JSONResponse(schema)
+
+    def Response(self, request: Request) -> Response:
+        routes = request.app.router.routes
+        schema = self.schema.get_schema(routes)
+        return OpenAPIResponse(schema)

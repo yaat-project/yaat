@@ -1,1 +1,1 @@
-from yaat.openapi.schemas import SchemaGenerator
+from yaat.openapi.schemas import OpenAPI, SchemaGenerator
