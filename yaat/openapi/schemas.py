@@ -112,6 +112,7 @@ class SchemaGenerator:
 
 
 class OpenAPIResponse(Response):
+    # https://github.com/OAI/OpenAPI-Specification/issues/110#issuecomment-364498200
     media_type = "application/vnd.oai.openapi"
 
     def render_content(self, content: typing.Any) -> bytes:
