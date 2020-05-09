@@ -37,10 +37,11 @@ class SchemaGenerator:
         def add_schema(
             schema: typing.Dict,
             path: str,
-            methods: str,
+            method: str,
             handler: typing.Callable,
         ):
             docs = self.get_docstirng(handler)
+            method = method.lower()
 
             if len(docs) == 0:
                 return
@@ -121,11 +122,18 @@ class OpenAPIResponse(Response):
 
 
 class OpenAPISchema:
-    def __init__(self, title: str, version: str):
+    def __init__(
+        self, title: str, description: str = None, version: str = None
+    ):
         base_schema = {
             "openapi": "3.0.0",
-            "info": {"title": title, "version": version},
+            "info": {"title": title},
         }
+        if description:
+            base_schema["info"]["description"] = description
+        if version:
+            base_schema["info"]["version"] = version
+
         self.schema = SchemaGenerator(base_schema)
 
     def JSONResponse(self, request: Request) -> JSONResponse:
