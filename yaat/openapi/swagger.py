@@ -1,5 +1,7 @@
 from yaat.responses import HTMLResponse
 
+DEFAULT_FAVICON_URL = "https://yaat.readthedocs.io/en/stable/images/logo.png"
+
 
 def get_swagger_ui(
     *,
@@ -7,10 +9,8 @@ def get_swagger_ui(
     title: str,
     swagger_js_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui-bundle.js",
     swagger_css_url: str = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@3/swagger-ui.css",
-    swagger_favicon_url: str = "https://avatars0.githubusercontent.com/u/62506028?s=200&v=4",
+    swagger_favicon_url: str = DEFAULT_FAVICON_URL,
 ) -> HTMLResponse:
-    # TODO: replace Yaat logo from proper domain
-
     html = f"""
         <!DOCTYPE html>
         <html>
