@@ -10,11 +10,16 @@ from yaat.routing import Route, Router, RouteTypes
 
 class RouteInfo:
     def __init__(
-        self, path: str, methods: typing.List[str], handler: typing.Callable
+        self,
+        path: str,
+        methods: typing.List[str],
+        handler: typing.Callable,
+        tags: typing.List[str] = None,
     ):
         self.path = path
         self.methods = methods
         self.handler = handler
+        self.tags = tags if tags else []
 
 
 class SchemaGenerator:
@@ -39,6 +44,7 @@ class SchemaGenerator:
             path: str,
             method: str,
             handler: typing.Callable,
+            tags: typing.List,
         ):
             docs = self.get_docstirng(handler)
             method = method.lower()
@@ -50,6 +56,8 @@ class SchemaGenerator:
                 schema["paths"][path] = {}
 
             schema["paths"][path][method] = docs
+            if tags:
+                schema["paths"][path][method]["tags"] = tags
 
         for route in routes_info:
             # if it is a class, check by its class methods
@@ -66,13 +74,15 @@ class SchemaGenerator:
                     if not hasattr(route.handler, method):
                         continue
                     handler = getattr(route.handler, method)
-                    add_schema(schema, route.path, method, handler)
+                    add_schema(schema, route.path, method, handler, route.tags)
             # if method, just loop through methods and add
             else:
                 for method in route.methods:
                     if method in ["HEAD"]:
                         continue
-                    add_schema(schema, route.path, method, route.handler)
+                    add_schema(
+                        schema, route.path, method, route.handler, route.tags
+                    )
 
         return schema
 
@@ -104,7 +114,9 @@ class SchemaGenerator:
                 if prev_path:
                     path = f"{prev_path}{path}"
 
-                info.append(RouteInfo(path, route.methods, route.handler))
+                info.append(
+                    RouteInfo(path, route.methods, route.handler, route.tags)
+                )
             # if router, parse the route to itself
             elif isinstance(route, Router):
                 info += self._get_info(route.routes, path)
