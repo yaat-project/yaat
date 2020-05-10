@@ -10,6 +10,7 @@ nav:
     - Responses: responses.md
     - Routing: routing.md
     - WebSockets: websockets.md
+    - OpenAPI Schemas: apischemas.md
     - Static Files: staticfiles.md
     - Templates: templates.md
     - Background Tasks: backgroundtasks.md

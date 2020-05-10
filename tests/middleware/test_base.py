@@ -14,7 +14,7 @@ class CustomMiddleware(BaseMiddleware):
 
 
 @pytest.mark.asyncio
-async def test_plain_text_response(app, client):
+async def test_base_middleware_plain_text_response(app, client):
     app.add_middleware(CustomMiddleware)
 
     @app.route("/")

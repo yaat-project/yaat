@@ -46,6 +46,7 @@ async def index(request):
 - HTTP streaming response.
 - Cookie support.
 - WebSocket support.
+- API schema generator and [Swagger UI](https://swagger.io/tools/swagger-ui/).
 - Background tasks runner.
 - Server startup and shutdown events.
 - CORS support.
@@ -76,10 +77,11 @@ uvicorn app:app
 ## Dependencies
 
 - [aiofiles](https://github.com/Tinche/aiofiles) - to read files for `FileResponse` or `StaticFiles`.
-- [httpx](https://www.python-httpx.org/) - for test client
+- [httpx](https://www.python-httpx.org/) - for test client.
 - [Jinja2](https://jinja.palletsprojects.com/) - to use `Jinja2Template` for template responses.
 - [parse](https://github.com/r1chardj0n3s/parse) - for parsing path parameters.
-- [python-multipart](http://andrew-d.github.io/python-multipart/) - for form parser, `request.form()`
+- [python-multipart](http://andrew-d.github.io/python-multipart/) - for form parser, `request.form()`.
+- [PyYAML](https://pyyaml.org/) - for schema generator.
 
 ## License
 

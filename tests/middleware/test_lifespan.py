@@ -4,7 +4,7 @@ from yaat import Yaat
 
 
 @pytest.mark.asyncio
-async def test_sync_lifespan():
+async def test_lifespan_middleware_sync_lifespan():
     ran_startup = False
     ran_shutdown = False
 
@@ -38,7 +38,7 @@ async def test_sync_lifespan():
 
 
 @pytest.mark.asyncio
-async def test_async_lifespan():
+async def test_lifespan_middleware_async_lifespan():
     ran_startup = False
     ran_shutdown = False
 
@@ -72,7 +72,7 @@ async def test_async_lifespan():
 
 
 @pytest.mark.asyncio
-async def test_raise_on_startup():
+async def test_lifespan_middleware_raise_on_startup():
     ran_startup = False
     startup_failed = False
 
@@ -104,7 +104,7 @@ async def test_raise_on_startup():
 
 
 @pytest.mark.asyncio
-async def test_raise_on_shutdown():
+async def test_lifespan_middleware_raise_on_shutdown():
     ran_startup = False
     ran_shutdown = False
     shutdown_failed = False
