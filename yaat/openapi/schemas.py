@@ -223,12 +223,15 @@ class OpenAPISchema:
 
         self.schema = SchemaGenerator(base_schema)
 
+    def get_schema(self, routes: typing.List[Route]) -> typing.Dict:
+        return self.schema.get_schema(routes)
+
     def JSONResponse(self, request: Request) -> JSONResponse:
         routes = request.app.router.routes
-        schema = self.schema.get_schema(routes)
+        schema = self.get_schema(routes)
         return JSONResponse(schema)
 
     def Response(self, request: Request) -> Response:
         routes = request.app.router.routes
-        schema = self.schema.get_schema(routes)
+        schema = self.get_schema(routes)
         return OpenAPIResponse(schema)
