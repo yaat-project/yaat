@@ -55,7 +55,12 @@ class SchemaGenerator:
                         continue
                     handler = getattr(route.handler, method)
                     self._add_to_schema(
-                        schema, route.path, method, handler, route.tags
+                        schema=schema,
+                        path=route.path,
+                        method=method,
+                        handler=handler,
+                        tags=route.tags,
+                        is_class=True,
                     )
             # if method, just loop through methods and add
             else:
@@ -63,7 +68,11 @@ class SchemaGenerator:
                     if method in ["HEAD"]:
                         continue
                     self._add_to_schema(
-                        schema, route.path, method, route.handler, route.tags
+                        schema=schema,
+                        path=route.path,
+                        method=method,
+                        handler=route.handler,
+                        tags=route.tags,
                     )
 
         return schema
@@ -112,6 +121,7 @@ class SchemaGenerator:
         method: str,
         handler: typing.Callable,
         tags: typing.List,
+        is_class: bool = False,
     ):
         """
         Add the route documentation to OpenAPI docs
@@ -131,7 +141,7 @@ class SchemaGenerator:
         param_names = list(signature.parameters.keys())
 
         # if class, ignore first 2 params (self, request) else 1 (request)
-        if inspect.isclass(handler):
+        if is_class:
             del parameters[param_names[0]]
             del parameters[param_names[1]]
             param_names = param_names[2:]
