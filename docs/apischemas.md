@@ -124,6 +124,8 @@ async def get_user(request, userid: str):
     return TextResponse(f"This is {userid}.")
 ```
 
+![swaggerui-tags](/images/apischemas/swaggerui1.png)
+
 - If you do not put the default value for the parameter, it will be `required` in documentation.
 
 - For the value type, it determines by Python's type hinting.
@@ -150,3 +152,5 @@ async def get_user(request, userid: str):
     """
     return TextResponse(f"This is {userid}.")
 ```
+
+![swaggerui-tags](/images/apischemas/swaggerui2.png)
