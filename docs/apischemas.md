@@ -124,7 +124,7 @@ async def get_user(request, userid: str):
     return TextResponse(f"This is {userid}.")
 ```
 
-![swaggerui-tags](/images/apischemas/swaggerui1.png)
+![swaggerui-tags](https://raw.githubusercontent.com/yaat-project/yaat/master/docs/images/apischemas/swaggerui1.png)
 
 - If you do not put the default value for the parameter, it will be `required` in documentation.
 
@@ -153,4 +153,4 @@ async def get_user(request, userid: str):
     return TextResponse(f"This is {userid}.")
 ```
 
-![swaggerui-tags](/images/apischemas/swaggerui2.png)
+![swaggerui-tags](https://raw.githubusercontent.com/yaat-project/yaat/master/docs/images/apischemas/swaggerui2.png)
