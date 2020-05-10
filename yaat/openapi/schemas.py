@@ -182,6 +182,7 @@ class SchemaGenerator:
                         # field exists, and updated already
                         # so no need to create new below
                         updated = True
+                        break
 
                 if updated:
                     continue
