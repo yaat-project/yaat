@@ -1,6 +1,6 @@
 from setuptools import setup
 
-VERSION = "0.1.9"
+VERSION = "0.1.10"
 
 
 def get_long_description():
@@ -10,7 +10,7 @@ def get_long_description():
 
 setup(
     name="yaat",
-    packages=["yaat", "yaat.middleware"],
+    packages=["yaat", "yaat.middleware", "yaat.openapi"],
     version=VERSION,
     license="LGPL",
     description="Yet another ASGI toolkit",
