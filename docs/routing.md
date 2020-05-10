@@ -49,7 +49,7 @@ app.add_route(
 ### Handling HTTP methods
 
 You can specify the HTTP methods during registration to restrict the route to specific HTTP method.
-If you do not specify, the route will be open to all HTTP methods.
+If you do not specify, only `GET` method is allowed.
 
 ```python
 @app.route("/", methods=["GET"])
