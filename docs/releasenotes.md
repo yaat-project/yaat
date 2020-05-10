@@ -1,5 +1,9 @@
 # Release Notes
 
+### 0.1.10
+
+- Fixed broken package `yaat.openapi`.
+
 ### 0.1.9
 
 - Updated routes to only allow `GET` method if HTTP methods are not specified.
