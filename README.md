@@ -38,6 +38,7 @@ Yaat is an asynchronous web framework/toolkit.
 - HTTP streaming response.
 - Cookie support.
 - WebSocket support.
+- API schema generator and [Swagger UI](https://swagger.io/tools/swagger-ui/).
 - Background tasks runner.
 - Server startup and shutdown events.
 - CORS support.

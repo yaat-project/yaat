@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from enum import Enum
 from parse import parse
+import inspect
 import typing
 
 from yaat.constants import HTTP_METHODS
@@ -19,11 +20,24 @@ class Route:
         path: str,
         handler: typing.Callable,
         methods: typing.List[str] = None,
+        has_schema: bool = False,
+        tags: typing.List[str] = None,
     ):
+        if inspect.isclass(handler):
+            # if handler is class, if will check in function level
+            # so allow all HTTP methods
+            methods = methods if methods else HTTP_METHODS
+        else:
+            # if handler is function, if methods are not provided
+            # only allow GET
+            methods = methods if methods else ["GET"]
+
         self.route_type = route_type
         self.path = path
         self.handler = handler
-        self.methods = methods if methods else HTTP_METHODS
+        self.methods = methods
+        self.has_schema = has_schema
+        self.tags = tags if tags else []
 
     @property
     def type(self) -> RouteTypes:
@@ -73,10 +87,20 @@ class Router:
         return self.__paths
 
     def route(
-        self, path: str, methods: typing.List[str] = None
+        self,
+        path: str,
+        methods: typing.List[str] = None,
+        has_schema: bool = False,
+        tags: typing.List[str] = None,
     ) -> typing.Callable:
         def wrapper(handler):
-            self.add_route(path=path, handler=handler, methods=methods)
+            self.add_route(
+                path=path,
+                handler=handler,
+                methods=methods,
+                has_schema=has_schema,
+                tags=tags,
+            )
             return handler
 
         return wrapper
@@ -86,27 +110,44 @@ class Router:
         path: str,
         handler: typing.Callable,
         methods: typing.List[str] = None,
+        has_schema: bool = False,
         is_static: bool = False,
+        tags: typing.List[str] = None,
     ):
         assert path not in self.paths, f"Route {path}, already exists"
         route_type = RouteTypes.STATIC if is_static else RouteTypes.HTTP
         path = self._clean_path(path)
         self.routes[path] = Route(
-            route_type=route_type, path=path, handler=handler, methods=methods,
+            route_type=route_type,
+            path=path,
+            handler=handler,
+            methods=methods,
+            has_schema=has_schema,
+            tags=tags,
         )
 
-    def websocket_route(self, path: str) -> typing.Callable:
+    def websocket_route(
+        self, path: str, tags: typing.List[str] = None
+    ) -> typing.Callable:
         def wrapper(handler):
             self.add_websocket_route(path=path)
             return handler
 
         return wrapper
 
-    def add_websocket_route(self, path: str, handler: typing.Callable):
+    def add_websocket_route(
+        self,
+        path: str,
+        handler: typing.Callable,
+        tags: typing.List[str] = None,
+    ):
         assert path not in self.paths, f"Route {path}, already exists"
         path = self._clean_path(path)
         self.routes[path] = Route(
-            route_type=RouteTypes.WEBSOCKET, path=path, handler=handler
+            route_type=RouteTypes.WEBSOCKET,
+            path=path,
+            handler=handler,
+            tags=tags,
         )
 
     def mount(self, router: typing.Callable, prefix: str):

@@ -14,8 +14,8 @@ Use to run a single background task after responding to a client.
 - `function` - function to be called from the background task. It can be either `sync` or `async`.
 
 ```python
-from yaat.background import BackgroundTask
-from yaat.responses import RunAfterResponse, TextResponse
+from yaat.background import BackgroundTask, RunAfterResponse
+from yaat.responses import TextResponse
 
 async def task():
     ...

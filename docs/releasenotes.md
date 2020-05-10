@@ -1,5 +1,11 @@
 # Release Notes
 
+### 0.1.9
+
+- Updated routes to only allow `GET` method if HTTP methods are not specified.
+- API schema generator, `OpenAPISchema` and `SchemaGenerator`.
+- [Swagger UI](https://swagger.io/tools/swagger-ui/), `get_swagger_ui`.
+
 ### 0.1.8
 
 - Bugfix on router. Read more about issue [here](https://github.com/yaat-project/yaat/pull/25).

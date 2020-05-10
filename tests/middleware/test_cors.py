@@ -7,7 +7,7 @@ from yaat.responses import TextResponse
 
 
 @pytest.mark.asyncio
-async def test_allow_all(app, client):
+async def test_cors_middleware_allow_all(app, client):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -36,7 +36,7 @@ async def test_allow_all(app, client):
 
 
 @pytest.mark.asyncio
-async def test_allow_specific_origin(app, client):
+async def test_cors_middleware_allow_specific_origin(app, client):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["http://testserver.com"],
@@ -80,7 +80,7 @@ async def test_allow_specific_origin(app, client):
 
 
 @pytest.mark.asyncio
-async def test_disallowed_preflight(app, client):
+async def test_cors_middleware_disallowed_preflight(app, client):
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["http://testserver.com"],
@@ -105,7 +105,9 @@ async def test_disallowed_preflight(app, client):
 
 
 @pytest.mark.asyncio
-async def test_credentialed_return_specific_origin(app, client):
+async def test_cors_middleware_credentialed_return_specific_origin(
+    app, client
+):
     app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
     @app.route("/")
@@ -126,7 +128,7 @@ async def test_credentialed_return_specific_origin(app, client):
 
 
 @pytest.mark.asyncio
-async def test_vary_headers_origin_default(app, client):
+async def test_cors_middleware_vary_headers_origin_default(app, client):
     app.add_middleware(CORSMiddleware, allow_origins=["http://testserver.com"])
 
     @app.route("/")
@@ -142,7 +144,7 @@ async def test_vary_headers_origin_default(app, client):
 
 
 @pytest.mark.asyncio
-async def test_vary_headers_set(app, client):
+async def test_cors_middleware_vary_headers_set(app, client):
     app.add_middleware(CORSMiddleware, allow_origins=["http://testserver.com"])
 
     @app.route("/")
@@ -158,7 +160,7 @@ async def test_vary_headers_set(app, client):
 
 
 @pytest.mark.asyncio
-async def test_allow_origin_regex(app, client):
+async def test_cors_middleware_allow_origin_regex(app, client):
     app.add_middleware(
         CORSMiddleware,
         allow_origin_regex=r"http://.*\.com",

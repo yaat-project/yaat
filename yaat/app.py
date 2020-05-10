@@ -33,10 +33,20 @@ class Yaat:
 
     # NOTE: Routing
     def route(
-        self, path: str, methods: typing.List[str] = None
+        self,
+        path: str,
+        methods: typing.List[str] = None,
+        has_schema: bool = False,
+        tags: typing.List[str] = None,
     ) -> typing.Callable:
         def wrapper(handler):
-            self.add_route(path, handler, methods)
+            self.add_route(
+                path=path,
+                handler=handler,
+                methods=methods,
+                has_schema=has_schema,
+                tags=tags,
+            )
             return handler
 
         return wrapper
@@ -46,18 +56,33 @@ class Yaat:
         path: str,
         handler: typing.Callable,
         methods: typing.List[str] = None,
+        has_schema: bool = False,
+        tags: typing.List[str] = None,
     ):
-        self.router.add_route(path=path, handler=handler, methods=methods)
+        self.router.add_route(
+            path=path,
+            handler=handler,
+            methods=methods,
+            has_schema=has_schema,
+            tags=tags,
+        )
 
-    def websocket_route(self, path: str) -> typing.Callable:
+    def websocket_route(
+        self, path: str, tags: typing.List[str] = None
+    ) -> typing.Callable:
         def wrapper(handler):
-            self.add_websocket_route(path, handler)
+            self.add_websocket_route(path, handler, tags)
             return handler
 
         return wrapper
 
-    def add_websocket_route(self, path: str, handler: typing.Callable):
-        self.router.add_websocket_route(path=path, handler=handler)
+    def add_websocket_route(
+        self,
+        path: str,
+        handler: typing.Callable,
+        tags: typing.List[str] = None,
+    ):
+        self.router.add_websocket_route(path=path, handler=handler, tags=tags)
 
     def mount(self, router: Router, prefix: str):
         self.router.mount(router=router, prefix=prefix)

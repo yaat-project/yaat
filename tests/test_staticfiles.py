@@ -26,7 +26,7 @@ async def test_staticfiles(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_post_method(app, client, tmpdir):
+async def test_staticfiles_post_method(app, client, tmpdir):
     CONTENT = b"xxxx"
 
     temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
@@ -44,7 +44,7 @@ async def test_post_method(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_missing_file(app, client, tmpdir):
+async def test_staticfiles_missing_file(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
 
     statics = StaticFiles(directory=directory)
@@ -55,7 +55,7 @@ async def test_missing_file(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_missing_directory(app, client, tmpdir):
+async def test_staticfiles_missing_directory(app, client, tmpdir):
     directory = f"/{str(tmpdir)}"
 
     statics = StaticFiles(directory=directory)
@@ -66,7 +66,7 @@ async def test_missing_directory(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_configured_with_file(app, client, tmpdir):
+async def test_staticfiles_configured_with_file(app, client, tmpdir):
     temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
     temp.write(b"xxxx")
     temp.close()
@@ -78,7 +78,7 @@ async def test_configured_with_file(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_head_method(app, client, tmpdir):
+async def test_staticfiles_head_method(app, client, tmpdir):
     CONTENT = b"xxxx"
 
     temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
@@ -99,7 +99,7 @@ async def test_head_method(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_304_with_etag_match(app, client, tmpdir):
+async def test_staticfiles_304_with_etag_match(app, client, tmpdir):
     CONTENT = b"xxxx"
 
     temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
@@ -126,7 +126,9 @@ async def test_304_with_etag_match(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_304_last_modified_compare_last_request(app, client, tmpdir):
+async def test_staticfiles_304_last_modified_compare_last_request(
+    app, client, tmpdir
+):
     CONTENT = b"xxxx"
     FILE_LAST_MODIFIED_TIME = time.mktime(
         time.strptime("2020-02-02 01:00:00", "%Y-%m-%d %H:%M:%S")
@@ -166,7 +168,7 @@ async def test_304_last_modified_compare_last_request(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_static_html(app, client, tmpdir):
+async def test_staticfiles_static_html(app, client, tmpdir):
     # create html file with name
     named_html = tempfile.NamedTemporaryFile(
         dir=tmpdir, suffix=".html", delete=False
@@ -198,7 +200,7 @@ async def test_static_html(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_static_from_sub_router(app, client, tmpdir):
+async def test_staticfiles_static_from_sub_router(app, client, tmpdir):
     router = Router()
     CONTENT = b"xxxx"
 

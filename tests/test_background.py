@@ -1,11 +1,11 @@
 import pytest
 
-from yaat.background import BackgroundTask, BackgroundTasks
-from yaat.responses import RunAfterResponse, Response
+from yaat.background import BackgroundTask, BackgroundTasks, RunAfterResponse
+from yaat.responses import Response
 
 
 @pytest.mark.asyncio
-async def test_async_task(app, client):
+async def test_background_async_task(app, client):
     TASK_COMPLETE = False
 
     async def task():
@@ -24,7 +24,7 @@ async def test_async_task(app, client):
 
 
 @pytest.mark.asyncio
-async def test_sync_task(app, client):
+async def test_background_sync_task(app, client):
     TASK_COMPLETE = False
 
     def task():
@@ -42,7 +42,7 @@ async def test_sync_task(app, client):
 
 
 @pytest.mark.asyncio
-async def test_task_with_arguments(app, client):
+async def test_background_task_with_arguments(app, client):
     MESSAGE = None
 
     def task(name, message):
@@ -62,7 +62,7 @@ async def test_task_with_arguments(app, client):
 
 
 @pytest.mark.asyncio
-async def test_multiple_tasks(app, client):
+async def test_background_multiple_tasks(app, client):
     TASK1_COMPLETE = False
     TASK2_COMPLETE = False
 
@@ -88,7 +88,7 @@ async def test_multiple_tasks(app, client):
 
 
 @pytest.mark.asyncio
-async def test_multiple_both_async_sync_tasks(app, client):
+async def test_background_multiple_both_async_sync_tasks(app, client):
     TASK1_COMPLETE = False
     TASK2_COMPLETE = False
 

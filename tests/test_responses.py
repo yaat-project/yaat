@@ -13,7 +13,7 @@ from yaat.responses import (
 
 
 @pytest.mark.asyncio
-async def test_plain_text_response(app, client):
+async def test_responses_plain_text_response(app, client):
     RESPONSE = "hello world"
 
     @app.route("/")
@@ -27,7 +27,7 @@ async def test_plain_text_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_bytes_response(app, client):
+async def test_responses_bytes_response(app, client):
     RESPONSE = b"bytes"
 
     @app.route("/")
@@ -41,7 +41,7 @@ async def test_bytes_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_json_response(app, client):
+async def test_responses_json_response(app, client):
     RESPONSE = {"hello": "world"}
 
     @app.route("/")
@@ -55,7 +55,7 @@ async def test_json_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_json_none_response(app, client):
+async def test_responses_json_none_response(app, client):
     RESPONSE = None
 
     @app.route("/")
@@ -69,7 +69,7 @@ async def test_json_none_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_html_response(app, client):
+async def test_responses_html_response(app, client):
     RESPONSE = "<h1>Hello World</h1>"
 
     @app.route("/")
@@ -83,7 +83,7 @@ async def test_html_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_redirect_response(app, client):
+async def test_responses_redirect_response(app, client):
     RESPONSE = "This is redirected."
     REDIRECTED_URL = "/text"
 
@@ -103,7 +103,7 @@ async def test_redirect_response(app, client):
 
 
 @pytest.mark.asyncio
-async def test_file_response(app, client, tmpdir):
+async def test_responses_file_response(app, client, tmpdir):
     CONTENT = b"xxxx"
 
     temp = tempfile.NamedTemporaryFile(dir=tmpdir, suffix=".png", delete=False)
@@ -122,7 +122,7 @@ async def test_file_response(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_headers_replace(app, client):
+async def test_responses_headers_replace(app, client):
     @app.route("/")
     async def handler(request):
         headers = {"header-1": "abc", "header-2": "def"}
@@ -137,7 +137,7 @@ async def test_headers_replace(app, client):
 
 
 @pytest.mark.asyncio
-async def test_response_status_code(app, client):
+async def test_responses_status_code(app, client):
     @app.route("/")
     async def handler(request):
         return Response(status_code=204)
@@ -148,7 +148,7 @@ async def test_response_status_code(app, client):
 
 
 @pytest.mark.asyncio
-async def test_file_response_directory_error(app, client, tmpdir):
+async def test_responses_file_response_directory_error(app, client, tmpdir):
     @app.route("/")
     async def handler(request):
         return FileResponse(path=tmpdir + "/notfound/example.txt")
@@ -159,7 +159,7 @@ async def test_file_response_directory_error(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_file_response_missing_file(app, client, tmpdir):
+async def test_responses_file_response_missing_file(app, client, tmpdir):
     @app.route("/")
     async def handler(request):
         return FileResponse(path="404.txt")
@@ -170,7 +170,7 @@ async def test_file_response_missing_file(app, client, tmpdir):
 
 
 @pytest.mark.asyncio
-async def test_set_cookie(app, client):
+async def test_responses_set_cookie(app, client):
     @app.route("/")
     async def handler(request):
         response = Response(content="hello world")
@@ -193,7 +193,7 @@ async def test_set_cookie(app, client):
 
 
 @pytest.mark.asyncio
-async def test_delete_cookie(app, client):
+async def test_responses_delete_cookie(app, client):
     @app.route("/")
     async def handler(request):
         response = Response(content="hello world")
@@ -207,7 +207,7 @@ async def test_delete_cookie(app, client):
 
 
 @pytest.mark.asyncio
-async def test_populate_headers(app, client):
+async def test_responses_populate_headers(app, client):
     CONTENT = "hello world"
 
     @app.route("/")
@@ -222,7 +222,7 @@ async def test_populate_headers(app, client):
 
 
 @pytest.mark.asyncio
-async def test_head_method(app, client):
+async def test_responses_head_method(app, client):
     @app.route("/")
     async def handler(request):
         return TextResponse(content="hello world")
@@ -233,7 +233,7 @@ async def test_head_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_stream_response(app, client):
+async def test_responses_stream_response(app, client):
     @app.route("/")
     async def handler(request):
         async def get_numbers(min, max):
