@@ -10,7 +10,7 @@ from yaat.routing import Router
 
 
 @pytest.mark.asyncio
-async def test_no_method_specify(app, client):
+async def test_routing_no_method_specify(app, client):
     RESPONSE = "hello world"
 
     @app.route("/")
@@ -22,7 +22,7 @@ async def test_no_method_specify(app, client):
 
 
 @pytest.mark.asyncio
-async def test_get_method(app, client):
+async def test_routing_get_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/", methods=["GET"])
@@ -34,7 +34,7 @@ async def test_get_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_post_method(app, client):
+async def test_routing_post_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/", methods=["POST"])
@@ -46,7 +46,7 @@ async def test_post_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_put_method(app, client):
+async def test_routing_put_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/", methods=["PUT"])
@@ -58,7 +58,7 @@ async def test_put_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_patch_method(app, client):
+async def test_routing_patch_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/", methods=["PATCH"])
@@ -70,7 +70,7 @@ async def test_patch_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_delete_method(app, client):
+async def test_routing_delete_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/", methods=["DELETE"])
@@ -82,7 +82,7 @@ async def test_delete_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_multiple_method(app, client):
+async def test_routing_multiple_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/multiple", methods=["GET", "POST"])
@@ -97,7 +97,7 @@ async def test_multiple_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_invalid_method(app, client):
+async def test_routing_invalid_method(app, client):
     RESPONSE = "hello world"
 
     @app.route("/", methods=["GET"])
@@ -111,7 +111,7 @@ async def test_invalid_method(app, client):
 
 
 @pytest.mark.asyncio
-async def test_url_param(app, client):
+async def test_routing_url_param(app, client):
     @app.route("/{name}")
     async def handler(request, name):
         name = unquote(name)
@@ -123,7 +123,7 @@ async def test_url_param(app, client):
 
 
 @pytest.mark.asyncio
-async def test_class_based_view(app, client):
+async def test_routing_class_based_view(app, client):
     @app.route("/")
     class Handler:
         async def get(self, request):
@@ -143,7 +143,7 @@ async def test_class_based_view(app, client):
 
 
 @pytest.mark.asyncio
-async def test_method_register_function_view(app, client):
+async def test_routing_method_register_function_view(app, client):
     async def handler(request):
         return TextResponse("hello world")
 
@@ -154,7 +154,7 @@ async def test_method_register_function_view(app, client):
 
 
 @pytest.mark.asyncio
-async def test_method_register_class_view(app, client):
+async def test_routing_method_register_class_view(app, client):
     class Handler:
         async def get(self, request):
             return TextResponse("This is get method.")
@@ -175,7 +175,7 @@ async def test_method_register_class_view(app, client):
 
 
 @pytest.mark.asyncio
-async def test_mount_sub_application(app, client):
+async def test_routing_mount_sub_application(app, client):
     @app.route("/")
     async def main(request):
         return TextResponse("This is main app.")
@@ -196,7 +196,7 @@ async def test_mount_sub_application(app, client):
 
 
 @pytest.mark.asyncio
-async def test_list_paths(app, client):
+async def test_routing_list_paths(app, client):
     @app.route("/")
     async def main(request):
         return TextResponse("main route")

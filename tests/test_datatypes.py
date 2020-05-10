@@ -11,7 +11,7 @@ from yaat.components import (
 
 
 @pytest.mark.asyncio
-async def test_url():
+async def test_datatypes_url():
     url = URL(
         url="https://example.com:8080/path/to/somewhere?xyz=123#fragment1"
     )
@@ -26,7 +26,7 @@ async def test_url():
 
 
 @pytest.mark.asyncio
-async def test_url_from_scope():
+async def test_datatypes_url_from_scope():
     url = URL(
         scope={
             "server": ("example.com", "8080"),
@@ -46,7 +46,7 @@ async def test_url_from_scope():
 
 
 @pytest.mark.asyncio
-async def test_address():
+async def test_datatypes_address():
     address = Address("example.com", "8080")
     assert address.host == "example.com"
     assert address.port == 8080
@@ -54,7 +54,7 @@ async def test_address():
 
 
 @pytest.mark.asyncio
-async def test_headers(app, client):
+async def test_datatypes_headers(app, client):
     header = Headers(
         [
             (b"content-type", b"application/json"),
@@ -79,7 +79,7 @@ async def test_headers(app, client):
 
 
 @pytest.mark.asyncio
-async def test_queryparams(app, client):
+async def test_datatypes_queryparams(app, client):
     query = QueryParams("a=123&a=456&b=789&c")
 
     assert "a" in query
@@ -93,7 +93,7 @@ async def test_queryparams(app, client):
 
 
 @pytest.mark.asyncio
-async def test_url_blank_params():
+async def test_datatypes_url_blank_params():
     query = QueryParams("a=123&b=456&abc&xyz")
 
     assert "a" in query
@@ -107,7 +107,7 @@ async def test_url_blank_params():
 
 
 @pytest.mark.asyncio
-async def test_form(app, client):
+async def test_datatypes_form(app, client):
     upload = io.BytesIO(b"test")
     form = Form(
         [("abc", "123"), ("abc", "456"), ("def", "789"), ("xyz", upload)]

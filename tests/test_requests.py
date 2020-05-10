@@ -5,7 +5,7 @@ from yaat.responses import JSONResponse, TextResponse
 
 
 @pytest.mark.asyncio
-async def test_request_url(app, client):
+async def test_requests_url(app, client):
     @app.route("/")
     async def handler(request):
         data = {"method": request.method, "url": str(request.url)}
@@ -19,7 +19,7 @@ async def test_request_url(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_query_params(app, client):
+async def test_requests_query_params(app, client):
     @app.route("/")
     async def handler(request):
         query_params = dict(request.query_params)
@@ -32,7 +32,7 @@ async def test_request_query_params(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_header(app, client):
+async def test_requests_header(app, client):
     @app.route("/")
     async def handler(request):
         headers = dict(request.headers)
@@ -44,7 +44,7 @@ async def test_request_header(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_client(app, client):
+async def test_requests_client(app, client):
     @app.route("/")
     async def handler(request):
         client = request.client
@@ -58,7 +58,7 @@ async def test_request_client(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_body(app, client):
+async def test_requests_body(app, client):
     @app.route("/", methods=["POST"])
     async def handler(request):
         body = await request.body()
@@ -70,7 +70,7 @@ async def test_request_body(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_json(app, client):
+async def test_requests_json(app, client):
     DATA = {"hello": "world", "hello_chinese": "世界"}
 
     @app.route("/", methods=["POST"])
@@ -84,7 +84,7 @@ async def test_request_json(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_form_urlencode(app, client):
+async def test_requests_form_urlencode(app, client):
     DATA = {"hello": "world", "hello_chinese": "世界"}
 
     @app.route("/", methods=["POST"])
@@ -99,7 +99,7 @@ async def test_request_form_urlencode(app, client):
 
 
 @pytest.mark.asyncio
-async def test_request_cookies(app, client):
+async def test_requests_cookies(app, client):
     COOKIE_VALUE = "Hello cookie!"
 
     @app.route("/")

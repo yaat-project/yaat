@@ -5,7 +5,7 @@ from yaat.responses import TextResponse
 
 
 @pytest.mark.asyncio
-async def test_not_acceptable(app, client):
+async def test_exceptions_not_acceptable(app, client):
     @app.route("/")
     async def handler(request):
         raise HTTPException(status_code=406)
@@ -15,7 +15,7 @@ async def test_not_acceptable(app, client):
 
 
 @pytest.mark.asyncio
-async def test_not_found(app, client):
+async def test_exceptions_not_found(app, client):
     @app.route("/")
     async def handler(request):
         raise HTTPException(status_code=404)
@@ -25,7 +25,7 @@ async def test_not_found(app, client):
 
 
 @pytest.mark.asyncio
-async def test_method_not_allow(app, client):
+async def test_exceptions_method_not_allow(app, client):
     @app.route("/")
     async def handler(request):
         raise HTTPException(status_code=405)
@@ -35,7 +35,7 @@ async def test_method_not_allow(app, client):
 
 
 @pytest.mark.asyncio
-async def test_not_modified(app, client):
+async def test_exceptions_not_modified(app, client):
     @app.route("/")
     async def handler(request):
         raise HTTPException(status_code=304)
@@ -45,7 +45,7 @@ async def test_not_modified(app, client):
 
 
 @pytest.mark.asyncio
-async def test_internal_server_error(app, client):
+async def test_exceptions_internal_server_error(app, client):
     @app.route("/")
     async def handler(request):
         raise RuntimeError("Ooooff")
