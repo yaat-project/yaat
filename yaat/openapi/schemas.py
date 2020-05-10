@@ -31,10 +31,7 @@ class SchemaGenerator:
     ) -> typing.List[RouteInfo]:
         return self._get_info(routes)
 
-    def get_schema(self, routes: typing.List[Route] = None) -> typing.Dict:
-        if not routes:
-            routes = self.router.routes
-
+    def get_schema(self, routes: typing.List[Route]) -> typing.Dict:
         schema = self.base_schema.copy()  # copy the base schema
         schema.setdefault("paths", {})
         routes_info = self.get_routes_info(routes)
