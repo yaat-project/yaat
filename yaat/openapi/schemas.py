@@ -150,6 +150,8 @@ class SchemaGenerator:
                     param_data.annotation
                 )
 
+                updated = False
+
                 # look for exists one and update fields
                 for param in docs["parameters"][:]:
                     if param["name"] in parameters.keys():
@@ -169,6 +171,13 @@ class SchemaGenerator:
                         if "required" not in param:
                             if param_data.default is inspect.Parameter.empty:
                                 param["required"] = "true"
+
+                        # field exists, and updated already
+                        # so no need to create new below
+                        updated = True
+
+                if updated:
+                    continue
 
                 # if document is not exists at all, create one and add
                 param_doc = {}
