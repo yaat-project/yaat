@@ -189,10 +189,10 @@ async def test_routing_mount_sub_application(app, client):
     app.mount(prefix="/blog", router=blogRouter)
 
     res = await client.get("/")
-    res.text == "This is main app."
+    assert res.text == "This is main app."
 
     res = await client.get("/blog")
-    res.text == "This is blog app."
+    assert res.text == "This is blog app."
 
 
 @pytest.mark.asyncio
