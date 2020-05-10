@@ -191,10 +191,10 @@ class SchemaGenerator:
     def _get_param_schema_types(self, object_type: typing.Any) -> str:
         if object_type == int:
             return "integer"
-        elif object_type == bool:
-            return "boolean"
         elif object_type == float:
             return "number"
+        elif object_type == bool:
+            return "boolean"
         else:
             return "string"
 
