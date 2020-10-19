@@ -16,6 +16,9 @@
     <a href="https://codecov.io/gh/yaat-project/yaat/">
         <img src="https://codecov.io/gh/yaat-project/yaat/branch/master/graph/badge.svg" alt="codecov report"/>
     </a>
+    <a href="https://www.codefactor.io/repository/github/yaat-project/yaat">
+        <img src="https://www.codefactor.io/Content/badges/A.svg" alt="codefactor report"/>
+    </a>
     <a href="https://pypi.org/project/yaat/">
         <img src="https://badge.fury.io/py/yaat.svg" alt="pypi package version"/>
     </a>
